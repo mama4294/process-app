@@ -1,11 +1,19 @@
 import Gantt from "../components/gantt";
 import ActionBar from "../components/actionBar";
+import EditEquipment from "../components/editEquipment";
+import { useState } from "react";
 
 export default function Home() {
+  const [modelOpen, setModalOpen] = useState(false);
+  const handleOpen = () => setModalOpen(true);
+  const handleClose = () => setModalOpen(false);
   return (
     <>
-      <ActionBar />
+      <ActionBar openModal={handleOpen} />
       <Gantt />
+      {modelOpen && (
+        <EditEquipment open={modelOpen} handleClose={handleClose} />
+      )}
     </>
   );
 }
