@@ -1,8 +1,9 @@
 import React from "react";
-import Modal from "@mui/material/Modal";
+import Drawer from "@mui/material/Drawer";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
+import TextField from "@mui/material/TextField";
+import { useState } from "react";
 
 const style = {
   position: "absolute",
@@ -19,17 +20,37 @@ const style = {
 const EditEquipmentModal = ({ open, handleClose }) => {
   return (
     <div>
-      <Modal open={open} onClose={handleClose}>
-        <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Text in a modal
-          </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-          </Typography>
-        </Box>
-      </Modal>
+      <Drawer
+        anchor="right"
+        open={open}
+        onClose={handleClose}
+        variant="temporary"
+      >
+        <EquipmentInputForm />
+      </Drawer>
     </div>
+  );
+};
+
+const EquipmentInputForm = () => {
+  const [equipment, setEquipment] = useState({ name: "Equipment 1" });
+  const { name } = equipment;
+
+  const handleChange = (event) => {
+    setEquipment(event.target.value);
+  };
+  return (
+    <Box sx={{ display: "flex", flexWrap: "wrap" }}>
+      <div>
+        <TextField
+          label="Equipment Name"
+          id="name"
+          sx={{ m: 1, width: "25ch" }}
+          value={name}
+          onChange={handleChange}
+        />
+      </div>
+    </Box>
   );
 };
 

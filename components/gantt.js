@@ -1,5 +1,6 @@
 import styles from "../styles/GanttChart.module.css";
 import Checkbox from "@mui/material/Checkbox";
+import Tooltip from "@mui/material/Tooltip";
 import { useContext } from "react";
 import { EquipmentContext } from "../contexts/equipmentContext";
 
@@ -98,8 +99,9 @@ const Operation = ({ operation }) => {
 
   return (
     <li className={`${styles.listItem} ${styles.tooltip}`} style={style}>
-      <div className={styles.taskContainer}>{/* <span>{title}</span> */}</div>
-      <ToolTip text={title} />
+      <Tooltip title={title} arrow>
+        <div className={styles.taskContainer}>{/* <span>{title}</span> */}</div>
+      </Tooltip>
     </li>
   );
 };
@@ -112,40 +114,40 @@ const ToolTip = ({ text }) => {
   );
 };
 
-const ChartLines = ({ numColumns }) => {
-  var rows = [],
-    i = 0,
-    len = numColumns;
-  while (++i <= len) rows.push(i);
-  return (
-    <div
-      className={(styles.chartRow, styles.chartLines)}
-      style={{ gridTemplateColumns: `50px repeat(${numColumns}, 1fr)` }}
-    >
-      {rows.map((column, index) => {
-        return <span key={index}></span>;
-      })}
-    </div>
-  );
-};
+// const ChartLines = ({ numColumns }) => {
+//   var rows = [],
+//     i = 0,
+//     len = numColumns;
+//   while (++i <= len) rows.push(i);
+//   return (
+//     <div
+//       className={(styles.chartRow, styles.chartLines)}
+//       style={{ gridTemplateColumns: `50px repeat(${numColumns}, 1fr)` }}
+//     >
+//       {rows.map((column, index) => {
+//         return <span key={index}></span>;
+//       })}
+//     </div>
+//   );
+// };
 
-const ChartHeader = ({ numColumns }) => {
-  var rows = [],
-    i = 0,
-    len = numColumns;
-  while (++i <= len) rows.push(i);
-  return (
-    <div
-      className="chart-row chart-period"
-      style={{ gridTemplateColumns: `50px repeat(${numColumns}, 1fr)` }}
-    >
-      <div className="chart-row-item"></div>
-      {rows.map((column, index) => {
-        return <span key={index}>{index + 1}</span>;
-      })}
-    </div>
-  );
-};
+// const ChartHeader = ({ numColumns }) => {
+//   var rows = [],
+//     i = 0,
+//     len = numColumns;
+//   while (++i <= len) rows.push(i);
+//   return (
+//     <div
+//       className="chart-row chart-period"
+//       style={{ gridTemplateColumns: `50px repeat(${numColumns}, 1fr)` }}
+//     >
+//       <div className="chart-row-item"></div>
+//       {rows.map((column, index) => {
+//         return <span key={index}>{index + 1}</span>;
+//       })}
+//     </div>
+//   );
+// };
 
 const findLargestEndpoint = (array) => {
   return Math.max(...array.map((o) => o.end), 0);

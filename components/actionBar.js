@@ -11,8 +11,8 @@ const ActionBar = ({ openModal }) => {
       <Button varient="outlined" onClick={openModal}>
         Add
       </Button>
-      <Button varient="outlined">Edit</Button>
-      {selectionIds !== null && selectionIds.length > 0 && (
+      {selectionIds.length === 1 && <Button varient="outlined">Edit</Button>}
+      {selectionIds.length > 0 && (
         <Button varient="outlined" onClick={deleteEquipment}>
           Delete
         </Button>

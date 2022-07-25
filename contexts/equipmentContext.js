@@ -81,7 +81,7 @@ export const EquipmentContext = createContext({
 export const EquipmentProvider = ({ children }) => {
   const [equipment, setEquipment] = useState(defaultEquipmentData);
   const [userResources, setUserResources] = useState(defaultResources);
-  const [selectionIds, setSelectionIds] = useState([{ id: 2 }, { id: 3 }]);
+  const [selectionIds, setSelectionIds] = useState([]);
 
   //Selection state functions
 
