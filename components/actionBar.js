@@ -8,14 +8,10 @@ const ActionBar = ({ openModal }) => {
 
   return (
     <div className={styles.actionBar}>
-      <Button varient="outlined" onClick={openModal}>
-        Add
-      </Button>
-      {selectionIds.length === 1 && <Button varient="outlined">Edit</Button>}
+      <Button onClick={openModal}>Add</Button>
+      {selectionIds.length === 1 && <Button>Edit</Button>}
       {selectionIds.length > 0 && (
-        <Button varient="outlined" onClick={deleteEquipment}>
-          Delete
-        </Button>
+        <Button onClick={deleteEquipment}>Delete</Button>
       )}
     </div>
   );

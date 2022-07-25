@@ -1,0 +1,112 @@
+.container {
+    max-width: 1200px;
+    min-width: 650px;
+    margin: 0 auto;   
+    padding: 10px 10px;  
+}
+
+.chart {
+    display: grid;
+    position: relative;
+    overflow: hidden;  
+    border-top: 2px solid #6E81AD;
+    border-radius: 2px;
+}
+.chartRow {  
+  display: grid;      
+  grid-template-columns: 5ch 20ch 8ch 20ch 20ch 8ch 20ch 1fr;
+  background-color: #FFFFFF;
+  border-bottom: 1px solid #6E81AD;
+}
+/* .chartRow:hover {
+  background-color: #c1d3ff;
+} */
+.chart-period {
+  color:  #D9D9D6;
+  background-color:  #F2F2F2 !important;
+  border-bottom: 2px solid #6E81AD; 
+  /* grid-template-columns: 50px repeat(20, 1fr); */
+}
+.chartLines {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background-color: transparent;
+  /* grid-template-columns: 50px repeat(20, 1fr); */
+}
+.chart-period > span {    
+  text-align: center;
+  font-size: 13px;
+  align-self: center;
+  font-weight: bold;
+  padding: 15px 0;    
+}
+.chart-lines > span {
+  display: block;
+  border-right: 2px solid #F2F2F2;
+}
+
+.chartRowLabel {
+  color: #8c8c8c;   
+  /* padding: 20px 0; */
+  font-size: 15px;
+  font-weight: bold;
+  text-align: center;
+  font-size: 0.875rem;
+  font-weight: 500;
+} 
+
+.chartRowBars {
+  list-style: none;
+  display: grid;
+  padding: 5px 0;
+  margin: 0;
+  justify-items: stretch;
+  grid-template-rows: 100%;
+}
+.listItem {
+  position: relative;
+  text-align: center;
+  border-radius: 5px;
+  font-weight: 450;
+  font-size: 15px;
+  min-height: 15px;
+  color: #fff;
+  cursor: pointer;
+
+}
+
+.taskContainer{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    font-size: 0.875rem;
+    font-weight: 500;
+    
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -60px;
+  }
+  
+  .tooltip:hover .tooltiptext {
+    visibility: visible;
+  }
