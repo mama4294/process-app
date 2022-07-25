@@ -1,14 +1,16 @@
 .container {
     max-width: 1200px;
     min-width: 650px;
-    margin: 0 auto;     
+    margin: 0 auto;   
+    padding: 10px 10px;  
 }
 
 .chart {
     display: grid;
-    border: 2px solid #F2F2F2;
     position: relative;
     overflow: hidden;  
+    border-top: 2px solid #6E81AD;
+    border-radius: 2px;
 }
 .chartRow {
   display: grid;      
@@ -49,6 +51,8 @@
   font-size: 15px;
   font-weight: bold;
   text-align: center;
+  font-size: 0.875rem;
+  font-weight: 500;
 } 
 
 .chartRowBars {
@@ -91,6 +95,8 @@
     text-align: center;
     border-radius: 6px;
     padding: 5px 0;
+    font-size: 0.875rem;
+    font-weight: 500;
     
     /* Position the tooltip */
     position: absolute;

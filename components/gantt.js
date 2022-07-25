@@ -87,8 +87,8 @@ const UnitRow = ({ unit, numColumns }) => {
   );
 };
 
-const Operation = ({ operation, title }) => {
-  const { id, start, end, bgColor } = operation;
+const Operation = ({ operation }) => {
+  const { id, title, start, end, bgColor } = operation;
 
   const style = {
     color: "#red",

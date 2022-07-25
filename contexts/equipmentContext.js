@@ -21,36 +21,42 @@ const defaultResources = {
 const operationData = [
   {
     id: "1",
+    title: "Fill",
     start: 1,
     end: 2,
     bgColor: "#E5B8D0",
   },
   {
     id: "2",
+    title: "Heat",
     start: 3,
     end: 4,
     bgColor: "#A0C8C2",
   },
   {
     id: "3",
+    title: "Cool",
     start: 5,
     end: 6,
     bgColor: "#rgb(178,201,151)",
   },
   {
     id: "4",
+    title: "Ferment",
     start: 6,
     end: 9,
     bgColor: "#F5CF6B",
   },
   {
     id: "5",
+    title: "Heat Treat",
     start: 10,
     end: 15,
     bgColor: "blue",
   },
   {
     id: "6",
+    title: "Transfer",
     start: 16,
     end: 150,
     bgColor: "gray",
