@@ -16,7 +16,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import InputAdornment from "@mui/material/InputAdornment";
 import styles from "../styles/ProcedureChart.module.css";
 import { useState } from "react";
-import TextInput from "../components/textInput";
+import TextInput from "./inputs/textInput";
+import Dropdown from "./inputs/dropdown";
 
 const EditEquipmentModal = ({ open, handleClose }) => {
   let drawerWidth = screen.width * 0.75;
@@ -144,10 +145,22 @@ const EquipmentInputForm = ({ handleClose }) => {
     setEquipment({ ...equipment, [event.target.id]: event.target.value });
   };
 
-  const handleChangeProcedure = (id) => (event) => {
+  const handleChangeProcedure = (procedureID, targetID) => (event) => {
+    let field = null;
+    let value = null;
+    if (event.target === undefined) {
+      //for dropdowns
+      field = targetID;
+      value = event.value;
+    } else {
+      //for text inputs
+      field = event.target.id;
+      value = event.target.value;
+    }
     const newState = procedures.map((procedure) => {
-      if (procedure.id === id) {
-        return { ...procedure, [event.target.id]: event.target.value };
+      if (procedure.id === procedureID) {
+        console.log(`Found procedure with field ${field} and value ${value}`);
+        return { ...procedure, [field]: value };
       }
       //otherwise return object as is
       return procedure;
@@ -225,6 +238,9 @@ const Table = ({ ProcedureData, numColumns, handleChangeProcedure }) => {
 };
 
 const ProcedureRow = ({ procedure, numColumns, handleChangeProcedure }) => {
+  const handleSelectChange = (event) => {
+    console.log(event.target);
+  };
   const { title, id, duration, predecessor, type, offset, resources } =
     procedure;
   const label = { inputProps: { "aria-label": "selection" } };
@@ -269,18 +285,17 @@ const ProcedureRow = ({ procedure, numColumns, handleChangeProcedure }) => {
         />
       </div>
       <div className={styles.chartRowLabel}>
-        <Select
+        <Dropdown
           id="type"
           value={type}
-          label="type"
-          variant="standard"
-          onChange={handleChangeProcedure(id)}
-        >
-          <MenuItem value={"SF"}>Start-to-Finish</MenuItem>
-          <MenuItem value={"SS"}>Start-to-Start</MenuItem>
-          <MenuItem value={"FF"}>Finish-to-Finish</MenuItem>
-          <MenuItem value={"FS"}>Finish-to-Start</MenuItem>
-        </Select>
+          onChange={handleChangeProcedure(id, "type")}
+          options={[
+            { label: "Start-to-Finish", value: "SF" },
+            { label: "Start-to-Start", value: "SS" },
+            { label: "Finish-to-Finish", value: "FF" },
+            { label: "Finish-to-Start", value: "FS" },
+          ]}
+        />
       </div>
       <div className={styles.chartRowLabel}>
         <TextField
