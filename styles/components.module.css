@@ -4,7 +4,16 @@
     border: 0px;
 }
 
+.textInput:hover{
+    outline: none;
+    border-bottom: 1px solid black;
+}
+
 .textInput:focus{
     outline: none;
     border-bottom: 1px solid #0070f3;
+}
+
+.dropdown{
+    height: 100%;
 }

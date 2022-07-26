@@ -54,7 +54,7 @@ const EquipmentInputForm = ({ handleClose }) => {
       predecessor: "CIP",
       offset: 0,
       offsetUnit: "hr",
-      type: "SF",
+      type: "Start-to-Finish",
       resources: [],
     },
     {
@@ -68,7 +68,7 @@ const EquipmentInputForm = ({ handleClose }) => {
       predecessor: "CIP",
       offset: 0,
       offsetUnit: "hr",
-      type: "SF",
+      type: "Start-to-Finish",
       resources: [],
     },
     {
@@ -82,7 +82,7 @@ const EquipmentInputForm = ({ handleClose }) => {
       predecessor: "CIP",
       offset: 0,
       offsetUnit: "hr",
-      type: "SF",
+      type: "Start-to-Finish",
       resources: [],
     },
     {
@@ -96,7 +96,7 @@ const EquipmentInputForm = ({ handleClose }) => {
       predecessor: "CIP",
       offset: 0,
       offsetUnit: "hr",
-      type: "SF",
+      type: "Start-to-Finish",
       resources: [],
     },
     {
@@ -110,7 +110,7 @@ const EquipmentInputForm = ({ handleClose }) => {
       predecessor: "CIP",
       offset: 0,
       offsetUnit: "hr",
-      type: "SF",
+      type: "Start-to-Finish",
       resources: [],
     },
     {
@@ -124,7 +124,7 @@ const EquipmentInputForm = ({ handleClose }) => {
       predecessor: "CIP",
       offset: 0,
       offsetUnit: "hr",
-      type: "SF",
+      type: "Start-to-Finish",
       resources: [],
     },
   ];
@@ -135,7 +135,7 @@ const EquipmentInputForm = ({ handleClose }) => {
     predecessor: "CIP",
     offset: 0,
     offsetUnit: "hr",
-    type: "SF",
+    type: "Start-to-Finish",
     resources: [],
   };
   const [equipment, setEquipment] = useState(defaultEquipment);
@@ -290,10 +290,10 @@ const ProcedureRow = ({ procedure, numColumns, handleChangeProcedure }) => {
           value={type}
           onChange={handleChangeProcedure(id, "type")}
           options={[
-            { label: "Start-to-Finish", value: "SF" },
-            { label: "Start-to-Start", value: "SS" },
-            { label: "Finish-to-Finish", value: "FF" },
-            { label: "Finish-to-Start", value: "FS" },
+            { label: "Start-to-Finish", value: "Start-to-Finish" },
+            { label: "Start-to-Start", value: "Start-to-Start" },
+            { label: "Finish-to-Finish", value: "Finish-to-Finish" },
+            { label: "Finish-to-Start", value: "Finish-to-Start" },
           ]}
         />
       </div>
