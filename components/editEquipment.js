@@ -241,8 +241,16 @@ const ProcedureRow = ({ procedure, numColumns, handleChangeProcedure }) => {
   const handleSelectChange = (event) => {
     console.log(event.target);
   };
-  const { title, id, duration, predecessor, type, offset, resources } =
-    procedure;
+  const {
+    title,
+    id,
+    duration,
+    durationUnit,
+    predecessor,
+    type,
+    offset,
+    resources,
+  } = procedure;
   const label = { inputProps: { "aria-label": "selection" } };
   const style = {
     color: "#red",
@@ -262,17 +270,26 @@ const ProcedureRow = ({ procedure, numColumns, handleChangeProcedure }) => {
         />
       </div>
       <div className={styles.chartRowLabel}>
-        <TextField
-          label="Duration"
-          id="duration"
-          sx={{ m: 1 }}
-          variant="standard"
-          InputProps={{
-            endAdornment: <InputAdornment position="end">hr</InputAdornment>,
-          }}
-          value={duration}
-          onChange={handleChangeProcedure(id)}
-        />
+        <div className={styles.doubleCell}>
+          <TextInput
+            id="duration"
+            value={duration}
+            type="number"
+            style={{ textAlign: "right" }}
+            placeholder="Duration"
+            onChange={handleChangeProcedure(id)}
+          />
+          <Dropdown
+            id="durationUnit"
+            value={durationUnit}
+            onChange={handleChangeProcedure(id, "durationUnit")}
+            options={[
+              { label: "min", value: "min" },
+              { label: "hr", value: "hr" },
+              { label: "day", value: "day" },
+            ]}
+          />
+        </div>
       </div>
       <div className={styles.chartRowLabel}>
         <TextField

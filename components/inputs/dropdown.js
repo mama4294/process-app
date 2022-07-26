@@ -12,12 +12,16 @@ const customStyles = {
   control: (provided, state) => ({
     ...provided,
     height: "100%",
+    borderRadius: "0px",
     border: state.isFocused ? "1px solid #0070f3" : 0,
     boxShadow: "none",
     "&:hover": {
       borderBottom: "1px solid black",
     },
   }),
+  indicatorsContainer: () => null,
+  dropdownIndicator: (styles) => ({ ...styles, width: "0%" }),
+  indicatorSeparator: () => null, // Remove separator
 };
 
 const Dropdown = ({ id, options, value, onChange, defaultValue }) => {
