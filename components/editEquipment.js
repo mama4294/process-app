@@ -16,6 +16,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import InputAdornment from "@mui/material/InputAdornment";
 import styles from "../styles/ProcedureChart.module.css";
 import { useState } from "react";
+import TextInput from "../components/textInput";
 
 const EditEquipmentModal = ({ open, handleClose }) => {
   let drawerWidth = screen.width * 0.75;
@@ -139,8 +140,20 @@ const EquipmentInputForm = ({ handleClose }) => {
   const [equipment, setEquipment] = useState(defaultEquipment);
   const [procedures, setProcedures] = useState([...testProcedures]);
 
-  const handleChange = (event) => {
-    setEquipment(event.target.value);
+  const handleChangeEquipment = (event) => {
+    setEquipment({ ...equipment, [event.target.id]: event.target.value });
+  };
+
+  const handleChangeProcedure = (id) => (event) => {
+    const newState = procedures.map((procedure) => {
+      if (procedure.id === id) {
+        return { ...procedure, [event.target.id]: event.target.value };
+      }
+      //otherwise return object as is
+      return procedure;
+    });
+
+    setProcedures(newState);
   };
 
   const addProcedure = () => {
@@ -161,16 +174,20 @@ const EquipmentInputForm = ({ handleClose }) => {
       <Box sx={{ display: "flex", flexWrap: "wrap", p: 2 }}>
         <TextField
           label="Equipment Name"
-          id="name"
+          id="title"
           variant="standard"
           sx={{ m: 1, width: "25ch" }}
           value={equipment.title}
-          onChange={handleChange}
+          onChange={handleChangeEquipment}
         />
       </Box>
       <Divider textAlign="left">Procedures</Divider>
       <Box sx={{ display: "flex", flexWrap: "wrap", p: 2 }}>
-        <Table ProcedureData={procedures} numColumns={10} />
+        <Table
+          ProcedureData={procedures}
+          numColumns={10}
+          handleChangeProcedure={handleChangeProcedure}
+        />
       </Box>
       <Box sx={{ display: "flex", flexWrap: "wrap", p: 2 }}>
         <Button variant="contained" onClick={addProcedure}>
@@ -190,7 +207,7 @@ const EquipmentInputForm = ({ handleClose }) => {
   );
 };
 
-const Table = ({ ProcedureData, numColumns }) => {
+const Table = ({ ProcedureData, numColumns, handleChangeProcedure }) => {
   return (
     <>
       {ProcedureData.map((procedure) => {
@@ -199,6 +216,7 @@ const Table = ({ ProcedureData, numColumns }) => {
             procedure={procedure}
             key={procedure.id}
             numColumns={numColumns}
+            handleChangeProcedure={handleChangeProcedure}
           />
         );
       })}
@@ -206,7 +224,9 @@ const Table = ({ ProcedureData, numColumns }) => {
   );
 };
 
-const ProcedureRow = ({ procedure, numColumns }) => {
+const ProcedureRow = ({ procedure, numColumns, handleChangeProcedure }) => {
+  const { title, id, duration, predecessor, type, offset, resources } =
+    procedure;
   const label = { inputProps: { "aria-label": "selection" } };
   const style = {
     color: "#red",
@@ -217,13 +237,12 @@ const ProcedureRow = ({ procedure, numColumns }) => {
     <div className={styles.chartRow}>
       <Checkbox {...label} />
       <div className={styles.chartRowLabel}>
-        <TextField
-          label="Procedure Title"
-          id="name"
-          variant="standard"
-          sx={{ m: 1 }}
-          value={procedure.title}
-          //   onChange={handleChange}
+        <TextInput
+          id="title"
+          value={title}
+          type="text"
+          placeholder="Procedure Title"
+          onChange={handleChangeProcedure(id)}
         />
       </div>
       <div className={styles.chartRowLabel}>
@@ -235,8 +254,8 @@ const ProcedureRow = ({ procedure, numColumns }) => {
           InputProps={{
             endAdornment: <InputAdornment position="end">hr</InputAdornment>,
           }}
-          value={procedure.duration}
-          //   onChange={handleChange}
+          value={duration}
+          onChange={handleChangeProcedure(id)}
         />
       </div>
       <div className={styles.chartRowLabel}>
@@ -245,17 +264,17 @@ const ProcedureRow = ({ procedure, numColumns }) => {
           id="predecessor"
           sx={{ m: 1 }}
           variant="standard"
-          value={procedure.predecessor}
-          //   onChange={handleChange}
+          value={predecessor}
+          onChange={handleChangeProcedure(id)}
         />
       </div>
       <div className={styles.chartRowLabel}>
         <Select
           id="type"
-          value={procedure.type}
+          value={type}
           label="type"
           variant="standard"
-          //   onChange={handleChange}
+          onChange={handleChangeProcedure(id)}
         >
           <MenuItem value={"SF"}>Start-to-Finish</MenuItem>
           <MenuItem value={"SS"}>Start-to-Start</MenuItem>
@@ -269,11 +288,11 @@ const ProcedureRow = ({ procedure, numColumns }) => {
           id="offset"
           variant="standard"
           sx={{ m: 1 }}
-          value={procedure.offset}
+          value={offset}
           InputProps={{
             endAdornment: <InputAdornment position="end">hr</InputAdornment>,
           }}
-          //   onChange={handleChange}
+          onChange={handleChangeProcedure(id)}
         />
       </div>
       <div className={styles.chartRowLabel}>
@@ -282,8 +301,8 @@ const ProcedureRow = ({ procedure, numColumns }) => {
           id="resources"
           variant="standard"
           sx={{ m: 1 }}
-          value={procedure.resources[0]}
-          //   onChange={handleChange}
+          value={resources[0]}
+          onChange={handleChangeProcedure(id)}
         />
       </div>
       <ul
