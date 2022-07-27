@@ -14,13 +14,21 @@
 }
 .chartRow {  
   display: grid;      
-  grid-template-columns: 5ch 10ch 16ch 20ch 20ch 8ch 20ch 1fr;
+  grid-template-columns: 5ch 10ch 10ch 20ch 20ch 8ch 20ch 1fr;
   background-color: #FFFFFF;
   border-bottom: 1px solid #6E81AD;
 }
 /* .chartRow:hover {
   background-color: #c1d3ff;
 } */
+
+.tableHeader{
+  /* background-color: #6E81AD;
+  color: #fff; */
+  padding: 1rem 0;
+  text-align: center;
+}
+
 .chart-period {
   color:  #D9D9D6;
   background-color:  #F2F2F2 !important;

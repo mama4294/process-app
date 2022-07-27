@@ -9,10 +9,15 @@ const customStyles = {
     // color: state.isSelected ? "yellow" : "black",
     // backgroundColor: state.isSelected ? "green" : "white",
   }),
+  singleValue: (provided) => ({
+    ...provided,
+    width: "100%",
+  }),
   control: (provided, state) => ({
     ...provided,
     height: "100%",
     borderRadius: "0px",
+    textAlign: "left",
     border: state.isFocused ? "1px solid #0070f3" : 0,
     boxShadow: "none",
     "&:hover": {
@@ -20,6 +25,11 @@ const customStyles = {
     },
   }),
   indicatorsContainer: () => null,
+  indicatorsContainer: (styles) => ({
+    ...styles,
+    padding: "0 0",
+    width: "0px",
+  }),
   dropdownIndicator: (styles) => ({ ...styles, width: "0%" }),
   indicatorSeparator: () => null, // Remove separator
 };

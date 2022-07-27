@@ -9,15 +9,13 @@ import Toolbar from "@mui/material/Toolbar";
 import Checkbox from "@mui/material/Checkbox";
 import Tooltip from "@mui/material/Tooltip";
 import Divider from "@mui/material/Divider";
-import Select from "@mui/material/Select";
 import IconButton from "@mui/material/IconButton";
-import MenuItem from "@mui/material/MenuItem";
 import CloseIcon from "@mui/icons-material/Close";
-import InputAdornment from "@mui/material/InputAdornment";
 import styles from "../styles/ProcedureChart.module.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import TextInput from "./inputs/textInput";
 import Dropdown from "./inputs/dropdown";
+import { toggleSelection, toggleAll } from "../utils/checkboxes";
 
 const EditEquipmentModal = ({ open, handleClose }) => {
   let drawerWidth = screen.width * 0.75;
@@ -140,6 +138,7 @@ const EquipmentInputForm = ({ handleClose }) => {
   };
   const [equipment, setEquipment] = useState(defaultEquipment);
   const [procedures, setProcedures] = useState([...testProcedures]);
+  const [selectedProcedures, setSelectedProcedures] = useState([]);
 
   const handleChangeEquipment = (event) => {
     setEquipment({ ...equipment, [event.target.id]: event.target.value });
@@ -175,6 +174,18 @@ const EquipmentInputForm = ({ handleClose }) => {
     setProcedures(newProcedures);
   };
 
+  useEffect(() => {
+    console.log(selectedProcedures);
+  }, [selectedProcedures]);
+
+  const handleToggle = (id) => {
+    setSelectedProcedures(toggleSelection(selectedProcedures, id));
+  };
+
+  const handleToggleAll = (checked) => {
+    setSelectedProcedures(toggleAll(procedures, checked));
+  };
+
   return (
     <>
       <AppBar position="static">
@@ -200,6 +211,9 @@ const EquipmentInputForm = ({ handleClose }) => {
           ProcedureData={procedures}
           numColumns={10}
           handleChangeProcedure={handleChangeProcedure}
+          selectedProcedures={selectedProcedures}
+          handleToggle={handleToggle}
+          handleToggleAll={handleToggleAll}
         />
       </Box>
       <Box sx={{ display: "flex", flexWrap: "wrap", p: 2 }}>
@@ -220,9 +234,17 @@ const EquipmentInputForm = ({ handleClose }) => {
   );
 };
 
-const Table = ({ ProcedureData, numColumns, handleChangeProcedure }) => {
+const Table = ({
+  ProcedureData,
+  numColumns,
+  handleChangeProcedure,
+  selectedProcedures,
+  handleToggle,
+  handleToggleAll,
+}) => {
   return (
     <>
+      <TableHeader handleToggleAll={handleToggleAll} />
       {ProcedureData.map((procedure) => {
         return (
           <ProcedureRow
@@ -230,6 +252,8 @@ const Table = ({ ProcedureData, numColumns, handleChangeProcedure }) => {
             key={procedure.id}
             numColumns={numColumns}
             handleChangeProcedure={handleChangeProcedure}
+            selectedProcedures={selectedProcedures}
+            handleToggle={handleToggle}
           />
         );
       })}
@@ -237,10 +261,42 @@ const Table = ({ ProcedureData, numColumns, handleChangeProcedure }) => {
   );
 };
 
-const ProcedureRow = ({ procedure, numColumns, handleChangeProcedure }) => {
-  const handleSelectChange = (event) => {
-    console.log(event.target);
+const TableHeader = ({ handleToggleAll }) => {
+  const headers = [
+    "Title",
+    "Duration",
+    "Predecessor",
+    "Type",
+    "Offset",
+    "Resources",
+  ];
+  const handleChange = (event) => {
+    handleToggleAll(event.target.checked);
   };
+  const label = { inputProps: { "aria-label": "selection" } };
+  return (
+    <div className={styles.chartRow}>
+      <div>
+        <Checkbox {...label} onChange={handleChange} />
+      </div>
+      {headers.map((header, index) => {
+        return (
+          <div className={styles.tableHeader} key={index}>
+            {header}
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
+const ProcedureRow = ({
+  procedure,
+  numColumns,
+  handleChangeProcedure,
+  selectedProcedures,
+  handleToggle,
+}) => {
   const {
     title,
     id,
@@ -249,8 +305,13 @@ const ProcedureRow = ({ procedure, numColumns, handleChangeProcedure }) => {
     predecessor,
     type,
     offset,
+    offsetUnit,
     resources,
   } = procedure;
+  const checked = selectedProcedures.some((item) => item.id === id);
+  const handleChange = () => {
+    handleToggle(id);
+  };
   const label = { inputProps: { "aria-label": "selection" } };
   const style = {
     color: "#red",
@@ -259,7 +320,7 @@ const ProcedureRow = ({ procedure, numColumns, handleChangeProcedure }) => {
   };
   return (
     <div className={styles.chartRow}>
-      <Checkbox {...label} />
+      <Checkbox {...label} checked={checked} onChange={handleChange} />
       <div className={styles.chartRowLabel}>
         <TextInput
           id="title"
@@ -292,13 +353,11 @@ const ProcedureRow = ({ procedure, numColumns, handleChangeProcedure }) => {
         </div>
       </div>
       <div className={styles.chartRowLabel}>
-        <TextField
-          label="Predecessor"
+        <Dropdown
           id="predecessor"
-          sx={{ m: 1 }}
-          variant="standard"
           value={predecessor}
-          onChange={handleChangeProcedure(id)}
+          onChange={handleChangeProcedure(id, "predecessor")}
+          options={[{ label: "CIP", value: "CIP" }]}
         />
       </div>
       <div className={styles.chartRowLabel}>
@@ -315,17 +374,26 @@ const ProcedureRow = ({ procedure, numColumns, handleChangeProcedure }) => {
         />
       </div>
       <div className={styles.chartRowLabel}>
-        <TextField
-          label="Offset"
-          id="offset"
-          variant="standard"
-          sx={{ m: 1 }}
-          value={offset}
-          InputProps={{
-            endAdornment: <InputAdornment position="end">hr</InputAdornment>,
-          }}
-          onChange={handleChangeProcedure(id)}
-        />
+        <div className={styles.doubleCell}>
+          <TextInput
+            id="offset"
+            value={offset}
+            type="number"
+            style={{ textAlign: "right" }}
+            placeholder="Offset"
+            onChange={handleChangeProcedure(id)}
+          />
+          <Dropdown
+            id="offsetUnit"
+            value={offsetUnit}
+            onChange={handleChangeProcedure(id, "offsetUnit")}
+            options={[
+              { label: "min", value: "min" },
+              { label: "hr", value: "hr" },
+              { label: "day", value: "day" },
+            ]}
+          />
+        </div>
       </div>
       <div className={styles.chartRowLabel}>
         <TextField

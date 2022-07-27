@@ -1,4 +1,5 @@
 import { useState, createContext } from "react";
+import { toggleSelection } from "../utils/checkboxes";
 
 const defaultResources = {
   steam: {
@@ -85,25 +86,8 @@ export const EquipmentProvider = ({ children }) => {
 
   //Selection state functions
 
-  const handleAdd = (array, newItem) => {
-    return [...array, newItem];
-  };
-
-  const handleRemove = (array, itemToRemove) => {
-    return array.filter((x) => x.id !== itemToRemove.id);
-  };
-
-  const toggleSelection = (id) => {
-    if (isNaN(id)) return;
-    const index = selectionIds.findIndex((item) => item.id === id);
-    if (index > -1) {
-      //remove selection
-      setSelectionIds(handleRemove(selectionIds, selectionIds[index]));
-    } else {
-      //add selection
-      const newSelection = { id: id };
-      setSelectionIds(handleAdd(selectionIds, newSelection));
-    }
+  const handleToggle = (id) => {
+    setSelectionIds(toggleSelection(selectionIds, id));
   };
 
   //Equipment state functions
@@ -127,7 +111,7 @@ export const EquipmentProvider = ({ children }) => {
         userResources,
         setUserResources,
         selectionIds,
-        toggleSelection,
+        handleToggle,
         deleteEquipment,
       }}
     >

@@ -58,11 +58,11 @@ const ProcedureTable = ({ EquipmentData, numColumns }) => {
 };
 
 const UnitRow = ({ unit, numColumns }) => {
-  const { selectionIds, toggleSelection } = useContext(EquipmentContext);
+  const { selectionIds, handleToggle } = useContext(EquipmentContext);
   let checked = selectionIds.some((item) => item.id === unit.id);
 
   const handleChange = () => {
-    toggleSelection(unit.id);
+    handleToggle(unit.id);
   };
 
   const label = { inputProps: { "aria-label": "selection" } };
@@ -103,14 +103,6 @@ const Operation = ({ operation }) => {
         <div className={styles.taskContainer}>{/* <span>{title}</span> */}</div>
       </Tooltip>
     </li>
-  );
-};
-
-const ToolTip = ({ text }) => {
-  return (
-    <span className="">
-      <span className={styles.tooltiptext}>{text}</span>
-    </span>
   );
 };
 
