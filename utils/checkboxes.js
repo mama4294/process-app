@@ -29,3 +29,17 @@ export const toggleAll = (array, checked) => {
   }
   return newArray;
 };
+
+export const addToArray = (array, item) => {
+  return [...array, item];
+};
+
+export const deleteByIds = (array, ids) => {
+  console.log("Array", array);
+  console.log("IDs", ids);
+  let newArray = array;
+  ids.map((selection) => {
+    newArray = handleRemove(newArray, selection);
+  });
+  return newArray;
+};

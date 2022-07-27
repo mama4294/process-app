@@ -1,5 +1,5 @@
 import { useState, createContext } from "react";
-import { toggleSelection } from "../utils/checkboxes";
+import { toggleSelection, deleteByIds } from "../utils/checkboxes";
 
 const defaultResources = {
   steam: {
@@ -93,13 +93,7 @@ export const EquipmentProvider = ({ children }) => {
   //Equipment state functions
 
   const deleteEquipment = () => {
-    console.log("Equipment", equipment);
-    console.log("IDs", selectionIds);
-    let remainingEquipment = equipment;
-    selectionIds.map((selection) => {
-      remainingEquipment = handleRemove(remainingEquipment, selection);
-    });
-    setEquipment(remainingEquipment);
+    setEquipment(deleteByIds(equipment, selectionIds));
     setSelectionIds([]);
   };
 

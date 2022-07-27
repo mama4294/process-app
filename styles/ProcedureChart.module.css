@@ -17,16 +17,39 @@
   grid-template-columns: 5ch 10ch 10ch 20ch 20ch 8ch 20ch 1fr;
   background-color: #FFFFFF;
   border-bottom: 1px solid #6E81AD;
+  align-items: center;
 }
 /* .chartRow:hover {
   background-color: #c1d3ff;
 } */
 
-.tableHeader{
+.tableHeaderValue{
   /* background-color: #6E81AD;
   color: #fff; */
   padding: 1rem 0;
-  text-align: center;
+  text-align: left;
+}
+
+.titleContainer{
+  padding-left: 12px;
+  display: flex;
+  /* justify-content: space-between; */
+  align-items: center;
+
+}
+
+.title{
+  font-weight: 500;
+    font-size: 1.25rem;
+    line-height: 1.6;
+}
+
+.pl8{
+  padding-left: 8px;
+}
+
+.headerRow{
+  font-weight: 500;
 }
 
 .chart-period {

@@ -11,11 +11,18 @@ import Tooltip from "@mui/material/Tooltip";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
+import DeleteIcon from "@mui/icons-material/Delete";
+import AddIcon from "@mui/icons-material/Add";
 import styles from "../styles/ProcedureChart.module.css";
 import { useState, useEffect } from "react";
 import TextInput from "./inputs/textInput";
 import Dropdown from "./inputs/dropdown";
-import { toggleSelection, toggleAll } from "../utils/checkboxes";
+import {
+  toggleSelection,
+  toggleAll,
+  addToArray,
+  deleteByIds,
+} from "../utils/checkboxes";
 
 const EditEquipmentModal = ({ open, handleClose }) => {
   let drawerWidth = screen.width * 0.75;
@@ -130,7 +137,7 @@ const EquipmentInputForm = ({ handleClose }) => {
     title: "Fill",
     duration: "1",
     durationUnit: "hr",
-    predecessor: "CIP",
+    predecessor: "Initial",
     offset: 0,
     offsetUnit: "hr",
     type: "Start-to-Finish",
@@ -168,15 +175,14 @@ const EquipmentInputForm = ({ handleClose }) => {
     setProcedures(newState);
   };
 
-  const addProcedure = () => {
-    const newProcedures = [...procedures, defaultProcedure];
-    console.log(newProcedures);
-    setProcedures(newProcedures);
+  const handleAdd = () => {
+    setProcedures(addToArray(procedures, defaultProcedure));
   };
 
-  useEffect(() => {
-    console.log(selectedProcedures);
-  }, [selectedProcedures]);
+  const handleDelete = () => {
+    setProcedures(deleteByIds(procedures, selectedProcedures));
+    setSelectedProcedures([]);
+  };
 
   const handleToggle = (id) => {
     setSelectedProcedures(toggleSelection(selectedProcedures, id));
@@ -195,9 +201,11 @@ const EquipmentInputForm = ({ handleClose }) => {
           </IconButton>
         </Toolbar>
       </AppBar>
-      <Box sx={{ display: "flex", flexWrap: "wrap", p: 2 }}>
+
+      <Box sx={{ p: 2 }}>
+        <div className={`${styles.title} ${styles.pl8}`}>Equipment</div>
         <TextField
-          label="Equipment Name"
+          label="Name"
           id="title"
           variant="standard"
           sx={{ m: 1, width: "25ch" }}
@@ -205,7 +213,6 @@ const EquipmentInputForm = ({ handleClose }) => {
           onChange={handleChangeEquipment}
         />
       </Box>
-      <Divider textAlign="left">Procedures</Divider>
       <Box sx={{ display: "flex", flexWrap: "wrap", p: 2 }}>
         <Table
           ProcedureData={procedures}
@@ -214,13 +221,15 @@ const EquipmentInputForm = ({ handleClose }) => {
           selectedProcedures={selectedProcedures}
           handleToggle={handleToggle}
           handleToggleAll={handleToggleAll}
+          handleAdd={handleAdd}
+          handleDelete={handleDelete}
         />
       </Box>
-      <Box sx={{ display: "flex", flexWrap: "wrap", p: 2 }}>
-        <Button variant="contained" onClick={addProcedure}>
+      {/* <Box sx={{ display: "flex", flexWrap: "wrap", p: 2 }}>
+        <Button variant="standard" onClick={handleAdd}>
           Add Procedure
         </Button>
-      </Box>
+      </Box> */}
       <Divider />
       <Box sx={{ display: "flex", flexWrap: "wrap", p: 2 }}>
         <Stack spacing={2} direction="row">
@@ -241,10 +250,17 @@ const Table = ({
   selectedProcedures,
   handleToggle,
   handleToggleAll,
+  handleAdd,
+  handleDelete,
 }) => {
   return (
     <>
-      <TableHeader handleToggleAll={handleToggleAll} />
+      <TableHeader
+        handleToggleAll={handleToggleAll}
+        selectedProcedures={selectedProcedures}
+        handleAdd={handleAdd}
+        handleDelete={handleDelete}
+      />
       {ProcedureData.map((procedure) => {
         return (
           <ProcedureRow
@@ -261,7 +277,12 @@ const Table = ({
   );
 };
 
-const TableHeader = ({ handleToggleAll }) => {
+const TableHeader = ({
+  handleToggleAll,
+  selectedProcedures,
+  handleAdd,
+  handleDelete,
+}) => {
   const headers = [
     "Title",
     "Duration",
@@ -275,18 +296,33 @@ const TableHeader = ({ handleToggleAll }) => {
   };
   const label = { inputProps: { "aria-label": "selection" } };
   return (
-    <div className={styles.chartRow}>
-      <div>
-        <Checkbox {...label} onChange={handleChange} />
+    <>
+      <div className={styles.titleContainer}>
+        <div className={styles.title}>Procedures</div>
+
+        {selectedProcedures.length > 0 ? (
+          <IconButton>
+            <DeleteIcon color="action" onClick={handleDelete} />
+          </IconButton>
+        ) : (
+          <IconButton>
+            <AddIcon color="action" onClick={handleAdd} />
+          </IconButton>
+        )}
       </div>
-      {headers.map((header, index) => {
-        return (
-          <div className={styles.tableHeader} key={index}>
-            {header}
-          </div>
-        );
-      })}
-    </div>
+      <div className={`${styles.chartRow} ${styles.headerRow}`}>
+        <div>
+          <Checkbox {...label} onChange={handleChange} />
+        </div>
+        {headers.map((header, index) => {
+          return (
+            <div className={styles.tableHeaderValue} key={index}>
+              {header}
+            </div>
+          );
+        })}
+      </div>
+    </>
   );
 };
 
@@ -396,14 +432,14 @@ const ProcedureRow = ({
         </div>
       </div>
       <div className={styles.chartRowLabel}>
-        <TextField
+        {/* <TextField
           label="Resources"
           id="resources"
           variant="standard"
           sx={{ m: 1 }}
           value={resources[0]}
           onChange={handleChangeProcedure(id)}
-        />
+        /> */}
       </div>
       <ul
         className={styles.chartRowBars}
