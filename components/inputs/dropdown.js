@@ -41,7 +41,8 @@ const Dropdown = ({ id, options, value, onChange, defaultValue }) => {
       styles={customStyles}
       className={styles.dropdown}
       inputId={id}
-      value={{ label: value }}
+      value={value}
+      // value={{ label: value }}
       defaultValue={defaultValue}
       onChange={onChange}
     />

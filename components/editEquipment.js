@@ -22,6 +22,7 @@ import {
   toggleAll,
   addToArray,
   deleteByIds,
+  getArrayOptions,
 } from "../utils/checkboxes";
 
 const EditEquipmentModal = ({ open, handleClose }) => {
@@ -55,11 +56,11 @@ const EquipmentInputForm = ({ handleClose }) => {
       end: 2,
       bgColor: "#E5B8D0",
       duration: "1",
-      durationUnit: "hr",
-      predecessor: "CIP",
+      durationUnit: { value: "hr", label: "hr" },
+      predecessor: { value: 0, label: "Initial" },
       offset: 0,
-      offsetUnit: "hr",
-      type: "Start-to-Finish",
+      offsetUnit: { value: "hr", label: "hr" },
+      type: { value: "SF", label: "Start-to-Finish" },
       resources: [],
     },
     {
@@ -69,11 +70,11 @@ const EquipmentInputForm = ({ handleClose }) => {
       end: 4,
       bgColor: "#A0C8C2",
       duration: "1",
-      durationUnit: "hr",
-      predecessor: "CIP",
+      durationUnit: { value: "hr", label: "hr" },
+      predecessor: { value: 0, label: "Initial" },
       offset: 0,
-      offsetUnit: "hr",
-      type: "Start-to-Finish",
+      offsetUnit: { value: "hr", label: "hr" },
+      type: { value: "SF", label: "Start-to-Finish" },
       resources: [],
     },
     {
@@ -83,11 +84,11 @@ const EquipmentInputForm = ({ handleClose }) => {
       end: 6,
       bgColor: "#rgb(178,201,151)",
       duration: "1",
-      durationUnit: "hr",
-      predecessor: "CIP",
+      durationUnit: { value: "hr", label: "hr" },
+      predecessor: { value: 0, label: "Initial" },
       offset: 0,
-      offsetUnit: "hr",
-      type: "Start-to-Finish",
+      offsetUnit: { value: "hr", label: "hr" },
+      type: { value: "SF", label: "Start-to-Finish" },
       resources: [],
     },
     {
@@ -97,11 +98,11 @@ const EquipmentInputForm = ({ handleClose }) => {
       end: 9,
       bgColor: "#F5CF6B",
       duration: "1",
-      durationUnit: "hr",
-      predecessor: "CIP",
+      durationUnit: { value: "hr", label: "hr" },
+      predecessor: { value: 0, label: "Initial" },
       offset: 0,
-      offsetUnit: "hr",
-      type: "Start-to-Finish",
+      offsetUnit: { value: "hr", label: "hr" },
+      type: { value: "SF", label: "Start-to-Finish" },
       resources: [],
     },
     {
@@ -111,11 +112,11 @@ const EquipmentInputForm = ({ handleClose }) => {
       end: 15,
       bgColor: "blue",
       duration: "1",
-      durationUnit: "hr",
-      predecessor: "CIP",
+      durationUnit: { value: "hr", label: "hr" },
+      predecessor: { value: 0, label: "Initial" },
       offset: 0,
-      offsetUnit: "hr",
-      type: "Start-to-Finish",
+      offsetUnit: { value: "hr", label: "hr" },
+      type: { value: "SF", label: "Start-to-Finish" },
       resources: [],
     },
     {
@@ -125,22 +126,22 @@ const EquipmentInputForm = ({ handleClose }) => {
       end: 150,
       bgColor: "gray",
       duration: "1",
-      durationUnit: "hr",
-      predecessor: "CIP",
+      durationUnit: { value: "hr", label: "hr" },
+      predecessor: { value: 0, label: "Initial" },
       offset: 0,
-      offsetUnit: "hr",
-      type: "Start-to-Finish",
+      offsetUnit: { value: "hr", label: "hr" },
+      type: { value: "SF", label: "Start-to-Finish" },
       resources: [],
     },
   ];
   const defaultProcedure = {
     title: "Fill",
     duration: "1",
-    durationUnit: "hr",
-    predecessor: "Initial",
+    durationUnit: { value: "hr", label: "hr" },
+    predecessor: { value: 0, label: "Initial" },
     offset: 0,
-    offsetUnit: "hr",
-    type: "Start-to-Finish",
+    offsetUnit: { value: "hr", label: "hr" },
+    type: { value: "SF", label: "Start-to-Finish" },
     resources: [],
   };
   const [equipment, setEquipment] = useState(defaultEquipment);
@@ -157,7 +158,8 @@ const EquipmentInputForm = ({ handleClose }) => {
     if (event.target === undefined) {
       //for dropdowns
       field = targetID;
-      value = event.value;
+      //   value = event.value;
+      value = { value: event.value, label: event.label };
     } else {
       //for text inputs
       field = event.target.id;
@@ -213,9 +215,10 @@ const EquipmentInputForm = ({ handleClose }) => {
           onChange={handleChangeEquipment}
         />
       </Box>
+      <Divider />
       <Box sx={{ display: "flex", flexWrap: "wrap", p: 2 }}>
         <Table
-          ProcedureData={procedures}
+          procedures={procedures}
           numColumns={10}
           handleChangeProcedure={handleChangeProcedure}
           selectedProcedures={selectedProcedures}
@@ -225,13 +228,8 @@ const EquipmentInputForm = ({ handleClose }) => {
           handleDelete={handleDelete}
         />
       </Box>
-      {/* <Box sx={{ display: "flex", flexWrap: "wrap", p: 2 }}>
-        <Button variant="standard" onClick={handleAdd}>
-          Add Procedure
-        </Button>
-      </Box> */}
       <Divider />
-      <Box sx={{ display: "flex", flexWrap: "wrap", p: 2 }}>
+      <Box sx={{ p: 2 }}>
         <Stack spacing={2} direction="row">
           <Button variant="contained">Save</Button>
           <Button variant="outlined" onClick={handleClose}>
@@ -244,7 +242,7 @@ const EquipmentInputForm = ({ handleClose }) => {
 };
 
 const Table = ({
-  ProcedureData,
+  procedures,
   numColumns,
   handleChangeProcedure,
   selectedProcedures,
@@ -256,28 +254,32 @@ const Table = ({
   return (
     <>
       <TableHeader
+        procedures={procedures}
         handleToggleAll={handleToggleAll}
         selectedProcedures={selectedProcedures}
         handleAdd={handleAdd}
         handleDelete={handleDelete}
       />
-      {ProcedureData.map((procedure) => {
-        return (
-          <ProcedureRow
-            procedure={procedure}
-            key={procedure.id}
-            numColumns={numColumns}
-            handleChangeProcedure={handleChangeProcedure}
-            selectedProcedures={selectedProcedures}
-            handleToggle={handleToggle}
-          />
-        );
-      })}
+      {procedures.length > 0 &&
+        procedures.map((procedure) => {
+          return (
+            <ProcedureRow
+              procedures={procedures}
+              procedure={procedure}
+              key={procedure.id}
+              numColumns={numColumns}
+              handleChangeProcedure={handleChangeProcedure}
+              selectedProcedures={selectedProcedures}
+              handleToggle={handleToggle}
+            />
+          );
+        })}
     </>
   );
 };
 
 const TableHeader = ({
+  procedures,
   handleToggleAll,
   selectedProcedures,
   handleAdd,
@@ -310,23 +312,30 @@ const TableHeader = ({
           </IconButton>
         )}
       </div>
-      <div className={`${styles.chartRow} ${styles.headerRow}`}>
-        <div>
-          <Checkbox {...label} onChange={handleChange} />
+      {procedures.length > 0 ? (
+        <div className={`${styles.chartRow} ${styles.headerRow}`}>
+          <div>
+            <Checkbox {...label} onChange={handleChange} />
+          </div>
+          {headers.map((header, index) => {
+            return (
+              <div className={styles.tableHeaderValue} key={index}>
+                {header}
+              </div>
+            );
+          })}
         </div>
-        {headers.map((header, index) => {
-          return (
-            <div className={styles.tableHeaderValue} key={index}>
-              {header}
-            </div>
-          );
-        })}
-      </div>
+      ) : (
+        <Button variant="standard" onClick={handleAdd}>
+          Add Procedure
+        </Button>
+      )}
     </>
   );
 };
 
 const ProcedureRow = ({
+  procedures,
   procedure,
   numColumns,
   handleChangeProcedure,
@@ -345,6 +354,11 @@ const ProcedureRow = ({
     resources,
   } = procedure;
   const checked = selectedProcedures.some((item) => item.id === id);
+  const predecessorOptions = [
+    { value: 0, label: "Initial" },
+    ...getArrayOptions(procedures, id),
+  ];
+
   const handleChange = () => {
     handleToggle(id);
   };
@@ -393,7 +407,7 @@ const ProcedureRow = ({
           id="predecessor"
           value={predecessor}
           onChange={handleChangeProcedure(id, "predecessor")}
-          options={[{ label: "CIP", value: "CIP" }]}
+          options={predecessorOptions}
         />
       </div>
       <div className={styles.chartRowLabel}>
@@ -402,10 +416,10 @@ const ProcedureRow = ({
           value={type}
           onChange={handleChangeProcedure(id, "type")}
           options={[
-            { label: "Start-to-Finish", value: "Start-to-Finish" },
-            { label: "Start-to-Start", value: "Start-to-Start" },
-            { label: "Finish-to-Finish", value: "Finish-to-Finish" },
-            { label: "Finish-to-Start", value: "Finish-to-Start" },
+            { label: "Start-to-Finish", value: "SF" },
+            { label: "Start-to-Start", value: "SS" },
+            { label: "Finish-to-Finish", value: "FF" },
+            { label: "Finish-to-Start", value: "FS" },
           ]}
         />
       </div>
