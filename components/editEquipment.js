@@ -24,6 +24,7 @@ import {
   deleteByIds,
   getArrayOptions,
 } from "../utils/checkboxes";
+import { generateId } from "../utils/helperFunctions";
 
 const EditEquipmentModal = ({ open, handleClose }) => {
   let drawerWidth = screen.width * 0.75;
@@ -47,7 +48,11 @@ const EditEquipmentModal = ({ open, handleClose }) => {
 };
 
 const EquipmentInputForm = ({ handleClose }) => {
-  const defaultEquipment = { title: "Equipment 1", procedures: [] };
+  const defaultEquipment = {
+    id: generateId(),
+    title: "",
+    procedures: [],
+  };
   const testProcedures = [
     {
       id: "1",
@@ -135,7 +140,8 @@ const EquipmentInputForm = ({ handleClose }) => {
     },
   ];
   const defaultProcedure = {
-    title: "Fill",
+    id: generateId(),
+    title: "",
     duration: "1",
     durationUnit: { value: "hr", label: "hr" },
     predecessor: { value: 0, label: "Initial" },
@@ -179,6 +185,7 @@ const EquipmentInputForm = ({ handleClose }) => {
 
   const handleAdd = () => {
     setProcedures(addToArray(procedures, defaultProcedure));
+    console.log(procedures);
   };
 
   const handleDelete = () => {
@@ -376,7 +383,7 @@ const ProcedureRow = ({
           id="title"
           value={title}
           type="text"
-          placeholder="Procedure Title"
+          placeholder="Name"
           onChange={handleChangeProcedure(id)}
         />
       </div>

@@ -7,7 +7,6 @@ const handleRemove = (array, itemToRemove) => {
 };
 
 export const toggleSelection = (array, id) => {
-  if (isNaN(id)) return array;
   const index = array.findIndex((item) => item.id === id);
   if (index > -1) {
     //remove selection
