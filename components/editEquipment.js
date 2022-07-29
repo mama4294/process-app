@@ -25,6 +25,7 @@ import {
   getArrayOptions,
 } from "../utils/checkboxes";
 import { generateId } from "../utils/helperFunctions";
+import { calcGanttLogic } from "../utils/ganttLogic";
 
 const EditEquipmentModal = ({ open, handleClose }) => {
   let drawerWidth = screen.width * 0.75;
@@ -201,6 +202,10 @@ const EquipmentInputForm = ({ handleClose }) => {
     setSelectedProcedures(toggleAll(procedures, checked));
   };
 
+  const handleSave = () => {
+    calcGanttLogic(procedures);
+  };
+
   return (
     <>
       <AppBar position="static">
@@ -238,7 +243,9 @@ const EquipmentInputForm = ({ handleClose }) => {
       <Divider />
       <Box sx={{ p: 2 }}>
         <Stack spacing={2} direction="row">
-          <Button variant="contained">Save</Button>
+          <Button variant="contained" onClick={handleSave}>
+            Save
+          </Button>
           <Button variant="outlined" onClick={handleClose}>
             Cancel
           </Button>
@@ -310,12 +317,12 @@ const TableHeader = ({
         <div className={styles.title}>Procedures</div>
 
         {selectedProcedures.length > 0 ? (
-          <IconButton>
-            <DeleteIcon color="action" onClick={handleDelete} />
+          <IconButton onClick={handleDelete}>
+            <DeleteIcon color="action" />
           </IconButton>
         ) : (
-          <IconButton>
-            <AddIcon color="action" onClick={handleAdd} />
+          <IconButton onClick={handleAdd}>
+            <AddIcon color="action" />
           </IconButton>
         )}
       </div>
