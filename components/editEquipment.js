@@ -14,7 +14,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import styles from "../styles/ProcedureChart.module.css";
-import { useState, useEffect } from "react";
+import { useState, useContext } from "react";
 import TextInput from "./inputs/textInput";
 import Dropdown from "./inputs/dropdown";
 import {
@@ -26,6 +26,7 @@ import {
 } from "../utils/checkboxes";
 import { generateId } from "../utils/helperFunctions";
 import { calcGanttLogic } from "../utils/ganttLogic";
+import { EquipmentContext } from "../contexts/equipmentContext";
 
 const EditEquipmentModal = ({ open, handleClose }) => {
   let drawerWidth = screen.width * 0.75;
@@ -49,12 +50,13 @@ const EditEquipmentModal = ({ open, handleClose }) => {
 };
 
 const EquipmentInputForm = ({ handleClose }) => {
+  const { addEquipment } = useContext(EquipmentContext);
   const defaultEquipment = {
     id: generateId(),
     title: "",
-    procedures: [],
+    operations: [],
   };
-  const testProcedures = [
+  const testOperations = [
     {
       id: "1",
       title: "Fill",
@@ -140,7 +142,7 @@ const EquipmentInputForm = ({ handleClose }) => {
       resources: [],
     },
   ];
-  const defaultProcedure = {
+  const defaultOperation = {
     id: generateId(),
     title: "",
     duration: "1",
@@ -152,14 +154,14 @@ const EquipmentInputForm = ({ handleClose }) => {
     resources: [],
   };
   const [equipment, setEquipment] = useState(defaultEquipment);
-  const [procedures, setProcedures] = useState([...testProcedures]);
-  const [selectedProcedures, setSelectedProcedures] = useState([]);
+  const [operations, setOperations] = useState([...testOperations]);
+  const [selectedOperations, setSelectedOperations] = useState([]);
 
   const handleChangeEquipment = (event) => {
     setEquipment({ ...equipment, [event.target.id]: event.target.value });
   };
 
-  const handleChangeProcedure = (procedureID, targetID) => (event) => {
+  const handleChangeOperation = (operationID, targetID) => (event) => {
     let field = null;
     let value = null;
     if (event.target === undefined) {
@@ -172,38 +174,50 @@ const EquipmentInputForm = ({ handleClose }) => {
       field = event.target.id;
       value = event.target.value;
     }
-    const newState = procedures.map((procedure) => {
-      if (procedure.id === procedureID) {
-        console.log(`Found procedure with field ${field} and value ${value}`);
-        return { ...procedure, [field]: value };
+    const newState = operations.map((operation) => {
+      if (operation.id === operationID) {
+        console.log(`Found operation with field ${field} and value ${value}`);
+        return { ...operation, [field]: value };
       }
       //otherwise return object as is
-      return procedure;
+      return operation;
     });
 
-    setProcedures(newState);
+    setOperations(newState);
   };
 
   const handleAdd = () => {
-    setProcedures(addToArray(procedures, defaultProcedure));
-    console.log(procedures);
+    setOperations(addToArray(operations, defaultOperation));
+    console.log(operations);
   };
 
   const handleDelete = () => {
-    setProcedures(deleteByIds(procedures, selectedProcedures));
-    setSelectedProcedures([]);
+    setOperations(deleteByIds(operations, selectedOperations));
+    setSelectedOperations([]);
   };
 
   const handleToggle = (id) => {
-    setSelectedProcedures(toggleSelection(selectedProcedures, id));
+    setSelectedOperations(toggleSelection(selectedOperations, id));
   };
 
   const handleToggleAll = (checked) => {
-    setSelectedProcedures(toggleAll(procedures, checked));
+    setSelectedOperations(toggleAll(operations, checked));
   };
 
   const handleSave = () => {
-    calcGanttLogic(procedures);
+    const { error, array } = calcGanttLogic(operations);
+    if (error.error) {
+      alert(error.message);
+    } else {
+      const newEquipment = {
+        id: generateId(),
+        ...equipment,
+        operations: array,
+      };
+      console.log(newEquipment);
+      addEquipment(newEquipment);
+      handleClose();
+    }
   };
 
   return (
@@ -230,10 +244,10 @@ const EquipmentInputForm = ({ handleClose }) => {
       <Divider />
       <Box sx={{ display: "flex", flexWrap: "wrap", p: 2 }}>
         <Table
-          procedures={procedures}
+          operations={operations}
           numColumns={10}
-          handleChangeProcedure={handleChangeProcedure}
-          selectedProcedures={selectedProcedures}
+          handleChangeOperation={handleChangeOperation}
+          selectedOperations={selectedOperations}
           handleToggle={handleToggle}
           handleToggleAll={handleToggleAll}
           handleAdd={handleAdd}
@@ -256,10 +270,10 @@ const EquipmentInputForm = ({ handleClose }) => {
 };
 
 const Table = ({
-  procedures,
+  operations,
   numColumns,
-  handleChangeProcedure,
-  selectedProcedures,
+  handleChangeOperation,
+  selectedOperations,
   handleToggle,
   handleToggleAll,
   handleAdd,
@@ -268,22 +282,22 @@ const Table = ({
   return (
     <>
       <TableHeader
-        procedures={procedures}
+        operations={operations}
         handleToggleAll={handleToggleAll}
-        selectedProcedures={selectedProcedures}
+        selectedOperations={selectedOperations}
         handleAdd={handleAdd}
         handleDelete={handleDelete}
       />
-      {procedures.length > 0 &&
-        procedures.map((procedure) => {
+      {operations.length > 0 &&
+        operations.map((operation) => {
           return (
-            <ProcedureRow
-              procedures={procedures}
-              procedure={procedure}
-              key={procedure.id}
+            <OperationRow
+              operations={operations}
+              operation={operation}
+              key={operation.id}
               numColumns={numColumns}
-              handleChangeProcedure={handleChangeProcedure}
-              selectedProcedures={selectedProcedures}
+              handleChangeOperation={handleChangeOperation}
+              selectedOperations={selectedOperations}
               handleToggle={handleToggle}
             />
           );
@@ -293,9 +307,9 @@ const Table = ({
 };
 
 const TableHeader = ({
-  procedures,
+  operations,
   handleToggleAll,
-  selectedProcedures,
+  selectedOperations,
   handleAdd,
   handleDelete,
 }) => {
@@ -314,9 +328,9 @@ const TableHeader = ({
   return (
     <>
       <div className={styles.titleContainer}>
-        <div className={styles.title}>Procedures</div>
+        <div className={styles.title}>Operations</div>
 
-        {selectedProcedures.length > 0 ? (
+        {selectedOperations.length > 0 ? (
           <IconButton onClick={handleDelete}>
             <DeleteIcon color="action" />
           </IconButton>
@@ -326,7 +340,7 @@ const TableHeader = ({
           </IconButton>
         )}
       </div>
-      {procedures.length > 0 ? (
+      {operations.length > 0 ? (
         <div className={`${styles.chartRow} ${styles.headerRow}`}>
           <div>
             <Checkbox {...label} onChange={handleChange} />
@@ -341,19 +355,19 @@ const TableHeader = ({
         </div>
       ) : (
         <Button variant="standard" onClick={handleAdd}>
-          Add Procedure
+          Add Operation
         </Button>
       )}
     </>
   );
 };
 
-const ProcedureRow = ({
-  procedures,
-  procedure,
+const OperationRow = ({
+  operations,
+  operation,
   numColumns,
-  handleChangeProcedure,
-  selectedProcedures,
+  handleChangeOperation,
+  selectedOperations,
   handleToggle,
 }) => {
   const {
@@ -366,11 +380,11 @@ const ProcedureRow = ({
     offset,
     offsetUnit,
     resources,
-  } = procedure;
-  const checked = selectedProcedures.some((item) => item.id === id);
+  } = operation;
+  const checked = selectedOperations.some((item) => item.id === id);
   const predecessorOptions = [
     { value: 0, label: "Initial" },
-    ...getArrayOptions(procedures, id),
+    ...getArrayOptions(operations, id),
   ];
 
   const handleChange = () => {
@@ -391,7 +405,7 @@ const ProcedureRow = ({
           value={title}
           type="text"
           placeholder="Name"
-          onChange={handleChangeProcedure(id)}
+          onChange={handleChangeOperation(id)}
         />
       </div>
       <div className={styles.chartRowLabel}>
@@ -402,12 +416,12 @@ const ProcedureRow = ({
             type="number"
             style={{ textAlign: "right" }}
             placeholder="Duration"
-            onChange={handleChangeProcedure(id)}
+            onChange={handleChangeOperation(id)}
           />
           <Dropdown
             id="durationUnit"
             value={durationUnit}
-            onChange={handleChangeProcedure(id, "durationUnit")}
+            onChange={handleChangeOperation(id, "durationUnit")}
             options={[
               { label: "min", value: "min" },
               { label: "hr", value: "hr" },
@@ -420,7 +434,7 @@ const ProcedureRow = ({
         <Dropdown
           id="predecessor"
           value={predecessor}
-          onChange={handleChangeProcedure(id, "predecessor")}
+          onChange={handleChangeOperation(id, "predecessor")}
           options={predecessorOptions}
         />
       </div>
@@ -428,7 +442,7 @@ const ProcedureRow = ({
         <Dropdown
           id="type"
           value={type}
-          onChange={handleChangeProcedure(id, "type")}
+          onChange={handleChangeOperation(id, "type")}
           options={[
             { label: "Start-to-Finish", value: "SF" },
             { label: "Start-to-Start", value: "SS" },
@@ -445,12 +459,12 @@ const ProcedureRow = ({
             type="number"
             style={{ textAlign: "right" }}
             placeholder="Offset"
-            onChange={handleChangeProcedure(id)}
+            onChange={handleChangeOperation(id)}
           />
           <Dropdown
             id="offsetUnit"
             value={offsetUnit}
-            onChange={handleChangeProcedure(id, "offsetUnit")}
+            onChange={handleChangeOperation(id, "offsetUnit")}
             options={[
               { label: "min", value: "min" },
               { label: "hr", value: "hr" },
@@ -466,7 +480,7 @@ const ProcedureRow = ({
           variant="standard"
           sx={{ m: 1 }}
           value={resources[0]}
-          onChange={handleChangeProcedure(id)}
+          onChange={handleChangeOperation(id)}
         /> */}
       </div>
       <ul
@@ -474,7 +488,7 @@ const ProcedureRow = ({
         style={{ gridTemplateColumns: `repeat(${numColumns}, 1fr)` }}
       >
         <li className={`${styles.listItem} ${styles.tooltip}`} style={style}>
-          <Tooltip title={procedure.title} arrow>
+          <Tooltip title={operation.title} arrow>
             <div className={styles.taskContainer}>
               {/* <span>{title}</span> */}
             </div>

@@ -5,49 +5,92 @@ const convertToMinutes = (value, unit) => {
   return alert("Error with units");
 };
 
-const calcStartAndEnd = (procedure, startTime) => {
-  const { duration, durationUnit, offset, offsetUnit } = procedure;
-  const lagMin = convertToMinutes(offset, offsetUnit);
+const handleRemove = (array, itemToRemove) => {
+  return array.filter((x) => x.id !== itemToRemove.id);
+};
+
+const calcStartAndEnd = (operation, predecessor) => {
+  console.log("Pred", predecessor);
+  const { duration, durationUnit, offset, offsetUnit, type } = operation;
+  const offsetMin = convertToMinutes(offset, offsetUnit);
   const durationMin = convertToMinutes(duration, durationUnit);
-  const start = startTime + lagMin;
-  const end = startTime + durationMin + lagMin;
-  const newProcedure = { ...procedure, start: start, end: end };
-  return newProcedure;
+
+  let [startMin, endMin] = [0, 0];
+
+  if (type.value === "SF") {
+    //Start of new is end of old
+    startMin = predecessor.end;
+    endMin = startMin + durationMin;
+  } else if (type.value === "SS") {
+    startMin = predecessor.start;
+    endMin = startMin + durationMin;
+  } else if (type.value === "FF") {
+    endMin = predecessor.end;
+    startMin = endMin - durationMin;
+  } else if (type.value === "FS") {
+    endMin = predecessor.start;
+    startMin = endMin - durationMin;
+  }
+
+  //add lag
+  const start = startMin + offsetMin;
+  const end = endMin + offsetMin;
+
+  //   console.log(
+  //     `${title}--- predStart: ${predecessor.start}, predEnd: ${predecessor.end}, duration: ${durationMin}, offset: ${offsetMin}, startMin: ${startMin}, endMin: ${endMin}`
+  //   );
+
+  const newOperation = { ...operation, start, end };
+  return newOperation;
+};
+
+const addColor = (operation, color) => {
+  return { ...operation, bgColor: color };
 };
 
 export const calcGanttLogic = (array) => {
+  let loopArray = [...array];
   let remainingArray = [...array];
   let finishedArray = [];
-  let count = 0;
-  while (remainingArray.length > 0 && count < 5) {
-    remainingArray.map((procedure, index) => {
-      const predecessorId = procedure.predecessor.value;
+  let count = 1;
+  while (remainingArray.length > 0 && count < remainingArray.length + 2) {
+    loopArray.map((operation, index) => {
+      console.log("remaining array:", remainingArray);
+      console.log("finished array:", finishedArray);
+      const predecessorId = operation.predecessor.value;
       const predecessorIndex = finishedArray.findIndex(
         (item) => item.id === predecessorId
       );
       console.log(
-        `Beginning test for ${procedure.title}. Predessor ID: ${predecessorId}, Predessor Index: ${predecessorIndex}`
+        `Round: ${count}, Test: ${index}... Test for ${operation.title}. Predessor ID: ${predecessorId}, Predessor Index: ${predecessorIndex}`
       );
-      if (predecessorId === 0) {
-        //initial
-        console.log(`${procedure.title} is an Intial process`);
-        const updatedProcedure = calcStartAndEnd(procedure, 0);
-        finishedArray.push(updatedProcedure); //add to finished
-        remainingArray.splice(index, 1); //remove from remaining
-      } else if (predecessorIndex >= 0) {
-        console.log(`Found a predessor for ${procedure.title}`);
-        const endOfPrecedessor = remainingArray[index].end;
-        const updatedProcedure = calcStartAndEnd(procedure, endOfPrecedessor);
-        finishedArray.push(updatedProcedure); //add to finished
-        remainingArray.splice(index, 1); //remove from remaining
+      if (predecessorIndex >= 0 || predecessorId === 0) {
+        let predecessor = { start: 1, end: 1 }; //if initial process
+        if (predecessorIndex >= 0)
+          predecessor = finishedArray[predecessorIndex];
+        const updatedOperation = calcStartAndEnd(operation, predecessor);
+        const coloredOperation = addColor(updatedOperation, "#E5B8D0");
+        finishedArray.push(coloredOperation); //add to finished
+        remainingArray = handleRemove(remainingArray, operation); //remove from remaining
+        console.log(`Found a home for ${operation.title}`);
       } else {
-        console.log(`No luck for ${procedure.title}`);
+        console.log(`No predecessors yet for ${operation.title}`);
       }
     });
     console.log(
       `Completed cycle: ${count} with ${remainingArray.length} / ${array.length} remaining`
     );
-    console.log("Finished Array ", finishedArray);
+    loopArray = [...remainingArray];
     count++;
   }
+
+  const error = remainingArray.length !== 0 || finishedArray.length === 0;
+  const message = error ? "!!Error!!" : "Success";
+
+  console.log(message);
+  console.log("Finished Array ", finishedArray);
+  return {
+    error: { error: error, message: message, ids: remainingArray },
+    array: finishedArray,
+  };
 };

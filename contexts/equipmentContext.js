@@ -65,9 +65,9 @@ const operationData = [
 ];
 
 const defaultEquipmentData = [
-  { id: 1, name: "Fermenter", operations: operationData },
-  { id: 2, name: "Filler", operations: operationData },
-  { id: 3, name: "Chiller", operations: operationData },
+  { id: 1, title: "Fermenter", operations: operationData },
+  { id: 2, title: "Filler", operations: operationData },
+  { id: 3, title: "Chiller", operations: operationData },
 ];
 
 export const EquipmentContext = createContext({
@@ -77,6 +77,7 @@ export const EquipmentContext = createContext({
   setUserResources: () => null,
   selectionIds: null,
   setSelectionIds: () => null,
+  addEquipment: () => null,
 });
 
 export const EquipmentProvider = ({ children }) => {
@@ -97,6 +98,10 @@ export const EquipmentProvider = ({ children }) => {
     setSelectionIds([]);
   };
 
+  const addEquipment = (newEquipment) => {
+    setEquipment([...equipment, newEquipment]);
+  };
+
   return (
     <EquipmentContext.Provider
       value={{
@@ -107,6 +112,7 @@ export const EquipmentProvider = ({ children }) => {
         selectionIds,
         handleToggle,
         deleteEquipment,
+        addEquipment,
       }}
     >
       {children}

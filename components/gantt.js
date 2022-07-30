@@ -69,7 +69,7 @@ const UnitRow = ({ unit, numColumns }) => {
   return (
     <div className={styles.chartRow}>
       <Checkbox checked={checked} onChange={handleChange} {...label} />
-      <div className={styles.chartRowLabel}>{unit.name}</div>
+      <div className={styles.chartRowLabel}>{unit.title}</div>
       <ul
         className={styles.chartRowBars}
         style={{ gridTemplateColumns: `repeat(${numColumns}, 1fr)` }}
@@ -79,7 +79,7 @@ const UnitRow = ({ unit, numColumns }) => {
             <Operation
               key={operation.id}
               operation={operation}
-              title={unit.name}
+              title={unit.title}
             />
           );
         })}
@@ -100,7 +100,9 @@ const Operation = ({ operation }) => {
   return (
     <li className={`${styles.listItem} ${styles.tooltip}`} style={style}>
       <Tooltip title={title} arrow>
-        <div className={styles.taskContainer}>{/* <span>{title}</span> */}</div>
+        <div className={styles.taskContainer}>
+          <span>{title}</span>
+        </div>
       </Tooltip>
     </li>
   );
