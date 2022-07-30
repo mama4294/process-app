@@ -13,7 +13,7 @@ import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
-import styles from "../styles/ProcedureChart.module.css";
+import styles from "../styles/operations.module.css";
 import { useState, useContext } from "react";
 import TextInput from "./inputs/textInput";
 import Dropdown from "./inputs/dropdown";
@@ -28,7 +28,8 @@ import { generateId } from "../utils/helperFunctions";
 import { calcGanttLogic } from "../utils/ganttLogic";
 import { EquipmentContext } from "../contexts/equipmentContext";
 
-const EditEquipmentModal = ({ open, handleClose }) => {
+const EditEquipmentModal = ({ drawer, handleClose }) => {
+  const { open, mode } = drawer;
   let drawerWidth = screen.width * 0.75;
   return (
     <div>
@@ -43,14 +44,17 @@ const EditEquipmentModal = ({ open, handleClose }) => {
         onClose={handleClose}
         variant="temporary"
       >
-        <EquipmentInputForm handleClose={handleClose} />
+        <EquipmentInputForm mode={mode} handleClose={handleClose} />
       </Drawer>
     </div>
   );
 };
 
-const EquipmentInputForm = ({ handleClose }) => {
-  const { addEquipment } = useContext(EquipmentContext);
+const EquipmentInputForm = ({ mode, handleClose }) => {
+  const { addEquipment, updateEquipment, findSelectedEquipment } =
+    useContext(EquipmentContext);
+  const equipmentToEdit = mode === "edit" ? findSelectedEquipment() : null;
+
   const defaultEquipment = {
     id: generateId(),
     title: "",
@@ -153,8 +157,12 @@ const EquipmentInputForm = ({ handleClose }) => {
     type: { value: "SF", label: "Start-to-Finish" },
     resources: [],
   };
-  const [equipment, setEquipment] = useState(defaultEquipment);
-  const [operations, setOperations] = useState([...testOperations]);
+  const [equipment, setEquipment] = useState(
+    mode === "edit" ? equipmentToEdit : defaultEquipment
+  );
+  const [operations, setOperations] = useState(
+    mode === "edit" ? equipmentToEdit.operations : []
+  );
   const [selectedOperations, setSelectedOperations] = useState([]);
 
   const handleChangeEquipment = (event) => {
@@ -204,7 +212,7 @@ const EquipmentInputForm = ({ handleClose }) => {
     setSelectedOperations(toggleAll(operations, checked));
   };
 
-  const handleSave = () => {
+  const handleSave = (mode) => {
     const { error, array } = calcGanttLogic(operations);
     if (error.error) {
       alert(error.message);
@@ -214,8 +222,13 @@ const EquipmentInputForm = ({ handleClose }) => {
         ...equipment,
         operations: array,
       };
+
+      if (mode === "new") {
+        addEquipment(newEquipment);
+      } else if (mode === "edit") {
+        updateEquipment(newEquipment);
+      }
       console.log(newEquipment);
-      addEquipment(newEquipment);
       handleClose();
     }
   };
@@ -224,9 +237,12 @@ const EquipmentInputForm = ({ handleClose }) => {
     <>
       <AppBar position="static">
         <Toolbar>
-          <IconButton onClick={handleClose}>
-            <CloseIcon color="action" />
-          </IconButton>
+          <>
+            <IconButton onClick={handleClose}>
+              <CloseIcon color="action" />
+            </IconButton>
+            <h1>{mode === "new" ? "New Equipment" : "Edit Equipment"}</h1>
+          </>
         </Toolbar>
       </AppBar>
 
@@ -257,7 +273,7 @@ const EquipmentInputForm = ({ handleClose }) => {
       <Divider />
       <Box sx={{ p: 2 }}>
         <Stack spacing={2} direction="row">
-          <Button variant="contained" onClick={handleSave}>
+          <Button variant="contained" onClick={() => handleSave(mode)}>
             Save
           </Button>
           <Button variant="outlined" onClick={handleClose}>

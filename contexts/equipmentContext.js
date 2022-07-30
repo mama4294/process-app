@@ -102,6 +102,26 @@ export const EquipmentProvider = ({ children }) => {
     setEquipment([...equipment, newEquipment]);
   };
 
+  const updateEquipment = (equipmentToUpdate) => {
+    const newArr = equipment.map((obj) => {
+      if (obj.id === equipmentToUpdate.id) {
+        return equipmentToUpdate;
+      }
+      return obj;
+    });
+    setEquipment(newArr);
+  };
+
+  const findSelectedEquipment = () => {
+    const index = equipment.findIndex((item) => item.id === selectionIds[0].id);
+    return equipment[index];
+  };
+
+  const findEquipmentById = (id) => {
+    const index = equipment.findIndex((item) => item.id === id);
+    return equipment[index];
+  };
+
   return (
     <EquipmentContext.Provider
       value={{
@@ -113,6 +133,9 @@ export const EquipmentProvider = ({ children }) => {
         handleToggle,
         deleteEquipment,
         addEquipment,
+        updateEquipment,
+        findSelectedEquipment,
+        findEquipmentById,
       }}
     >
       {children}

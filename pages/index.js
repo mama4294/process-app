@@ -4,15 +4,16 @@ import EditEquipment from "../components/editEquipment";
 import { useState } from "react";
 
 export default function Home() {
-  const [modelOpen, setModalOpen] = useState(false);
-  const handleOpen = () => setModalOpen(true);
-  const handleClose = () => setModalOpen(false);
+  const [drawer, setDrawer] = useState({ open: false, mode: "new" });
+  const handleOpenNew = () => setDrawer({ open: true, mode: "new" });
+  const handleOpenEdit = () => setDrawer({ open: true, mode: "edit" });
+  const handleClose = () => setDrawer({ open: false, mode: "new" });
   return (
     <>
-      <ActionBar openModal={handleOpen} />
+      <ActionBar handleNew={handleOpenNew} handleEdit={handleOpenEdit} />
       <Gantt />
-      {modelOpen && (
-        <EditEquipment open={modelOpen} handleClose={handleClose} />
+      {drawer.open && (
+        <EditEquipment drawer={drawer} handleClose={handleClose} />
       )}
     </>
   );
