@@ -14,6 +14,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import styles from "../styles/operations.module.css";
+import { blueGrey } from "@mui/material/colors";
 import { useState, useContext } from "react";
 import TextInput from "./inputs/textInput";
 import Dropdown from "./inputs/dropdown";
@@ -54,6 +55,9 @@ const EquipmentInputForm = ({ mode, handleClose }) => {
   const { addEquipment, updateEquipment, findSelectedEquipment } =
     useContext(EquipmentContext);
   const equipmentToEdit = mode === "edit" ? findSelectedEquipment() : null;
+  const [operations, setOperations] = useState(
+    mode === "edit" ? equipmentToEdit.operations : []
+  );
 
   const defaultEquipment = {
     id: generateId(),
@@ -146,12 +150,19 @@ const EquipmentInputForm = ({ mode, handleClose }) => {
       resources: [],
     },
   ];
+
   const defaultOperation = {
     id: generateId(),
     title: "",
     duration: "1",
     durationUnit: { value: "hr", label: "hr" },
-    predecessor: { value: 0, label: "Initial" },
+    predecessor:
+      operations.length > 0
+        ? {
+            value: operations[operations.length - 1].id,
+            label: operations[operations.length - 1].title,
+          }
+        : { value: 0, label: "Initial" },
     offset: 0,
     offsetUnit: { value: "hr", label: "hr" },
     type: { value: "SF", label: "Start-to-Finish" },
@@ -160,9 +171,7 @@ const EquipmentInputForm = ({ mode, handleClose }) => {
   const [equipment, setEquipment] = useState(
     mode === "edit" ? equipmentToEdit : defaultEquipment
   );
-  const [operations, setOperations] = useState(
-    mode === "edit" ? equipmentToEdit.operations : []
-  );
+
   const [selectedOperations, setSelectedOperations] = useState([]);
 
   const handleChangeEquipment = (event) => {
@@ -184,7 +193,7 @@ const EquipmentInputForm = ({ mode, handleClose }) => {
     }
     const newState = operations.map((operation) => {
       if (operation.id === operationID) {
-        console.log(`Found operation with field ${field} and value ${value}`);
+        // console.log(`Found operation with field ${field} and value ${value}`);
         return { ...operation, [field]: value };
       }
       //otherwise return object as is
@@ -196,7 +205,6 @@ const EquipmentInputForm = ({ mode, handleClose }) => {
 
   const handleAdd = () => {
     setOperations(addToArray(operations, defaultOperation));
-    console.log(operations);
   };
 
   const handleDelete = () => {
@@ -228,7 +236,6 @@ const EquipmentInputForm = ({ mode, handleClose }) => {
       } else if (mode === "edit") {
         updateEquipment(newEquipment);
       }
-      console.log(newEquipment);
       handleClose();
     }
   };
@@ -239,7 +246,7 @@ const EquipmentInputForm = ({ mode, handleClose }) => {
         <Toolbar>
           <>
             <IconButton onClick={handleClose}>
-              <CloseIcon color="action" />
+              <CloseIcon sx={{ color: blueGrey[50] }} />
             </IconButton>
             <h1>{mode === "new" ? "New Equipment" : "Edit Equipment"}</h1>
           </>
@@ -318,6 +325,11 @@ const Table = ({
             />
           );
         })}
+      {operations.length > 0 && (
+        <Button variant="outline" onClick={handleAdd} sx={{ mt: 2 }}>
+          Add Operation
+        </Button>
+      )}
     </>
   );
 };
@@ -356,7 +368,7 @@ const TableHeader = ({
           </IconButton>
         )}
       </div>
-      {operations.length > 0 ? (
+      {operations.length > 0 && (
         <div className={`${styles.chartRow} ${styles.headerRow}`}>
           <div>
             <Checkbox {...label} onChange={handleChange} />
@@ -369,10 +381,6 @@ const TableHeader = ({
             );
           })}
         </div>
-      ) : (
-        <Button variant="standard" onClick={handleAdd}>
-          Add Operation
-        </Button>
       )}
     </>
   );
@@ -430,6 +438,7 @@ const OperationRow = ({
             id="duration"
             value={duration}
             type="number"
+            min="0"
             style={{ textAlign: "right" }}
             placeholder="Duration"
             onChange={handleChangeOperation(id)}

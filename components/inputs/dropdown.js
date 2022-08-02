@@ -5,6 +5,7 @@ import Select from "react-select";
 const customStyles = {
   option: (provided, state) => ({
     ...provided,
+    textAlign: "left",
     // borderBottom: "2px dotted green",
     // color: state.isSelected ? "yellow" : "black",
     // backgroundColor: state.isSelected ? "green" : "white",

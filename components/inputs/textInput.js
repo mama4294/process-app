@@ -1,7 +1,16 @@
 import React from "react";
 import styles from "../../styles/components.module.css";
 
-const TextInput = ({ id, value, name, placeholder, type, onChange, style }) => {
+const TextInput = ({
+  id,
+  value,
+  name,
+  placeholder,
+  type,
+  onChange,
+  style,
+  ...props
+}) => {
   return (
     <input
       id={id}
@@ -12,6 +21,7 @@ const TextInput = ({ id, value, name, placeholder, type, onChange, style }) => {
       className={styles.textInput}
       placeholder={placeholder}
       onChange={onChange}
+      {...props}
     />
   );
 };

@@ -14,7 +14,7 @@
 }
 .chartRow {  
   display: grid;      
-  grid-template-columns: 5ch 10ch 10ch 20ch 20ch 8ch 20ch 1fr;
+  grid-template-columns: 5ch 10ch 10ch 20ch 20ch 10ch 20ch 1fr;
   background-color: #FFFFFF;
   border-bottom: 1px solid #6E81AD;
   align-items: center;
@@ -80,6 +80,7 @@
 .chartRowLabel {
   color: #8c8c8c;   
   /* padding: 20px 0; */
+  height:100%;
   font-size: 15px;
   font-weight: bold;
   text-align: center;
