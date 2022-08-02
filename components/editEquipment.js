@@ -14,8 +14,9 @@ import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import styles from "../styles/operations.module.css";
+import Alert from "@mui/material/Alert";
 import { blueGrey } from "@mui/material/colors";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import TextInput from "./inputs/textInput";
 import Dropdown from "./inputs/dropdown";
 import {
@@ -58,6 +59,7 @@ const EquipmentInputForm = ({ mode, handleClose }) => {
   const [operations, setOperations] = useState(
     mode === "edit" ? equipmentToEdit.operations : []
   );
+  const [error, setError] = useState({ error: false, ids: [] });
 
   const defaultEquipment = {
     id: generateId(),
@@ -174,6 +176,10 @@ const EquipmentInputForm = ({ mode, handleClose }) => {
 
   const [selectedOperations, setSelectedOperations] = useState([]);
 
+  useEffect(() => {
+    console.log(error);
+  }, [error]);
+
   const handleChangeEquipment = (event) => {
     setEquipment({ ...equipment, [event.target.id]: event.target.value });
   };
@@ -223,7 +229,7 @@ const EquipmentInputForm = ({ mode, handleClose }) => {
   const handleSave = (mode) => {
     const { error, array } = calcGanttLogic(operations);
     if (error.error) {
-      alert(error.message);
+      setError({ error: true, ids: error.ids, message: error.message });
     } else {
       const newEquipment = {
         id: generateId(),
@@ -268,6 +274,7 @@ const EquipmentInputForm = ({ mode, handleClose }) => {
       <Box sx={{ display: "flex", flexWrap: "wrap", p: 2 }}>
         <Table
           operations={operations}
+          error={error}
           numColumns={10}
           handleChangeOperation={handleChangeOperation}
           selectedOperations={selectedOperations}
@@ -278,7 +285,11 @@ const EquipmentInputForm = ({ mode, handleClose }) => {
         />
       </Box>
       <Divider />
-      <Box sx={{ p: 2 }}>
+      <Box sx={{ pt: 2, px: 2 }}>
+        {error.error > 0 && <Alert severity="error">{error.message}</Alert>}
+      </Box>
+
+      <Box sx={{ pt: 2, px: 2 }}>
         <Stack spacing={2} direction="row">
           <Button variant="contained" onClick={() => handleSave(mode)}>
             Save
@@ -301,6 +312,7 @@ const Table = ({
   handleToggleAll,
   handleAdd,
   handleDelete,
+  error,
 }) => {
   return (
     <>
@@ -322,9 +334,11 @@ const Table = ({
               handleChangeOperation={handleChangeOperation}
               selectedOperations={selectedOperations}
               handleToggle={handleToggle}
+              error={error}
             />
           );
         })}
+
       {operations.length > 0 && (
         <Button variant="outline" onClick={handleAdd} sx={{ mt: 2 }}>
           Add Operation
@@ -393,6 +407,7 @@ const OperationRow = ({
   handleChangeOperation,
   selectedOperations,
   handleToggle,
+  error,
 }) => {
   const {
     title,
@@ -406,6 +421,8 @@ const OperationRow = ({
     resources,
   } = operation;
   const checked = selectedOperations.some((item) => item.id === id);
+  const isError = error.ids.includes(id);
+  console.log(id, isError);
   const predecessorOptions = [
     { value: 0, label: "Initial" },
     ...getArrayOptions(operations, id),
@@ -420,8 +437,9 @@ const OperationRow = ({
     gridColumn: `2/4`,
     backgroundColor: "#red",
   };
+
   return (
-    <div className={styles.chartRow}>
+    <div className={`${styles.chartRow} ${isError ? styles.error : ""}`}>
       <Checkbox {...label} checked={checked} onChange={handleChange} />
       <div className={styles.chartRowLabel}>
         <TextInput

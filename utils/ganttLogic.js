@@ -85,12 +85,20 @@ export const calcGanttLogic = (array) => {
   }
 
   const error = remainingArray.length !== 0 || finishedArray.length === 0;
-  const message = error ? "!!Error!!" : "Success";
+  const initialIndex = array.findIndex((item) => item.predecessor.value === 0);
+  const message =
+    initialIndex >= 0
+      ? "Recursive Error: Could not find a solution"
+      : "Error: No inital operation";
 
   console.log(message);
   console.log("Finished Array ", finishedArray);
   return {
-    error: { error: error, message: message, ids: remainingArray },
+    error: {
+      error: error,
+      message: message,
+      ids: remainingArray.map((a) => a.id), //Array of ids
+    },
     array: finishedArray,
   };
 };

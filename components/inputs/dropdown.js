@@ -19,6 +19,7 @@ const customStyles = {
     height: "100%",
     borderRadius: "0px",
     textAlign: "left",
+    backgroundColor: "transparent",
     border: state.isFocused ? "1px solid #0070f3" : 0,
     boxShadow: "none",
     "&:hover": {

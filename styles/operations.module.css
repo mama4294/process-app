@@ -15,10 +15,14 @@
 .chartRow {  
   display: grid;      
   grid-template-columns: 5ch 10ch 10ch 20ch 20ch 10ch 20ch 1fr;
-  background-color: #FFFFFF;
   border-bottom: 1px solid #6E81AD;
   align-items: center;
 }
+
+.error{
+  background-color: #FDEDED;
+}
+
 /* .chartRow:hover {
   background-color: #c1d3ff;
 } */
