@@ -57,6 +57,10 @@ export const calcGanttLogic = (array) => {
     loopArray.map((operation, index) => {
       console.log("remaining array:", remainingArray);
       console.log("finished array:", finishedArray);
+      if (operation.predecessor.external) {
+        //External Operation
+        alert(`${operation.title} has an external predessor`);
+      }
       const predecessorId = operation.predecessor.value;
       const predecessorIndex = finishedArray.findIndex(
         (item) => item.id === predecessorId
@@ -64,7 +68,9 @@ export const calcGanttLogic = (array) => {
       console.log(
         `Round: ${count}, Test: ${index}... Test for ${operation.title}. Predessor ID: ${predecessorId}, Predessor Index: ${predecessorIndex}`
       );
+
       if (predecessorIndex >= 0 || predecessorId === 0) {
+        //If predecessor is found
         let predecessor = { start: 1, end: 1 }; //if initial process
         if (predecessorIndex >= 0)
           predecessor = finishedArray[predecessorIndex];

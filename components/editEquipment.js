@@ -53,13 +53,18 @@ const EditEquipmentModal = ({ drawer, handleClose }) => {
 };
 
 const EquipmentInputForm = ({ mode, handleClose }) => {
-  const { addEquipment, updateEquipment, findSelectedEquipment } =
-    useContext(EquipmentContext);
+  const {
+    addEquipment,
+    updateEquipment,
+    findSelectedEquipment,
+    findAllEquipmentOpOptions,
+  } = useContext(EquipmentContext);
   const equipmentToEdit = mode === "edit" ? findSelectedEquipment() : null;
   const [operations, setOperations] = useState(
     mode === "edit" ? equipmentToEdit.operations : []
   );
   const [error, setError] = useState({ error: false, ids: [] });
+  const externalOptions = findAllEquipmentOpOptions();
 
   const defaultEquipment = {
     id: generateId(),
@@ -176,10 +181,6 @@ const EquipmentInputForm = ({ mode, handleClose }) => {
 
   const [selectedOperations, setSelectedOperations] = useState([]);
 
-  useEffect(() => {
-    console.log(error);
-  }, [error]);
-
   const handleChangeEquipment = (event) => {
     setEquipment({ ...equipment, [event.target.id]: event.target.value });
   };
@@ -191,7 +192,11 @@ const EquipmentInputForm = ({ mode, handleClose }) => {
       //for dropdowns
       field = targetID;
       //   value = event.value;
-      value = { value: event.value, label: event.label };
+      value = {
+        value: event.value,
+        label: event.label,
+        external: event.external,
+      };
     } else {
       //for text inputs
       field = event.target.id;
@@ -277,6 +282,7 @@ const EquipmentInputForm = ({ mode, handleClose }) => {
           error={error}
           numColumns={10}
           handleChangeOperation={handleChangeOperation}
+          externalOptions={externalOptions}
           selectedOperations={selectedOperations}
           handleToggle={handleToggle}
           handleToggleAll={handleToggleAll}
@@ -308,6 +314,7 @@ const Table = ({
   numColumns,
   handleChangeOperation,
   selectedOperations,
+  externalOptions,
   handleToggle,
   handleToggleAll,
   handleAdd,
@@ -329,6 +336,7 @@ const Table = ({
             <OperationRow
               operations={operations}
               operation={operation}
+              externalOptions={externalOptions}
               key={operation.id}
               numColumns={numColumns}
               handleChangeOperation={handleChangeOperation}
@@ -406,6 +414,7 @@ const OperationRow = ({
   numColumns,
   handleChangeOperation,
   selectedOperations,
+  externalOptions,
   handleToggle,
   error,
 }) => {
@@ -423,11 +432,15 @@ const OperationRow = ({
   const checked = selectedOperations.some((item) => item.id === id);
   const isError = error.ids.includes(id);
   console.log(id, isError);
-  const predecessorOptions = [
-    { value: 0, label: "Initial" },
+  const internalOptions = [
+    { value: 0, label: "Initial", external: false },
     ...getArrayOptions(operations, id),
   ];
 
+  const predecessorOptions = [
+    { label: "Internal", options: internalOptions },
+    { label: "External", options: externalOptions },
+  ];
   const handleChange = () => {
     handleToggle(id);
   };
@@ -437,6 +450,13 @@ const OperationRow = ({
     gridColumn: `2/4`,
     backgroundColor: "#red",
   };
+
+  const formatGroupLabel = (data) => (
+    <div style={styles.dropdownGroup}>
+      <span>{data.label}</span>
+      <span style={styles.dropdownBadge}>{data.options.length}</span>
+    </div>
+  );
 
   return (
     <div className={`${styles.chartRow} ${isError ? styles.error : ""}`}>
@@ -479,6 +499,8 @@ const OperationRow = ({
           value={predecessor}
           onChange={handleChangeOperation(id, "predecessor")}
           options={predecessorOptions}
+          isSearchable={true}
+          // formatGroupLabel={formatGroupLabel}
         />
       </div>
       <div className={styles.chartRowLabel}>

@@ -36,7 +36,7 @@ const customStyles = {
   indicatorSeparator: () => null, // Remove separator
 };
 
-const Dropdown = ({ id, options, value, onChange, defaultValue }) => {
+const Dropdown = ({ id, options, value, onChange, defaultValue, ...props }) => {
   return (
     <Select
       options={options}
@@ -44,9 +44,9 @@ const Dropdown = ({ id, options, value, onChange, defaultValue }) => {
       className={styles.dropdown}
       inputId={id}
       value={value}
-      // value={{ label: value }}
       defaultValue={defaultValue}
       onChange={onChange}
+      {...props}
     />
   );
 };

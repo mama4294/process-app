@@ -19,55 +19,96 @@ const defaultResources = {
   },
 };
 
-const operationData = [
+const sterilizerOperations = [
   {
-    id: "1",
-    title: "Fill",
+    id: "asldfkj",
+    title: "CIP",
     start: 1,
-    end: 2,
+    end: 61,
     bgColor: "#E5B8D0",
   },
   {
-    id: "2",
-    title: "Heat",
-    start: 3,
-    end: 4,
-    bgColor: "#A0C8C2",
+    id: "2nmgd",
+    title: "SIP",
+    start: 62,
+    end: 153,
+    bgColor: "#E5B8D0",
   },
   {
-    id: "3",
+    id: "kwklj",
     title: "Cool",
-    start: 5,
-    end: 6,
-    bgColor: "#rgb(178,201,151)",
+    start: 154,
+    end: 184,
+    bgColor: "#E5B8D0",
   },
   {
-    id: "4",
+    id: "aanmse",
+    title: "Fill",
+    start: 184,
+    end: 250,
+    bgColor: "#E5B8D0",
+  },
+];
+
+const fermenterOperations = [
+  {
+    id: "lkajsd",
+    title: "CIP",
+    start: 1,
+    end: 31,
+    bgColor: "#E5B8D0",
+  },
+  {
+    id: "plkapsdlf",
+    title: "SIP",
+    start: 45,
+    end: 165,
+    bgColor: "#E5B8D0",
+  },
+  {
+    id: "pasldkf",
+    title: "Cool",
+    start: 166,
+    end: 183,
+    bgColor: "#E5B8D0",
+  },
+  {
+    id: "paksjdd",
+    title: "Fill",
+    start: 184,
+    end: 250,
+    bgColor: "#E5B8D0",
+  },
+  {
+    id: "asdfnmddd",
     title: "Ferment",
-    start: 6,
-    end: 9,
-    bgColor: "#F5CF6B",
+    start: 251,
+    end: 800,
+    bgColor: "#E5B8D0",
+  },
+];
+
+const decanterOperations = [
+  {
+    id: "lkjsldfj",
+    title: "CIP",
+    start: 740,
+    end: 800,
+    bgColor: "#E5B8D0",
   },
   {
-    id: "5",
-    title: "Heat Treat",
-    start: 10,
-    end: 15,
-    bgColor: "blue",
-  },
-  {
-    id: "6",
-    title: "Transfer",
-    start: 16,
-    end: 150,
-    bgColor: "gray",
+    id: "lkasdfjjj",
+    title: "Process",
+    start: 801,
+    end: 900,
+    bgColor: "#E5B8D0",
   },
 ];
 
 const defaultEquipmentData = [
-  { id: 1, title: "Fermenter", operations: operationData },
-  { id: 2, title: "Filler", operations: operationData },
-  { id: 3, title: "Chiller", operations: operationData },
+  { id: 1, title: "Sterilizer", operations: sterilizerOperations },
+  { id: 2, title: "Fermenter", operations: fermenterOperations },
+  { id: 3, title: "Decanter", operations: decanterOperations },
 ];
 
 export const EquipmentContext = createContext({
@@ -122,6 +163,20 @@ export const EquipmentProvider = ({ children }) => {
     return equipment[index];
   };
 
+  const findAllEquipmentOpOptions = () => {
+    let newArray = [];
+    equipment.map((equip) => {
+      equip.operations.map((operation) => {
+        newArray.push({
+          label: `${equip.title} - ${operation.title}`,
+          value: operation.id,
+          external: true,
+        });
+      });
+    });
+    return newArray;
+  };
+
   return (
     <EquipmentContext.Provider
       value={{
@@ -136,6 +191,7 @@ export const EquipmentProvider = ({ children }) => {
         updateEquipment,
         findSelectedEquipment,
         findEquipmentById,
+        findAllEquipmentOpOptions,
       }}
     >
       {children}

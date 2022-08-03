@@ -45,7 +45,7 @@ export const getArrayOptions = (array, id) => {
   let newArray = [];
   array.map((item) => {
     if (item.id !== id) {
-      newArray.push({ label: item.title, value: item.id });
+      newArray.push({ label: item.title, value: item.id, external: false });
     }
   });
   return newArray;
