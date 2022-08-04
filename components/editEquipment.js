@@ -278,7 +278,7 @@ const EquipmentInputForm = ({ mode, handleClose }) => {
         />
       </Box>
       <Divider />
-      <Box sx={{ display: "flex", flexWrap: "wrap", p: 2 }}>
+      <Box sx={{ p: 2 }}>
         <Table
           operations={operations}
           error={error}

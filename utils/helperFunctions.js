@@ -5,3 +5,7 @@ export const generateId = () => {
   const small_id = unique_id.slice(0, 8);
   return small_id;
 };
+
+export const sortArrayByStart = (array) => {
+  return array.sort((a, b) => a.start - b.start);
+};

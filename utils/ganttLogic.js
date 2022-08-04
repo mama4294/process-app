@@ -1,3 +1,5 @@
+import { sortArrayByStart } from "../utils/helperFunctions";
+
 const convertToMinutes = (value, unit) => {
   if (unit.value === "min") return value;
   if (unit.value === "hr") return value * 60;
@@ -142,6 +144,6 @@ export const calcGanttLogic = (array, equipment) => {
       message: message,
       ids: remainingArray.map((a) => a.id), //Array of ids
     },
-    array: finishedArray,
+    array: sortArrayByStart(finishedArray),
   };
 };

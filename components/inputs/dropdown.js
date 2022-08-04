@@ -40,9 +40,14 @@ const customStyles = {
   indicatorSeparator: () => null, // Remove separator
 };
 
-const Dropdown = ({ ...props }) => {
+const Dropdown = ({ disabled, ...props }) => {
   return (
-    <Select styles={customStyles} className={styles.dropdown} {...props} />
+    <Select
+      styles={customStyles}
+      className={styles.dropdown}
+      isDisabled={disabled}
+      {...props}
+    />
   );
 };
 
