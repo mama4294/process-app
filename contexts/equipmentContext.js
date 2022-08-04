@@ -1,5 +1,6 @@
 import { useState, createContext } from "react";
 import { toggleSelection, deleteByIds } from "../utils/checkboxes";
+import { calcGanttLogic } from "../utils/ganttLogic";
 
 const defaultResources = {
   steam: {
@@ -163,6 +164,10 @@ export const EquipmentProvider = ({ children }) => {
     return equipment[index];
   };
 
+  const solveGantt = (array) => {
+    return calcGanttLogic(array, equipment);
+  };
+
   const findAllEquipmentOpOptions = () => {
     let newArray = [];
     equipment.map((equip) => {
@@ -192,6 +197,7 @@ export const EquipmentProvider = ({ children }) => {
         findSelectedEquipment,
         findEquipmentById,
         findAllEquipmentOpOptions,
+        solveGantt,
       }}
     >
       {children}

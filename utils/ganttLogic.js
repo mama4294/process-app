@@ -48,38 +48,72 @@ const addColor = (operation, color) => {
   return { ...operation, bgColor: color };
 };
 
-export const calcGanttLogic = (array) => {
+const findIndexById = (searchArray, id) => {
+  return searchArray.findIndex((item) => item.id === id);
+};
+
+const findObjectById = (searchArray, id) => {
+  return searchArray.find((item) => item.id === id);
+};
+
+const findPredecessor = (
+  operation,
+  predecessorId,
+  externalMap,
+  internalMap
+) => {
+  if (predecessorId == 0) {
+    //Inital Operation
+    return { start: 1, end: 1 };
+  }
+
+  if (operation.predecessor.external) {
+    //external predecessor
+    return findObjectById(externalMap, predecessorId);
+  }
+
+  if (!operation.predecessor.external) {
+    //external predecessor
+    return findObjectById(internalMap, predecessorId);
+  }
+
+  console.log("Couldnt match a pred");
+  return undefined;
+};
+
+export const calcGanttLogic = (array, equipment) => {
   let loopArray = [...array];
   let remainingArray = [...array];
   let finishedArray = [];
+  const externalMap = equipment.flatMap((eq) => eq.operations);
   let count = 1;
   while (remainingArray.length > 0 && count < remainingArray.length + 2) {
     loopArray.map((operation, index) => {
       console.log("remaining array:", remainingArray);
       console.log("finished array:", finishedArray);
-      if (operation.predecessor.external) {
-        //External Operation
-        alert(`${operation.title} has an external predessor`);
-      }
       const predecessorId = operation.predecessor.value;
-      const predecessorIndex = finishedArray.findIndex(
-        (item) => item.id === predecessorId
-      );
-      console.log(
-        `Round: ${count}, Test: ${index}... Test for ${operation.title}. Predessor ID: ${predecessorId}, Predessor Index: ${predecessorIndex}`
+      const predecessorObj = findPredecessor(
+        operation,
+        predecessorId,
+        externalMap,
+        finishedArray
       );
 
-      if (predecessorIndex >= 0 || predecessorId === 0) {
-        //If predecessor is found
-        let predecessor = { start: 1, end: 1 }; //if initial process
-        if (predecessorIndex >= 0)
-          predecessor = finishedArray[predecessorIndex];
-        const updatedOperation = calcStartAndEnd(operation, predecessor);
+      console.log("Predecessor....", predecessorObj);
+
+      console.log(
+        `Round: ${count}, Test: ${index}... Test for ${operation.title}. Predessor ID: ${predecessorId}`
+      );
+
+      if (predecessorObj !== undefined) {
+        //found predecessor
+        const updatedOperation = calcStartAndEnd(operation, predecessorObj);
         const coloredOperation = addColor(updatedOperation, "#E5B8D0");
         finishedArray.push(coloredOperation); //add to finished
         remainingArray = handleRemove(remainingArray, operation); //remove from remaining
         console.log(`Found a home for ${operation.title}`);
       } else {
+        //predessor not found yet
         console.log(`No predecessors yet for ${operation.title}`);
       }
     });

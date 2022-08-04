@@ -58,6 +58,7 @@ const EquipmentInputForm = ({ mode, handleClose }) => {
     updateEquipment,
     findSelectedEquipment,
     findAllEquipmentOpOptions,
+    solveGantt,
   } = useContext(EquipmentContext);
   const equipmentToEdit = mode === "edit" ? findSelectedEquipment() : null;
   const [operations, setOperations] = useState(
@@ -232,7 +233,7 @@ const EquipmentInputForm = ({ mode, handleClose }) => {
   };
 
   const handleSave = (mode) => {
-    const { error, array } = calcGanttLogic(operations);
+    const { error, array } = solveGantt(operations);
     if (error.error) {
       setError({ error: true, ids: error.ids, message: error.message });
     } else {
