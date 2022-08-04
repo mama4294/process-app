@@ -469,6 +469,8 @@ const OperationRow = ({
     }
   }, []);
 
+  const disabled = type.value === "LINK";
+
   return (
     <div className={`${styles.chartRow} ${isError ? styles.error : ""}`}>
       <Checkbox {...label} checked={checked} onChange={handleChange} />
@@ -489,6 +491,7 @@ const OperationRow = ({
             value={duration}
             type="number"
             min="0"
+            disabled={disabled}
             style={{ textAlign: "right" }}
             placeholder="Duration"
             onChange={handleChangeOperation(id)}
@@ -496,6 +499,7 @@ const OperationRow = ({
           <Dropdown
             id="durationUnit"
             value={durationUnit}
+            disabled={disabled}
             onChange={handleChangeOperation(id, "durationUnit")}
             options={[
               { label: "min", value: "min" },
@@ -525,6 +529,7 @@ const OperationRow = ({
             { label: "Start-to-Start", value: "SS" },
             { label: "Finish-to-Finish", value: "FF" },
             { label: "Finish-to-Start", value: "FS" },
+            { label: "Link", value: "LINK" },
           ]}
         />
       </div>
@@ -534,6 +539,7 @@ const OperationRow = ({
             id="offset"
             value={offset}
             type="number"
+            disabled={disabled}
             style={{ textAlign: "right" }}
             placeholder="Offset"
             onChange={handleChangeOperation(id)}
@@ -541,6 +547,7 @@ const OperationRow = ({
           <Dropdown
             id="offsetUnit"
             value={offsetUnit}
+            disabled={disabled}
             onChange={handleChangeOperation(id, "offsetUnit")}
             options={[
               { label: "min", value: "min" },

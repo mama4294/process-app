@@ -16,6 +16,11 @@
     border-bottom: 1px solid #0070f3;
 }
 
+.textInput:disabled{
+    color: rgba(0, 0, 0, 0.38);
+    border-bottom: 0px 
+}
+
 .dropdown{
     height: 100%;
     flex-basis: 10ch;

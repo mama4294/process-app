@@ -30,6 +30,9 @@ const calcStartAndEnd = (operation, predecessor) => {
   } else if (type.value === "FS") {
     endMin = predecessor.start;
     startMin = endMin - durationMin;
+  } else if (type.value === "LINK") {
+    startMin = predecessor.start;
+    endMin = predecessor.end;
   }
 
   //add lag

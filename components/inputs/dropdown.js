@@ -14,6 +14,10 @@ const customStyles = {
     ...provided,
     width: "100%",
   }),
+  valueContainer: (provided) => ({
+    ...provided,
+    padding: "2px 0px",
+  }),
   control: (provided, state) => ({
     ...provided,
     height: "100%",
@@ -36,18 +40,9 @@ const customStyles = {
   indicatorSeparator: () => null, // Remove separator
 };
 
-const Dropdown = ({ id, options, value, onChange, defaultValue, ...props }) => {
+const Dropdown = ({ ...props }) => {
   return (
-    <Select
-      options={options}
-      styles={customStyles}
-      className={styles.dropdown}
-      inputId={id}
-      value={value}
-      defaultValue={defaultValue}
-      onChange={onChange}
-      {...props}
-    />
+    <Select styles={customStyles} className={styles.dropdown} {...props} />
   );
 };
 
