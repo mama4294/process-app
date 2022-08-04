@@ -17,6 +17,7 @@ import styles from "../styles/operations.module.css";
 import Alert from "@mui/material/Alert";
 import { blueGrey } from "@mui/material/colors";
 import { useState, useContext, useEffect, useCallback } from "react";
+import { useWindowWide } from "../hooks/windowWidth";
 import TextInput from "./inputs/textInput";
 import Dropdown from "./inputs/dropdown";
 import {
@@ -27,12 +28,14 @@ import {
   getArrayOptions,
 } from "../utils/checkboxes";
 import { generateId } from "../utils/helperFunctions";
-import { calcGanttLogic } from "../utils/ganttLogic";
 import { EquipmentContext } from "../contexts/equipmentContext";
 
 const EditEquipmentModal = ({ drawer, handleClose }) => {
   const { open, mode } = drawer;
-  let drawerWidth = screen.width * 0.75;
+  const windowWidth = useWindowWide();
+  const drawerWidth =
+    windowWidth < 700 ? windowWidth * 0.95 : windowWidth * 0.8;
+
   return (
     <div>
       <Drawer

@@ -1,5 +1,6 @@
 import Gantt from "../components/gantt";
 import ActionBar from "../components/actionBar";
+import Navbar from "../components/navbar";
 import EditEquipment from "../components/editEquipment";
 import { useState } from "react";
 
@@ -10,6 +11,7 @@ export default function Home() {
   const handleClose = () => setDrawer({ open: false, mode: "new" });
   return (
     <>
+      <Navbar />
       <ActionBar handleNew={handleOpenNew} handleEdit={handleOpenEdit} />
       <Gantt />
       {drawer.open && (

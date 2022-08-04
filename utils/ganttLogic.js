@@ -113,7 +113,7 @@ export const calcGanttLogic = (array, equipment) => {
       if (predecessorObj !== undefined) {
         //found predecessor
         const updatedOperation = calcStartAndEnd(operation, predecessorObj);
-        const coloredOperation = addColor(updatedOperation, "#E5B8D0");
+        const coloredOperation = addColor(updatedOperation, "#A9C0E4");
         finishedArray.push(coloredOperation); //add to finished
         remainingArray = handleRemove(remainingArray, operation); //remove from remaining
         console.log(`Found a home for ${operation.title}`);
