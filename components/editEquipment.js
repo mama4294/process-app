@@ -16,7 +16,7 @@ import AddIcon from "@mui/icons-material/Add";
 import styles from "../styles/operations.module.css";
 import Alert from "@mui/material/Alert";
 import { blueGrey } from "@mui/material/colors";
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect, useCallback } from "react";
 import TextInput from "./inputs/textInput";
 import Dropdown from "./inputs/dropdown";
 import {
@@ -274,6 +274,7 @@ const EquipmentInputForm = ({ mode, handleClose }) => {
           sx={{ m: 1, width: "25ch" }}
           value={equipment.title}
           onChange={handleChangeEquipment}
+          autoFocus
         />
       </Box>
       <Divider />
@@ -430,6 +431,7 @@ const OperationRow = ({
     offsetUnit,
     resources,
   } = operation;
+
   const checked = selectedOperations.some((item) => item.id === id);
   const isError = error.ids.includes(id);
   console.log(id, isError);
@@ -459,6 +461,14 @@ const OperationRow = ({
     </div>
   );
 
+  //For autofocusing on the next row title input
+  const nameInput = useCallback((inputElement) => {
+    console.log("nameInput", inputElement);
+    if (inputElement) {
+      inputElement.focus();
+    }
+  }, []);
+
   return (
     <div className={`${styles.chartRow} ${isError ? styles.error : ""}`}>
       <Checkbox {...label} checked={checked} onChange={handleChange} />
@@ -469,6 +479,7 @@ const OperationRow = ({
           type="text"
           placeholder="Name"
           onChange={handleChangeOperation(id)}
+          ref={nameInput}
         />
       </div>
       <div className={styles.chartRowLabel}>
