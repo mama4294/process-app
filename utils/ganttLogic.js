@@ -49,10 +49,6 @@ const calcStartAndEnd = (operation, predecessor) => {
   return newOperation;
 };
 
-const addColor = (operation, color) => {
-  return { ...operation, bgColor: color };
-};
-
 const findIndexById = (searchArray, id) => {
   return searchArray.findIndex((item) => item.id === id);
 };
@@ -64,21 +60,26 @@ const findObjectById = (searchArray, id) => {
 const findPredecessor = (
   operation,
   predecessorId,
-  externalMap,
-  internalMap
+  internalMap,
+  external,
+  externalMap
 ) => {
   if (predecessorId == 0) {
     //Inital Operation
     return { start: 1, end: 1 };
   }
 
-  if (operation.predecessor.external) {
-    //external predecessor
-    return findObjectById(externalMap, predecessorId);
-  }
+  if (external) {
+    if (operation.predecessor.external) {
+      //external predecessor
+      return findObjectById(externalMap, predecessorId);
+    }
 
-  if (!operation.predecessor.external) {
-    //external predecessor
+    if (!operation.predecessor.external) {
+      //external predecessor
+      return findObjectById(internalMap, predecessorId);
+    }
+  } else {
     return findObjectById(internalMap, predecessorId);
   }
 
@@ -100,8 +101,9 @@ export const calcGanttLogic = (array, equipment) => {
       const predecessorObj = findPredecessor(
         operation,
         predecessorId,
-        externalMap,
-        finishedArray
+        finishedArray,
+        true,
+        externalMap
       );
 
       console.log("Predecessor....", predecessorObj);
@@ -113,8 +115,7 @@ export const calcGanttLogic = (array, equipment) => {
       if (predecessorObj !== undefined) {
         //found predecessor
         const updatedOperation = calcStartAndEnd(operation, predecessorObj);
-        const coloredOperation = addColor(updatedOperation, "#A9C0E4");
-        finishedArray.push(coloredOperation); //add to finished
+        finishedArray.push(updatedOperation); //add to finished
         remainingArray = handleRemove(remainingArray, operation); //remove from remaining
         console.log(`Found a home for ${operation.title}`);
       } else {
@@ -130,11 +131,7 @@ export const calcGanttLogic = (array, equipment) => {
   }
 
   const error = remainingArray.length !== 0 || finishedArray.length === 0;
-  const initialIndex = array.findIndex((item) => item.predecessor.value === 0);
-  const message =
-    initialIndex >= 0
-      ? "Recursive Error: Could not find a solution"
-      : "Error: No inital operation";
+  const message = "Recursive Error: Could not find a solution";
 
   console.log(message);
   console.log("Finished Array ", finishedArray);
@@ -142,6 +139,61 @@ export const calcGanttLogic = (array, equipment) => {
     error: {
       error: error,
       message: message,
+      ids: remainingArray.map((a) => a.id), //Array of ids
+    },
+    array: sortArrayByStart(finishedArray),
+  };
+};
+
+export const calcEOCLogic = (equipment) => {
+  const array = equipment.flatMap((eq) => eq.operations);
+  let loopArray = [...array];
+  let remainingArray = [...array];
+  let finishedArray = [];
+  let count = 1;
+  while (remainingArray.length > 0 && count < remainingArray.length + 2) {
+    loopArray.map((operation, index) => {
+      console.log("remaining array:", remainingArray);
+      console.log("finished array:", finishedArray);
+      const predecessorId = operation.predecessor.value;
+      const predecessorObj = findPredecessor(
+        operation,
+        predecessorId,
+        finishedArray,
+        false,
+        []
+      );
+
+      console.log("Predecessor....", predecessorObj);
+
+      console.log(
+        `Round: ${count}, Test: ${index}... Test for ${operation.title}. Predessor ID: ${predecessorId}`
+      );
+
+      if (predecessorObj !== undefined) {
+        //found predecessor
+        const updatedOperation = calcStartAndEnd(operation, predecessorObj);
+        finishedArray.push(updatedOperation); //add to finished
+        remainingArray = handleRemove(remainingArray, operation); //remove from remaining
+        console.log(`Found a home for ${operation.title}`);
+      } else {
+        //predessor not found yet
+        console.log(`No predecessors yet for ${operation.title}`);
+      }
+    });
+    console.log(
+      `Completed cycle: ${count} with ${remainingArray.length} / ${loopArray.length} remaining`
+    );
+    loopArray = [...remainingArray];
+    count++;
+  }
+
+  const error = remainingArray.length !== 0 || finishedArray.length === 0;
+  console.log("Finished Array ", finishedArray);
+  return {
+    error: {
+      error: error,
+      message: "Recursive Error: Could not find a solution",
       ids: remainingArray.map((a) => a.id), //Array of ids
     },
     array: sortArrayByStart(finishedArray),

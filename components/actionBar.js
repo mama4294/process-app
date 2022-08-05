@@ -7,15 +7,22 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import Tooltip from "@mui/material/Tooltip";
+import CachedIcon from "@mui/icons-material/Cached";
 
 const ActionBar = ({ handleNew, handleEdit }) => {
-  const { selectionIds, deleteEquipment } = useContext(EquipmentContext);
+  const { selectionIds, deleteEquipment, solveEquipmentOccupancy } =
+    useContext(EquipmentContext);
 
   return (
     <div className={styles.actionBar}>
       <Tooltip title="Add Equipment">
         <IconButton onClick={handleNew}>
           <AddIcon color="action" />
+        </IconButton>
+      </Tooltip>
+      <Tooltip title="Recalculate schedule">
+        <IconButton onClick={solveEquipmentOccupancy}>
+          <CachedIcon color="action" />
         </IconButton>
       </Tooltip>
       {selectionIds.length === 1 && (

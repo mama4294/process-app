@@ -235,21 +235,26 @@ const EquipmentInputForm = ({ mode, handleClose }) => {
     setSelectedOperations(toggleAll(operations, checked));
   };
 
+  const addParentIdToOps = (operations, id) => {
+    return operations.map((obj) => ({ ...obj, parentId: id }));
+  };
+
   const handleSave = (mode) => {
     const { error, array } = solveGantt(operations);
     if (error.error) {
       setError({ error: true, ids: error.ids, message: error.message });
     } else {
-      const newEquipment = {
-        id: generateId(),
-        ...equipment,
-        operations: array,
-      };
-
       if (mode === "new") {
-        addEquipment(newEquipment);
+        addEquipment({
+          id: generateId(),
+          ...equipment,
+          operations: array,
+        });
       } else if (mode === "edit") {
-        updateEquipment(newEquipment);
+        updateEquipment({
+          ...equipment,
+          operations: array,
+        });
       }
       handleClose();
     }

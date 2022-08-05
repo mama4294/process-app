@@ -1,6 +1,6 @@
 import { useState, createContext } from "react";
 import { toggleSelection, deleteByIds } from "../utils/checkboxes";
-import { calcGanttLogic } from "../utils/ganttLogic";
+import { calcGanttLogic, calcEOCLogic } from "../utils/ganttLogic";
 
 const defaultResources = {
   steam: {
@@ -124,6 +124,11 @@ export const EquipmentContext = createContext({
 
 export const EquipmentProvider = ({ children }) => {
   const [equipment, setEquipment] = useState(defaultEquipmentData);
+  const [EOerror, setOEError] = useState({
+    error: false,
+    ids: [],
+    message: "",
+  });
   const [userResources, setUserResources] = useState(defaultResources);
   const [selectionIds, setSelectionIds] = useState([]);
 
@@ -141,7 +146,20 @@ export const EquipmentProvider = ({ children }) => {
   };
 
   const addEquipment = (newEquipment) => {
-    setEquipment([...equipment, newEquipment]);
+    const updatedEquip = addIdToOperations([...equipment, newEquipment]);
+    console.log("Updated Equipment after ID add", updateEquipment);
+    setEquipment(updatedEquip);
+  };
+
+  const addIdToOperations = (array) => {
+    const newArray = array.map((equip) => {
+      const newOps = equip.operations.map((op) => {
+        return { ...op, parentId: equip.id };
+      });
+      return { ...equip, operations: newOps };
+    });
+
+    return newArray;
   };
 
   const updateEquipment = (equipmentToUpdate) => {
@@ -151,7 +169,8 @@ export const EquipmentProvider = ({ children }) => {
       }
       return obj;
     });
-    setEquipment(newArr);
+    const updatedEquip = addIdToOperations(newArr);
+    setEquipment(updatedEquip);
   };
 
   const findSelectedEquipment = () => {
@@ -166,6 +185,29 @@ export const EquipmentProvider = ({ children }) => {
 
   const solveGantt = (array) => {
     return calcGanttLogic(array, equipment);
+  };
+
+  const findById = (array, id) => {
+    return array.find((item) => item.id === id);
+  };
+
+  const solveEquipmentOccupancy = () => {
+    const { error, array } = calcEOCLogic(equipment);
+    console.log("updated ops", array);
+
+    if (error.error) {
+      setOEError({ error: true, ids: error.ids, message: error.message });
+    } else {
+      setOEError({ error: false, ids: [], message: "" });
+      const newArray = equipment.map((equip) => {
+        const newOps = equip.operations.map((op) => {
+          return findById(array, op.id);
+        });
+        return { ...equip, operations: newOps };
+      });
+      console.log(newArray);
+      setEquipment(newArray);
+    }
   };
 
   const findAllEquipmentOpOptions = () => {
@@ -186,6 +228,7 @@ export const EquipmentProvider = ({ children }) => {
     <EquipmentContext.Provider
       value={{
         equipment,
+        EOerror,
         setEquipment,
         userResources,
         setUserResources,
@@ -198,6 +241,7 @@ export const EquipmentProvider = ({ children }) => {
         findEquipmentById,
         findAllEquipmentOpOptions,
         solveGantt,
+        solveEquipmentOccupancy,
       }}
     >
       {children}

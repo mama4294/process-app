@@ -1,6 +1,8 @@
 import styles from "../styles/GanttChart.module.css";
 import Checkbox from "@mui/material/Checkbox";
 import Tooltip from "@mui/material/Tooltip";
+import Alert from "@mui/material/Alert";
+import Stack from "@mui/material/Stack";
 import { useContext } from "react";
 import { EquipmentContext } from "../contexts/equipmentContext";
 
@@ -24,7 +26,10 @@ import { EquipmentContext } from "../contexts/equipmentContext";
 // Process Action
 
 const GanttChart = () => {
-  const { equipment } = useContext(EquipmentContext);
+  const { equipment, EOerror } = useContext(EquipmentContext);
+  const { error, message } = EOerror;
+  console.log("EOerror", EOerror);
+  console.log("equipment", equipment);
 
   const numColumns = Math.max.apply(
     Math,
@@ -36,6 +41,7 @@ const GanttChart = () => {
 
   return (
     <>
+      {error && <Notification message={message} />}
       <div className={styles.container}>
         <div className={styles.chart}>
           {/* <ChartHeader numColumns={numColumns}/> */}
@@ -44,6 +50,14 @@ const GanttChart = () => {
         </div>
       </div>
     </>
+  );
+};
+
+const Notification = ({ message }) => {
+  return (
+    <Stack sx={{ width: "100%" }} spacing={2}>
+      <Alert severity="error">{message}</Alert>
+    </Stack>
   );
 };
 
@@ -58,7 +72,8 @@ const ProcedureTable = ({ EquipmentData, numColumns }) => {
 };
 
 const UnitRow = ({ unit, numColumns }) => {
-  const { selectionIds, handleToggle } = useContext(EquipmentContext);
+  const { selectionIds, handleToggle, EOerror } = useContext(EquipmentContext);
+  const { ids: errorIds } = EOerror;
   let checked = selectionIds.some((item) => item.id === unit.id);
 
   const handleChange = () => {
@@ -75,11 +90,13 @@ const UnitRow = ({ unit, numColumns }) => {
         style={{ gridTemplateColumns: `repeat(${numColumns}, 1fr)` }}
       >
         {unit.operations.map((operation) => {
+          const isError = errorIds.includes(operation.id);
           return (
             <Operation
               key={operation.id}
               operation={operation}
               title={unit.title}
+              error={isError}
             />
           );
         })}
@@ -88,21 +105,21 @@ const UnitRow = ({ unit, numColumns }) => {
   );
 };
 
-const Operation = ({ operation }) => {
-  const { id, title, start, end, bgColor } = operation;
+const Operation = ({ operation, error }) => {
+  const { title, start, end } = operation;
+
+  const backgroundColor = error ? "red" : "#A9C0E4";
 
   const style = {
     color: "#red",
     gridColumn: `${start}/${end}`,
-    backgroundColor: bgColor,
+    backgroundColor: backgroundColor,
   };
 
   return (
     <li className={`${styles.listItem} ${styles.tooltip}`} style={style}>
       <Tooltip title={title} arrow>
-        <div className={styles.taskContainer}>
-          <span>{title}</span>
-        </div>
+        <div className={styles.taskContainer}>{/* <span>{title}</span> */}</div>
       </Tooltip>
     </li>
   );
