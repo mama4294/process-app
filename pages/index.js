@@ -1,4 +1,4 @@
-import Gantt from "../components/gantt";
+import EquipmentOccupancyChart from "../components/equipmentOccupancy";
 import ActionBar from "../components/actionBar";
 import Navbar from "../components/navbar";
 import EditEquipment from "../components/editEquipment";
@@ -13,7 +13,7 @@ export default function Home() {
     <>
       <Navbar />
       <ActionBar handleNew={handleOpenNew} handleEdit={handleOpenEdit} />
-      <Gantt />
+      <EquipmentOccupancyChart />
       {drawer.open && (
         <EditEquipment drawer={drawer} handleClose={handleClose} />
       )}

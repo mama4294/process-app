@@ -25,7 +25,7 @@ import { EquipmentContext } from "../contexts/equipmentContext";
 // Process Operation
 // Process Action
 
-const GanttChart = () => {
+const EquipmentOccupancyChart = () => {
   const { equipment, EOerror } = useContext(EquipmentContext);
   const { error, message } = EOerror;
   console.log("EOerror", EOerror);
@@ -164,4 +164,4 @@ const findLargestEndpoint = (array) => {
   return Math.max(...array.map((o) => o.end), 0);
 };
 
-export default GanttChart;
+export default EquipmentOccupancyChart;
