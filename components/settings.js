@@ -1,41 +1,100 @@
+import React, { useState } from "react";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
-import Modal from "@mui/material/Modal";
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
+import Drawer from "@mui/material/Drawer";
 import Divider from "@mui/material/Divider";
-
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 400,
-  bgcolor: "background.paper",
-  border: "2px solid #000",
-  boxShadow: 24,
-  p: 4,
-};
+import List from "@mui/material/List";
+import Typography from "@mui/material/Typography";
+import ListItem from "@mui/material/ListItem";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import InboxIcon from "@mui/icons-material/MoveToInbox";
+import MailIcon from "@mui/icons-material/Mail";
+import { blueGrey } from "@mui/material/colors";
+import { useWindowWide } from "../hooks/windowWidth";
 
 const Settings = ({ open, handleClose }) => {
+  const windowWidth = useWindowWide();
+  const drawerWidth =
+    windowWidth < 700 ? windowWidth * 0.95 : windowWidth * 0.8;
+  const sideBarWidth = windowWidth * 0.2;
   return (
     <div>
-      <Modal
+      <Drawer
+        anchor="left"
+        PaperProps={{
+          sx: {
+            width: drawerWidth,
+          },
+        }}
         open={open}
         onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
+        variant="temporary"
       >
-        <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h1">
-            Settings
-          </Typography>
-          <Divider />
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-          </Typography>
+        <Box sx={{ display: "flex" }}>
+          <AppBar position="static" sx={{ zIndex: 1201 }}>
+            <Toolbar>
+              <>
+                <IconButton onClick={handleClose}>
+                  <CloseIcon sx={{ color: blueGrey[50] }} />
+                </IconButton>
+                <h1>Settings</h1>
+              </>
+            </Toolbar>
+          </AppBar>
+          <Sidebar width={sideBarWidth} />
         </Box>
-      </Modal>
+      </Drawer>
     </div>
+  );
+};
+
+const Sidebar = ({ width }) => {
+  return (
+    <Drawer
+      variant="permanent"
+      sx={{
+        width: width,
+        flexShrink: 0,
+        [`& .MuiDrawer-paper`]: {
+          width: width,
+          boxSizing: "border-box",
+        },
+      }}
+    >
+      <Toolbar />
+      <Box sx={{ overflow: "auto" }}>
+        <List>
+          {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
+            <ListItem key={text} disablePadding>
+              <ListItemButton>
+                <ListItemIcon>
+                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                </ListItemIcon>
+                <ListItemText primary={text} />
+              </ListItemButton>
+            </ListItem>
+          ))}
+        </List>
+        <Divider />
+        <List>
+          {["All mail", "Trash", "Spam"].map((text, index) => (
+            <ListItem key={text} disablePadding>
+              <ListItemButton>
+                <ListItemIcon>
+                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                </ListItemIcon>
+                <ListItemText primary={text} />
+              </ListItemButton>
+            </ListItem>
+          ))}
+        </List>
+      </Box>
+    </Drawer>
   );
 };
 
