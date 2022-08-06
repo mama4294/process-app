@@ -168,7 +168,6 @@ export const EquipmentProvider = ({ children }) => {
 
   const addEquipment = (newEquipment) => {
     const updatedEquip = addIdToOperations([...equipment, newEquipment]);
-    console.log("Updated Equipment after ID add", updateEquipment);
     setEquipment(updatedEquip);
   };
 
@@ -199,6 +198,11 @@ export const EquipmentProvider = ({ children }) => {
     return equipment[index];
   };
 
+  const findSelectedEquipmentIndex = () => {
+    const index = equipment.findIndex((item) => item.id === selectionIds[0].id);
+    return index;
+  };
+
   const findEquipmentById = (id) => {
     const index = equipment.findIndex((item) => item.id === id);
     return equipment[index];
@@ -214,7 +218,6 @@ export const EquipmentProvider = ({ children }) => {
 
   const solveEquipmentOccupancy = () => {
     const { error, array } = calcEOCLogic(equipment);
-    console.log("updated ops", array);
 
     if (error.error) {
       setOEError({ error: true, ids: error.ids, message: error.message });
@@ -226,7 +229,6 @@ export const EquipmentProvider = ({ children }) => {
         });
         return { ...equip, operations: newOps };
       });
-      console.log(newArray);
       setEquipment(newArray);
     }
   };
@@ -243,6 +245,21 @@ export const EquipmentProvider = ({ children }) => {
       });
     });
     return newArray;
+  };
+
+  const moveUp = () => {
+    const index = findSelectedEquipmentIndex();
+    if (index === 0) return;
+    let newArr = [...equipment];
+    newArr.splice(index - 1, 0, newArr.splice(index, 1)[0]);
+    setEquipment(newArr);
+  };
+  const moveDown = () => {
+    const index = findSelectedEquipmentIndex();
+    if (index === equipment.length - 1) return;
+    let newArr = [...equipment];
+    newArr.splice(index + 1, 0, newArr.splice(index, 1)[0]);
+    setEquipment(newArr);
   };
 
   return (
@@ -264,6 +281,8 @@ export const EquipmentProvider = ({ children }) => {
         solveGantt,
         solveEquipmentOccupancy,
         saveEquipment,
+        moveUp,
+        moveDown,
       }}
     >
       {children}

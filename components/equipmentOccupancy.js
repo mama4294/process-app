@@ -28,8 +28,6 @@ import { EquipmentContext } from "../contexts/equipmentContext";
 const EquipmentOccupancyChart = () => {
   const { equipment, EOerror } = useContext(EquipmentContext);
   const { error, message } = EOerror;
-  console.log("EOerror", EOerror);
-  console.log("equipment", equipment);
 
   const numColumns = Math.max.apply(
     Math,
