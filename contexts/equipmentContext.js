@@ -1,4 +1,4 @@
-import { useState, createContext } from "react";
+import { useState, createContext, useEffect } from "react";
 import { toggleSelection, deleteByIds } from "../utils/checkboxes";
 import { calcGanttLogic, calcEOCLogic } from "../utils/ganttLogic";
 
@@ -123,7 +123,7 @@ export const EquipmentContext = createContext({
 });
 
 export const EquipmentProvider = ({ children }) => {
-  const [equipment, setEquipment] = useState(defaultEquipmentData);
+  const [equipment, setEquipment] = useState([]);
   const [EOerror, setOEError] = useState({
     error: false,
     ids: [],
@@ -131,6 +131,27 @@ export const EquipmentProvider = ({ children }) => {
   });
   const [userResources, setUserResources] = useState(defaultResources);
   const [selectionIds, setSelectionIds] = useState([]);
+
+  //Local storage functions
+
+  useEffect(() => {
+    const getLocalEquipment = () => {
+      const localdata = localStorage.getItem("equipment");
+      return localdata ? JSON.parse(localdata) : defaultEquipmentData;
+    };
+    setEquipment(getLocalEquipment());
+  }, []);
+
+  // useEffect(() => {
+  //   if (equipment) {
+  //     localStorage.setItem("equipment", JSON.stringify(equipment));
+  //     alert("Setting local data:...", JSON.stringify(equipment));
+  //   }
+  // }, [equipment]);
+
+  const saveEquipment = () => {
+    localStorage.setItem("equipment", JSON.stringify(equipment));
+  };
 
   //Selection state functions
 
@@ -242,6 +263,7 @@ export const EquipmentProvider = ({ children }) => {
         findAllEquipmentOpOptions,
         solveGantt,
         solveEquipmentOccupancy,
+        saveEquipment,
       }}
     >
       {children}

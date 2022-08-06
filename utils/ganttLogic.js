@@ -93,7 +93,7 @@ export const calcGanttLogic = (array, equipment) => {
   let finishedArray = [];
   const externalMap = equipment.flatMap((eq) => eq.operations);
   let count = 1;
-  while (remainingArray.length > 0 && count < remainingArray.length + 2) {
+  while (remainingArray.length > 0 && count < array.length + 2) {
     loopArray.map((operation, index) => {
       console.log("remaining array:", remainingArray);
       console.log("finished array:", finishedArray);
@@ -151,7 +151,7 @@ export const calcEOCLogic = (equipment) => {
   let remainingArray = [...array];
   let finishedArray = [];
   let count = 1;
-  while (remainingArray.length > 0 && count < remainingArray.length + 2) {
+  while (remainingArray.length > 0 && count < equipment.length + 2) {
     loopArray.map((operation, index) => {
       console.log("remaining array:", remainingArray);
       console.log("finished array:", finishedArray);
