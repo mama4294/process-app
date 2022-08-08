@@ -120,6 +120,7 @@ export const EquipmentContext = createContext({
   selectionIds: null,
   setSelectionIds: () => null,
   addEquipment: () => null,
+  findEquipmentDuration: () => null,
 });
 
 export const EquipmentProvider = ({ children }) => {
@@ -182,6 +183,10 @@ export const EquipmentProvider = ({ children }) => {
     return newArray;
   };
 
+  const getLongestOperation = (operations) => {
+    return Math.max(...operations.map((o) => o.duration));
+  };
+
   const updateEquipment = (equipmentToUpdate) => {
     const newArr = equipment.map((obj) => {
       if (obj.id === equipmentToUpdate.id) {
@@ -206,6 +211,14 @@ export const EquipmentProvider = ({ children }) => {
   const findEquipmentById = (id) => {
     const index = equipment.findIndex((item) => item.id === id);
     return equipment[index];
+  };
+
+  const findEquipmentDuration = (operations) => {
+    const start = operations[0].start;
+    const end = operations[operations.length - 1].end;
+    const duration = end - start;
+    alert(`start: ${start} end: ${end} duration: ${duration}`);
+    return duration;
   };
 
   const solveGantt = (array) => {
@@ -283,6 +296,7 @@ export const EquipmentProvider = ({ children }) => {
         saveEquipment,
         moveUp,
         moveDown,
+        findEquipmentDuration,
       }}
     >
       {children}

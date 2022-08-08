@@ -62,6 +62,7 @@ const EquipmentInputForm = ({ mode, handleClose }) => {
     findSelectedEquipment,
     findAllEquipmentOpOptions,
     solveGantt,
+    findEquipmentDuration,
   } = useContext(EquipmentContext);
   const equipmentToEdit = mode === "edit" ? findSelectedEquipment() : null;
   const [operations, setOperations] = useState(
@@ -75,92 +76,6 @@ const EquipmentInputForm = ({ mode, handleClose }) => {
     title: "",
     operations: [],
   };
-  const testOperations = [
-    {
-      id: "1",
-      title: "Fill",
-      start: 1,
-      end: 2,
-      bgColor: "#E5B8D0",
-      duration: "1",
-      durationUnit: { value: "hr", label: "hr" },
-      predecessor: { value: 0, label: "Initial" },
-      offset: 0,
-      offsetUnit: { value: "hr", label: "hr" },
-      type: { value: "SF", label: "Start-to-Finish" },
-      resources: [],
-    },
-    {
-      id: "2",
-      title: "Heat",
-      start: 3,
-      end: 4,
-      bgColor: "#A0C8C2",
-      duration: "1",
-      durationUnit: { value: "hr", label: "hr" },
-      predecessor: { value: 0, label: "Initial" },
-      offset: 0,
-      offsetUnit: { value: "hr", label: "hr" },
-      type: { value: "SF", label: "Start-to-Finish" },
-      resources: [],
-    },
-    {
-      id: "3",
-      title: "Cool",
-      start: 5,
-      end: 6,
-      bgColor: "#rgb(178,201,151)",
-      duration: "1",
-      durationUnit: { value: "hr", label: "hr" },
-      predecessor: { value: 0, label: "Initial" },
-      offset: 0,
-      offsetUnit: { value: "hr", label: "hr" },
-      type: { value: "SF", label: "Start-to-Finish" },
-      resources: [],
-    },
-    {
-      id: "4",
-      title: "Ferment",
-      start: 6,
-      end: 9,
-      bgColor: "#F5CF6B",
-      duration: "1",
-      durationUnit: { value: "hr", label: "hr" },
-      predecessor: { value: 0, label: "Initial" },
-      offset: 0,
-      offsetUnit: { value: "hr", label: "hr" },
-      type: { value: "SF", label: "Start-to-Finish" },
-      resources: [],
-    },
-    {
-      id: "5",
-      title: "Heat Treat",
-      start: 10,
-      end: 15,
-      bgColor: "blue",
-      duration: "1",
-      durationUnit: { value: "hr", label: "hr" },
-      predecessor: { value: 0, label: "Initial" },
-      offset: 0,
-      offsetUnit: { value: "hr", label: "hr" },
-      type: { value: "SF", label: "Start-to-Finish" },
-      resources: [],
-    },
-    {
-      id: "6",
-      title: "Transfer",
-      start: 16,
-      end: 150,
-      bgColor: "gray",
-      duration: "1",
-      durationUnit: { value: "hr", label: "hr" },
-      predecessor: { value: 0, label: "Initial" },
-      offset: 0,
-      offsetUnit: { value: "hr", label: "hr" },
-      type: { value: "SF", label: "Start-to-Finish" },
-      resources: [],
-    },
-  ];
 
   const defaultOperation = {
     id: generateId(),
@@ -240,16 +155,19 @@ const EquipmentInputForm = ({ mode, handleClose }) => {
     if (error.error) {
       setError({ error: true, ids: error.ids, message: error.message });
     } else {
+      const duration = findEquipmentDuration(array);
       if (mode === "new") {
         addEquipment({
           id: generateId(),
           ...equipment,
           operations: array,
+          duration: duration,
         });
       } else if (mode === "edit") {
         updateEquipment({
           ...equipment,
           operations: array,
+          duration: duration,
         });
       }
       handleClose();
