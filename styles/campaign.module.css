@@ -1,56 +1,17 @@
-.container {
-    max-width: 1200px;
-    min-width: 650px;
-    margin: 0 auto;   
-    padding: 10px 10px;  
-}
 
-.chart {
-    display: grid;
-    position: relative;
-    overflow: hidden;  
-    border-top: 2px solid #6E81AD;
-    border-radius: 2px;
-}
 .chartRow {  
   display: grid;      
-  grid-template-columns: 5ch 15ch 20ch;
+  grid-template-columns: 10ch 25ch 1fr;
   border-bottom: 1px solid #6E81AD;
   align-items: center;
 }
 
-.error{
-  background-color: #FDEDED;
-}
-
-.dropdownGroup{
-  display: 'flex';
-  align-items: 'center';
-  justify-content: 'space-between';
-}
-
-.dropdownBadge{
-    background-color: '#EBECF0';
-    border-radius: '2em';
-    color: '#172B4D';
-    display: 'inline-block';
-    font-size: 12;
-    font-weight: 'normal';
-    line-height: '1';
-    min-width: 1;
-    padding: '0.16666666666667em 0.5em';
-    text-align: 'center';
-}
-
-/* .chartRow:hover {
-  background-color: #c1d3ff;
-} */
 
 .tableHeaderValue{
   /* background-color: #6E81AD;
   color: #fff; */
   padding: 1rem 0;
-  text-align: left;
+  text-align: center;
 }
 
 .titleContainer{
@@ -61,19 +22,6 @@
 
 }
 
-.title{
-  font-weight: 500;
-    font-size: 1.25rem;
-    line-height: 1.6;
-}
-
-.pl8{
-  padding-left: 8px;
-}
-
-.headerRow{
-  font-weight: 500;
-}
 
 .chart-period {
   color:  #D9D9D6;

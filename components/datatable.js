@@ -5,31 +5,16 @@ import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import TextInput from "./inputs/textInput";
+import ClearIcon from "@mui/icons-material/Clear";
 import { TwitterPicker } from "react-color";
 
 import styles from "../styles/operations.module.css";
 import stylesCampaign from "../styles/campaign.module.css";
 
-const DataTable = ({
-  data,
-  headers,
-  handleEdit,
-  selection,
-  handleToggle,
-  handleToggleAll,
-  handleAdd,
-  handleDelete,
-}) => {
+const DataTable = ({ data, headers, handleEdit, handleAdd, handleDelete }) => {
   return (
     <>
-      <TableHeader
-        data={data}
-        headers={headers}
-        handleToggleAll={handleToggleAll}
-        selection={selection}
-        handleAdd={handleAdd}
-        handleDelete={handleDelete}
-      />
+      <TableHeader data={data} headers={headers} handleAdd={handleAdd} />
       {data.length > 0 &&
         data.map((object, index) => {
           return (
@@ -37,9 +22,8 @@ const DataTable = ({
               key={object.id}
               index={index}
               object={object}
-              selection={selection}
               handleEdit={handleEdit}
-              handleToggle={handleToggle}
+              handleDelete={handleDelete}
             />
           );
         })}
@@ -53,41 +37,24 @@ const DataTable = ({
   );
 };
 
-const TableHeader = ({
-  data,
-  headers,
-  handleToggleAll,
-  selection,
-  handleAdd,
-  handleDelete,
-}) => {
-  const handleChange = (event) => {
-    handleToggleAll(event.target.checked);
-  };
-  const label = { inputProps: { "aria-label": "selection" } };
+const TableHeader = ({ data, headers, handleAdd }) => {
   return (
     <>
       <div className={styles.titleContainer}>
         <div className={styles.title}>Batches</div>
 
-        {selection.length > 0 ? (
-          <IconButton onClick={handleDelete}>
-            <DeleteIcon color="action" />
-          </IconButton>
-        ) : (
-          <IconButton onClick={handleAdd}>
-            <AddIcon color="action" />
-          </IconButton>
-        )}
+        <IconButton onClick={handleAdd}>
+          <AddIcon color="action" />
+        </IconButton>
       </div>
       {data.length > 0 && (
         <div className={`${stylesCampaign.chartRow} ${styles.headerRow}`}>
-          <div>
+          {/* <div>
             <Checkbox {...label} onChange={handleChange} />
-          </div>
+          </div> */}
           {headers.map((header, index) => {
             return (
-              <div className={styles.tableHeaderValue} key={index}>
+              <div className={stylesCampaign.tableHeaderValue} key={index}>
                 {header}
               </div>
             );
@@ -98,39 +65,21 @@ const TableHeader = ({
   );
 };
 
-const TableRow = ({ object, handleEdit, selection, handleToggle, index }) => {
+const TableRow = ({ object, handleEdit, handleDelete, index }) => {
   const { id, color } = object;
   const [showColorPicker, setShowColorPicker] = useState(false);
 
-  const checked = selection.some((item) => item.id === id);
-
-  const handleChange = () => {
-    handleToggle(id);
-  };
-
-  const label = { inputProps: { "aria-label": "selection" } };
-  const style = {
-    color: "#red",
-    gridColumn: `2/4`,
-    backgroundColor: "#red",
-  };
-
-  //For autofocusing on the next row title input
-  const nameInput = useCallback((inputElement) => {
-    if (inputElement) {
-      inputElement.focus();
-    }
-  }, []);
-
   const handleColor = (event, id) => {
-    console.log(event);
     handleEdit(event, id);
     setShowColorPicker(false);
   };
 
+  const handleRemove = (id) => {
+    handleDelete(id);
+  };
+
   return (
     <div className={`${stylesCampaign.chartRow}`}>
-      <Checkbox {...label} checked={checked} onChange={handleChange} />
       <div className={styles.chartRowLabel}>
         <TextInput
           id="id"
@@ -142,6 +91,7 @@ const TableRow = ({ object, handleEdit, selection, handleToggle, index }) => {
           style={{ textAlign: "center" }}
         />
       </div>
+
       <div className={stylesCampaign.chartRowLabel}>
         <Button
           onClick={() => setShowColorPicker(true)}
@@ -153,7 +103,7 @@ const TableRow = ({ object, handleEdit, selection, handleToggle, index }) => {
           <div
             style={{
               background: color,
-              height: "100%",
+              height: "28px",
               width: "100%",
             }}
           />
@@ -181,6 +131,15 @@ const TableRow = ({ object, handleEdit, selection, handleToggle, index }) => {
             />
           </>
         )}
+      </div>
+      <div className={styles.chartRowLabel}>
+        <div style={{ display: "flex", justifyContent: "space-around" }}>
+          {index !== 0 && (
+            <IconButton onClick={() => handleRemove(id)}>
+              <DeleteIcon color="action" />
+            </IconButton>
+          )}
+        </div>
       </div>
     </div>
   );

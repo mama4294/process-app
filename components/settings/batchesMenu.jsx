@@ -7,9 +7,9 @@ import DataTable from "../datatable";
 
 export const BatchesMenu = () => {
 
-const {batches, selection, handleAdd, handleToggle, handleToggleAll, handleEdit, handleDelete} = useContext(CampaignContext);
+const {batches, handleAdd, handleEdit, handleDelete} = useContext(CampaignContext);
 const headers = [
-    "Batch Number",
+    "Number",
     "Color"
   ];
 
@@ -22,10 +22,7 @@ const headers = [
         <DataTable 
             headers={headers} 
             data={batches} 
-            selection={selection} 
             handleEdit={handleEdit} 
-            handleToggle={handleToggle} 
-            handleToggleAll={handleToggleAll} 
             handleAdd={handleAdd} 
             handleDelete={handleDelete}>
         </DataTable>

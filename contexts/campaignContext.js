@@ -1,22 +1,13 @@
 import { useState, createContext, useEffect } from "react";
 import { generateId } from "../utils/helperFunctions";
-import {
-  addToArray,
-  toggleSelection,
-  toggleAll,
-  deleteByIds,
-} from "../utils/arrayLogic";
+import { addToArray, deleteByIds } from "../utils/arrayLogic";
 
 export const CampaignContext = createContext({
   batches: null,
   setBatches: () => null,
-  selection: null,
-  setSelection: () => null,
   defaultBatch: null,
   handleAdd: () => null,
-  handleToggle: () => null,
   handleEdit: () => null,
-  handleToggleAll: () => null,
   handleDelete: () => null,
   saveBatches: () => null,
 });
@@ -38,7 +29,6 @@ export const CampaignProvider = ({ children }) => {
     return colors[Math.floor(Math.random() * colors.length)];
   };
   const [batches, setBatches] = useState([]);
-  const [selection, setSelection] = useState([]);
   const defaultBatch = { id: generateId(), color: getRandomColor() };
 
   useEffect(() => {
@@ -56,15 +46,9 @@ export const CampaignProvider = ({ children }) => {
   };
 
   const handleAdd = () => {
-    setBatches(addToArray(batches, defaultBatch));
-  };
-
-  const handleToggle = (id) => {
-    setSelection(toggleSelection(selection, id));
-  };
-
-  const handleToggleAll = (checked) => {
-    setSelection(toggleAll(selection, checked));
+    if (batches.length < 10) {
+      setBatches(addToArray(batches, defaultBatch));
+    }
   };
 
   const handleEdit = (event, batchId) => {
@@ -93,9 +77,10 @@ export const CampaignProvider = ({ children }) => {
     setBatches(newState);
   };
 
-  const handleDelete = () => {
-    setBatches(deleteByIds(batches, selection));
-    setSelection([]);
+  const handleDelete = (id) => {
+    if (batches.length > 1) {
+      setBatches(deleteByIds(batches, [{ id: id }]));
+    }
   };
 
   useEffect(() => {
@@ -107,13 +92,9 @@ export const CampaignProvider = ({ children }) => {
       value={{
         batches,
         setBatches,
-        selection,
-        setSelection,
         defaultBatch,
         handleAdd,
-        handleToggle,
         handleEdit,
-        handleToggleAll,
         handleDelete,
         saveBatches,
       }}
