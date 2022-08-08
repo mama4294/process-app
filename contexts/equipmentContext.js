@@ -1,5 +1,5 @@
 import { useState, createContext, useEffect } from "react";
-import { toggleSelection, deleteByIds } from "../utils/checkboxes";
+import { toggleSelection, deleteByIds } from "../utils/arrayLogic";
 import { calcGanttLogic, calcEOCLogic } from "../utils/ganttLogic";
 
 const defaultResources = {

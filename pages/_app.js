@@ -1,11 +1,14 @@
 import "../styles/globals.css";
 import { EquipmentProvider } from "../contexts/equipmentContext";
+import { CampaignProvider } from "../contexts/campaignContext";
 
 function MyApp({ Component, pageProps }) {
   return (
-    <EquipmentProvider>
-      <Component {...pageProps} />
-    </EquipmentProvider>
+    <CampaignProvider>
+      <EquipmentProvider>
+        <Component {...pageProps} />
+      </EquipmentProvider>
+    </CampaignProvider>
   );
 }
 

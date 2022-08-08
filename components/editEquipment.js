@@ -26,7 +26,7 @@ import {
   addToArray,
   deleteByIds,
   getArrayOptions,
-} from "../utils/checkboxes";
+} from "../utils/arrayLogic";
 import { generateId } from "../utils/helperFunctions";
 import { EquipmentContext } from "../contexts/equipmentContext";
 
@@ -233,10 +233,6 @@ const EquipmentInputForm = ({ mode, handleClose }) => {
 
   const handleToggleAll = (checked) => {
     setSelectedOperations(toggleAll(operations, checked));
-  };
-
-  const addParentIdToOps = (operations, id) => {
-    return operations.map((obj) => ({ ...obj, parentId: id }));
   };
 
   const handleSave = (mode) => {
