@@ -9,8 +9,7 @@ export const BatchesMenu = () => {
 
 const {batches, selection, handleAdd, handleToggle, handleToggleAll, handleEdit, handleDelete} = useContext(CampaignContext);
 const headers = [
-    "No",
-    "Batch Name",
+    "Batch Number",
     "Color"
   ];
 

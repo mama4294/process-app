@@ -1,4 +1,4 @@
-import { useState, createContext } from "react";
+import { useState, createContext, useEffect } from "react";
 import { generateId } from "../utils/helperFunctions";
 import {
   addToArray,
@@ -18,16 +18,42 @@ export const CampaignContext = createContext({
   handleEdit: () => null,
   handleToggleAll: () => null,
   handleDelete: () => null,
+  saveBatches: () => null,
 });
 
 export const CampaignProvider = ({ children }) => {
-  const [batches, setBatches] = useState([
-    { id: 1, title: "Batch 1", color: "red" },
-    { id: 2, title: "Batch 2", color: "blue" },
-  ]);
+  const getRandomColor = () => {
+    const colors = [
+      "#FF6900",
+      "#FCB900",
+      "#7BDCB5",
+      "#00D084",
+      "#8ED1FC",
+      "#0693E3",
+      "#ABB8C3",
+      "#EB144C",
+      "#F78DA7",
+      "#9900EF",
+    ];
+    return colors[Math.floor(Math.random() * colors.length)];
+  };
+  const [batches, setBatches] = useState([]);
   const [selection, setSelection] = useState([]);
+  const defaultBatch = { id: generateId(), color: getRandomColor() };
 
-  const defaultBatch = { id: generateId(), title: "", color: "blue" };
+  useEffect(() => {
+    const getLocalData = () => {
+      const localdata = localStorage.getItem("batches");
+      return localdata
+        ? JSON.parse(localdata)
+        : [{ id: 1, color: getRandomColor() }];
+    };
+    setBatches(getLocalData());
+  }, []);
+
+  const saveBatches = () => {
+    localStorage.setItem("batches", JSON.stringify(batches));
+  };
 
   const handleAdd = () => {
     setBatches(addToArray(batches, defaultBatch));
@@ -41,10 +67,20 @@ export const CampaignProvider = ({ children }) => {
     setSelection(toggleAll(selection, checked));
   };
 
-  const handleEdit = (batchId) => (event) => {
+  const handleEdit = (event, batchId) => {
     console.log("edit", batchId);
+    let id = null;
+    let value = null;
 
-    const { id, value } = event.target;
+    if (event.target !== undefined) {
+      id = event.target.id;
+      value = event.target.value;
+    } else if (event.hex !== undefined) {
+      id = "color";
+      value = event.hex;
+    } else {
+      throw new Error("Invalid event");
+    }
 
     const newState = batches.map((batch) => {
       if (batch.id === batchId) {
@@ -62,6 +98,10 @@ export const CampaignProvider = ({ children }) => {
     setSelection([]);
   };
 
+  useEffect(() => {
+    console.log(batches);
+  }, [batches]);
+
   return (
     <CampaignContext.Provider
       value={{
@@ -75,6 +115,7 @@ export const CampaignProvider = ({ children }) => {
         handleEdit,
         handleToggleAll,
         handleDelete,
+        saveBatches,
       }}
     >
       {children}

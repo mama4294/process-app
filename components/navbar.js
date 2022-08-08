@@ -7,12 +7,19 @@ import Button from "@mui/material/Button";
 import SettingsIcon from "@mui/icons-material/Settings";
 import Settings from "../components/settings";
 import { EquipmentContext } from "../contexts/equipmentContext";
+import { CampaignContext } from "../contexts/campaignContext";
 
 const Navbar = () => {
   const { saveEquipment } = useContext(EquipmentContext);
+  const { saveBatches } = useContext(CampaignContext);
   const [openSettings, setOpenSettings] = useState(false);
   const handleOpenSettings = () => setOpenSettings(true);
   const handleCloseSettings = () => setOpenSettings(false);
+
+  const handleSave = () => {
+    saveEquipment();
+    saveBatches();
+  };
 
   return (
     <>
@@ -31,7 +38,7 @@ const Navbar = () => {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Process
           </Typography>
-          <Button color="inherit" onClick={saveEquipment}>
+          <Button color="inherit" onClick={handleSave}>
             Save
           </Button>
         </Toolbar>

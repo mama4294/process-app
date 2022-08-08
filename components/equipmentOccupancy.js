@@ -5,6 +5,7 @@ import Alert from "@mui/material/Alert";
 import Stack from "@mui/material/Stack";
 import { useContext } from "react";
 import { EquipmentContext } from "../contexts/equipmentContext";
+import { CampaignContext } from "../contexts/campaignContext";
 
 //ISA 88 Terminology
 
@@ -71,12 +72,15 @@ const ProcedureTable = ({ EquipmentData, numColumns }) => {
 
 const UnitRow = ({ unit, numColumns }) => {
   const { selectionIds, handleToggle, EOerror } = useContext(EquipmentContext);
+  const { batches } = useContext(CampaignContext);
   const { ids: errorIds } = EOerror;
   let checked = selectionIds.some((item) => item.id === unit.id);
 
   const handleChange = () => {
     handleToggle(unit.id);
   };
+
+  const color = batches[0] !== undefined ? batches[0].color : "#A9C0E4";
 
   const label = { inputProps: { "aria-label": "selection" } };
   return (
@@ -93,8 +97,8 @@ const UnitRow = ({ unit, numColumns }) => {
             <Operation
               key={operation.id}
               operation={operation}
-              title={unit.title}
               error={isError}
+              color={color}
             />
           );
         })}
@@ -103,10 +107,10 @@ const UnitRow = ({ unit, numColumns }) => {
   );
 };
 
-const Operation = ({ operation, error }) => {
+const Operation = ({ operation, error, color }) => {
   const { title, start, end } = operation;
 
-  const backgroundColor = error ? "red" : "#A9C0E4";
+  const backgroundColor = error ? "red" : color;
 
   const style = {
     color: "#red",
@@ -122,41 +126,6 @@ const Operation = ({ operation, error }) => {
     </li>
   );
 };
-
-// const ChartLines = ({ numColumns }) => {
-//   var rows = [],
-//     i = 0,
-//     len = numColumns;
-//   while (++i <= len) rows.push(i);
-//   return (
-//     <div
-//       className={(styles.chartRow, styles.chartLines)}
-//       style={{ gridTemplateColumns: `50px repeat(${numColumns}, 1fr)` }}
-//     >
-//       {rows.map((column, index) => {
-//         return <span key={index}></span>;
-//       })}
-//     </div>
-//   );
-// };
-
-// const ChartHeader = ({ numColumns }) => {
-//   var rows = [],
-//     i = 0,
-//     len = numColumns;
-//   while (++i <= len) rows.push(i);
-//   return (
-//     <div
-//       className="chart-row chart-period"
-//       style={{ gridTemplateColumns: `50px repeat(${numColumns}, 1fr)` }}
-//     >
-//       <div className="chart-row-item"></div>
-//       {rows.map((column, index) => {
-//         return <span key={index}>{index + 1}</span>;
-//       })}
-//     </div>
-//   );
-// };
 
 const findLargestEndpoint = (array) => {
   return Math.max(...array.map((o) => o.end), 0);

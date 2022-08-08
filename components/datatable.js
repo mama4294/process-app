@@ -1,10 +1,11 @@
-import React, { useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import Button from "@mui/material/Button";
 import Checkbox from "@mui/material/Checkbox";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import TextInput from "./inputs/textInput";
+import { TwitterPicker } from "react-color";
 
 import styles from "../styles/operations.module.css";
 import stylesCampaign from "../styles/campaign.module.css";
@@ -98,13 +99,15 @@ const TableHeader = ({
 };
 
 const TableRow = ({ object, handleEdit, selection, handleToggle, index }) => {
-  const { title, id, color } = object;
+  const { id, color } = object;
+  const [showColorPicker, setShowColorPicker] = useState(false);
 
   const checked = selection.some((item) => item.id === id);
 
   const handleChange = () => {
     handleToggle(id);
   };
+
   const label = { inputProps: { "aria-label": "selection" } };
   const style = {
     color: "#red",
@@ -119,6 +122,12 @@ const TableRow = ({ object, handleEdit, selection, handleToggle, index }) => {
     }
   }, []);
 
+  const handleColor = (event, id) => {
+    console.log(event);
+    handleEdit(event, id);
+    setShowColorPicker(false);
+  };
+
   return (
     <div className={`${stylesCampaign.chartRow}`}>
       <Checkbox {...label} checked={checked} onChange={handleChange} />
@@ -129,27 +138,49 @@ const TableRow = ({ object, handleEdit, selection, handleToggle, index }) => {
           disabled
           type="text"
           placeholder="Name"
-          onChange={handleEdit(id)}
+          onChange={(event) => handleEdit(event, id)}
+          style={{ textAlign: "center" }}
         />
       </div>
-      <div className={styles.chartRowLabel}>
-        <TextInput
-          id="title"
-          value={title}
-          type="text"
-          placeholder="Name"
-          onChange={handleEdit(id)}
-          ref={nameInput}
-        />
-      </div>
-      <div className={styles.chartRowLabel}>
-        <TextInput
-          id="color"
-          value={color}
-          type="text"
-          placeholder="Color"
-          onChange={handleEdit(id)}
-        />
+      <div className={stylesCampaign.chartRowLabel}>
+        <Button
+          onClick={() => setShowColorPicker(true)}
+          sx={{
+            height: "100%",
+            width: "100%",
+          }}
+        >
+          <div
+            style={{
+              background: color,
+              height: "100%",
+              width: "100%",
+            }}
+          />
+        </Button>
+
+        {showColorPicker && (
+          <>
+            <div style={{ position: "absolute", zIndex: 1203 }}>
+              <TwitterPicker
+                id="color"
+                color={color}
+                onChange={(event) => handleColor(event, id)}
+              />
+            </div>
+            <div
+              onClick={() => setShowColorPicker(false)}
+              style={{
+                position: "fixed",
+                top: "0px",
+                right: "0px",
+                bottom: "0px",
+                left: "0px",
+                zIndex: 1202,
+              }}
+            />
+          </>
+        )}
       </div>
     </div>
   );
