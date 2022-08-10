@@ -356,7 +356,6 @@ const OperationRow = ({
 
   const checked = selectedOperations.some((item) => item.id === id);
   const isError = error.ids.includes(id);
-  console.log(id, isError);
   const internalOptions = [
     { value: 0, label: "Initial", external: false },
     ...getArrayOptions(operations, id),
@@ -385,7 +384,6 @@ const OperationRow = ({
 
   //For autofocusing on the next row title input
   const nameInput = useCallback((inputElement) => {
-    console.log("nameInput", inputElement);
     if (inputElement) {
       inputElement.focus();
     }

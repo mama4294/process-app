@@ -137,8 +137,8 @@
   min-height: 15px;
   color: #fff;
   cursor: pointer;
-
 }
+
 
 .taskContainer{
   display: flex;
@@ -146,6 +146,8 @@
   align-items: center;
   height: 100%;
 }
+
+
 
 .tooltip {
     position: relative;

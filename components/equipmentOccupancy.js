@@ -30,22 +30,12 @@ const EquipmentOccupancyChart = () => {
   const { equipment, EOerror } = useContext(EquipmentContext);
   const { error, message } = EOerror;
 
-  const numColumns = Math.max.apply(
-    Math,
-    equipment.map(function (row) {
-      const max = findLargestEndpoint(row.operations);
-      return max;
-    })
-  );
-
   return (
     <>
       {error && <Notification message={message} />}
       <div className={styles.container}>
         <div className={styles.chart}>
-          {/* <ChartHeader numColumns={numColumns}/> */}
-          {/* <ChartLines numColumns={numColumns}/> */}
-          <ProcedureTable EquipmentData={equipment} numColumns={numColumns} />
+          <ProcedureTable EquipmentData={equipment} />
         </div>
       </div>
     </>
@@ -60,27 +50,42 @@ const Notification = ({ message }) => {
   );
 };
 
-const ProcedureTable = ({ EquipmentData, numColumns }) => {
+const ProcedureTable = ({ EquipmentData }) => {
   return (
     <>
       {EquipmentData.map((unit) => {
-        return <UnitRow unit={unit} key={unit.id} numColumns={numColumns} />;
+        return <UnitRow unit={unit} key={unit.id} />;
       })}
     </>
   );
 };
 
-const UnitRow = ({ unit, numColumns }) => {
-  const { selectionIds, handleToggle, EOerror } = useContext(EquipmentContext);
+const UnitRow = ({ unit }) => {
+  const { selectionIds, handleToggle, EOerror, calcCycleTime } =
+    useContext(EquipmentContext);
   const { batches } = useContext(CampaignContext);
   const { ids: errorIds } = EOerror;
+  const bottleneck = calcCycleTime();
+  const cycleTime = bottleneck.duration;
+  const offsetTime = Math.abs(
+    bottleneck.operations[0] ? bottleneck.operations[0].start : 0
+  );
+  const numColumns = cycleTime * batches.length + offsetTime;
+  console.log(
+    "numcols",
+    numColumns,
+    "numBatches",
+    batches.length,
+    "cycleTime",
+    cycleTime * batches.length,
+    "start:",
+    offsetTime
+  );
   let checked = selectionIds.some((item) => item.id === unit.id);
 
   const handleChange = () => {
     handleToggle(unit.id);
   };
-
-  const color = batches[0] !== undefined ? batches[0].color : "#A9C0E4";
 
   const label = { inputProps: { "aria-label": "selection" } };
   return (
@@ -91,37 +96,46 @@ const UnitRow = ({ unit, numColumns }) => {
         className={styles.chartRowBars}
         style={{ gridTemplateColumns: `repeat(${numColumns}, 1fr)` }}
       >
-        {unit.operations.map((operation) => {
-          const isError = errorIds.includes(operation.id);
-          return (
-            <Operation
-              key={operation.id}
-              operation={operation}
-              error={isError}
-              color={color}
-            />
-          );
+        {batches.map((batch, index) => {
+          const color = batch.color !== undefined ? batch.color : "#A9C0E4";
+          return unit.operations.map((operation) => {
+            const isError = errorIds.includes(operation.id);
+            return (
+              <Operation
+                key={operation.id}
+                operation={operation}
+                error={isError}
+                color={color}
+                batchIndex={index}
+                cycleTime={cycleTime}
+              />
+            );
+          });
         })}
       </ul>
     </div>
   );
 };
 
-const Operation = ({ operation, error, color }) => {
+const Operation = ({ operation, error, color, batchIndex, cycleTime }) => {
   const { title, start, end } = operation;
 
   const backgroundColor = error ? "red" : color;
+  const batchOffset = batchIndex * cycleTime;
 
   const style = {
     color: "#red",
-    gridColumn: `${start}/${end}`,
+    gridColumn: `${start + batchOffset}/${end + batchOffset}`,
     backgroundColor: backgroundColor,
   };
 
   return (
     <li className={`${styles.listItem} ${styles.tooltip}`} style={style}>
-      <Tooltip title={title} arrow>
-        <div className={styles.taskContainer}>{/* <span>{title}</span> */}</div>
+      <Tooltip
+        title={`Batch: ${batchIndex + 1}, Operation: ${title}, Start: ${start}`}
+        arrow
+      >
+        <div className={styles.taskContainer}></div>
       </Tooltip>
     </li>
   );

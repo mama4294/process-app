@@ -143,13 +143,6 @@ export const EquipmentProvider = ({ children }) => {
     setEquipment(getLocalEquipment());
   }, []);
 
-  // useEffect(() => {
-  //   if (equipment) {
-  //     localStorage.setItem("equipment", JSON.stringify(equipment));
-  //     alert("Setting local data:...", JSON.stringify(equipment));
-  //   }
-  // }, [equipment]);
-
   const saveEquipment = () => {
     localStorage.setItem("equipment", JSON.stringify(equipment));
   };
@@ -183,8 +176,18 @@ export const EquipmentProvider = ({ children }) => {
     return newArray;
   };
 
-  const getLongestOperation = (operations) => {
-    return Math.max(...operations.map((o) => o.duration));
+  const getLongestEquipmentDuration = (equipment) => {
+    if (equipment.length === 0) return { duration: 0 };
+    // return Math.max(...equipment.map((obj) => obj.duration));
+    let longestEquip = equipment.reduce((max, obj) =>
+      max.duration > obj.duration ? max : obj
+    );
+    console.log("Longest Equip", longestEquip);
+    return longestEquip;
+  };
+
+  const calcCycleTime = () => {
+    return getLongestEquipmentDuration(equipment);
   };
 
   const updateEquipment = (equipmentToUpdate) => {
@@ -217,7 +220,6 @@ export const EquipmentProvider = ({ children }) => {
     const start = operations[0].start;
     const end = operations[operations.length - 1].end;
     const duration = end - start;
-    alert(`start: ${start} end: ${end} duration: ${duration}`);
     return duration;
   };
 
@@ -297,6 +299,7 @@ export const EquipmentProvider = ({ children }) => {
         moveUp,
         moveDown,
         findEquipmentDuration,
+        calcCycleTime,
       }}
     >
       {children}
