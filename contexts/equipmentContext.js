@@ -121,6 +121,7 @@ export const EquipmentContext = createContext({
   setSelectionIds: () => null,
   addEquipment: () => null,
   findEquipmentDuration: () => null,
+  getMinEquipmentTime: () => null,
 });
 
 export const EquipmentProvider = ({ children }) => {
@@ -231,6 +232,10 @@ export const EquipmentProvider = ({ children }) => {
     return array.find((item) => item.id === id);
   };
 
+  const getMinEquipmentTime = () => {
+    return Math.min(...equipment.map((obj) => obj.operations[0].start));
+  };
+
   const solveEquipmentOccupancy = () => {
     const { error, array } = calcEOCLogic(equipment);
 
@@ -300,6 +305,7 @@ export const EquipmentProvider = ({ children }) => {
         moveDown,
         findEquipmentDuration,
         calcCycleTime,
+        getMinEquipmentTime,
       }}
     >
       {children}

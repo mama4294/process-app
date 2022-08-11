@@ -61,8 +61,13 @@ const ProcedureTable = ({ EquipmentData }) => {
 };
 
 const UnitRow = ({ unit }) => {
-  const { selectionIds, handleToggle, EOerror, calcCycleTime } =
-    useContext(EquipmentContext);
+  const {
+    selectionIds,
+    handleToggle,
+    EOerror,
+    calcCycleTime,
+    getMinEquipmentTime,
+  } = useContext(EquipmentContext);
   const { batches } = useContext(CampaignContext);
   const { ids: errorIds } = EOerror;
   const bottleneck = calcCycleTime();
@@ -70,6 +75,8 @@ const UnitRow = ({ unit }) => {
   const offsetTime = Math.abs(
     bottleneck.operations[0] ? bottleneck.operations[0].start : 0
   );
+  const minOperation = getMinEquipmentTime();
+  const negativeCorrection = minOperation <= 0 ? Math.abs(minOperation) + 1 : 0;
   const numColumns = cycleTime * batches.length + offsetTime;
   console.log(
     "numcols",
@@ -79,7 +86,9 @@ const UnitRow = ({ unit }) => {
     "cycleTime",
     cycleTime * batches.length,
     "start:",
-    offsetTime
+    offsetTime,
+    "negativeCorrection: ",
+    negativeCorrection
   );
   let checked = selectionIds.some((item) => item.id === unit.id);
 
@@ -108,6 +117,7 @@ const UnitRow = ({ unit }) => {
                 color={color}
                 batchIndex={index}
                 cycleTime={cycleTime}
+                negativeCorrection={negativeCorrection}
               />
             );
           });
@@ -117,7 +127,14 @@ const UnitRow = ({ unit }) => {
   );
 };
 
-const Operation = ({ operation, error, color, batchIndex, cycleTime }) => {
+const Operation = ({
+  operation,
+  error,
+  color,
+  batchIndex,
+  cycleTime,
+  negativeCorrection,
+}) => {
   const { title, start, end } = operation;
 
   const backgroundColor = error ? "red" : color;
@@ -125,7 +142,9 @@ const Operation = ({ operation, error, color, batchIndex, cycleTime }) => {
 
   const style = {
     color: "#red",
-    gridColumn: `${start + batchOffset}/${end + batchOffset}`,
+    gridColumn: `${start + batchOffset + negativeCorrection}/${
+      end + batchOffset + negativeCorrection
+    }`,
     backgroundColor: backgroundColor,
   };
 
