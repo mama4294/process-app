@@ -1,4 +1,4 @@
-import styles from "../styles/GanttChart.module.css";
+import styles from "../styles/EOchart.module.css";
 import Checkbox from "@mui/material/Checkbox";
 import Tooltip from "@mui/material/Tooltip";
 import Alert from "@mui/material/Alert";
@@ -78,18 +78,7 @@ const UnitRow = ({ unit }) => {
   const minOperation = getMinEquipmentTime();
   const negativeCorrection = minOperation <= 0 ? Math.abs(minOperation) + 1 : 0;
   const numColumns = cycleTime * batches.length + offsetTime;
-  console.log(
-    "numcols",
-    numColumns,
-    "numBatches",
-    batches.length,
-    "cycleTime",
-    cycleTime * batches.length,
-    "start:",
-    offsetTime,
-    "negativeCorrection: ",
-    negativeCorrection
-  );
+
   let checked = selectionIds.some((item) => item.id === unit.id);
 
   const handleChange = () => {
@@ -150,10 +139,7 @@ const Operation = ({
 
   return (
     <li className={`${styles.listItem} ${styles.tooltip}`} style={style}>
-      <Tooltip
-        title={`Batch: ${batchIndex + 1}, Operation: ${title}, Start: ${start}`}
-        arrow
-      >
+      <Tooltip title={`Batch: ${batchIndex + 1}, Operation: ${title}`} arrow>
         <div className={styles.taskContainer}></div>
       </Tooltip>
     </li>

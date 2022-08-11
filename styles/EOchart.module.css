@@ -70,14 +70,22 @@
   min-height: 15px;
   color: #fff;
   cursor: pointer;
-
+  border: 1px solid;
 }
+
 
 .taskContainer{
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100%;
+  border: 1px solid;
+}
+
+
+.taskContainer:hover {
+  background-color: inherit;
+  filter: brightness(95%);
 }
 
 .tooltip {
