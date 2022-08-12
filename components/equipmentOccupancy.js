@@ -71,6 +71,7 @@ const UnitRow = ({ unit }) => {
     getMinEquipmentTime,
     moveUp,
     moveDown,
+    duplicate,
     deleteEquipment,
     openFormEdit,
   } = useContext(EquipmentContext);
@@ -107,6 +108,10 @@ const UnitRow = ({ unit }) => {
     setAnchorEl(null);
   };
 
+  const handleDuplicate = () => {
+    duplicate(unit.id);
+  };
+
   const handleDelete = () => {
     deleteEquipment(unit.id);
     setAnchorEl(null);
@@ -139,6 +144,7 @@ const UnitRow = ({ unit }) => {
           handleMoveDown={handleMoveDown}
           handleEdit={handleEdit}
           handleDelete={handleDelete}
+          handleDuplicate={handleDuplicate}
           anchorEl={anchorEl}
         />
       ) : (

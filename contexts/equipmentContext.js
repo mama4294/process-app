@@ -1,6 +1,7 @@
 import { useState, createContext, useEffect } from "react";
 import { toggleSelection, deleteByIds, deleteById } from "../utils/arrayLogic";
 import { calcGanttLogic, calcEOCLogic } from "../utils/ganttLogic";
+import { generateId } from "../utils/helperFunctions";
 
 const defaultResources = {
   steam: {
@@ -123,6 +124,7 @@ export const EquipmentContext = createContext({
   addEquipment: () => null,
   findEquipmentDuration: () => null,
   getMinEquipmentTime: () => null,
+  duplicate: () => null,
   drawer: null,
   setDrawer: () => null,
   openFormNew: () => null,
@@ -163,12 +165,6 @@ export const EquipmentProvider = ({ children }) => {
     localStorage.setItem("equipment", JSON.stringify(equipment));
   };
 
-  //Selection state functions
-
-  // const handleToggle = (id) => {
-  //   setSelectionIds(toggleSelection(selectionIds, id));
-  // };
-
   //Equipment state functions
 
   const deleteEquipment = (id) => {
@@ -199,7 +195,7 @@ export const EquipmentProvider = ({ children }) => {
     let longestEquip = equipment.reduce((max, obj) =>
       max.duration > obj.duration ? max : obj
     );
-    console.log("Longest Equip", longestEquip);
+    // console.log("Longest Equip", longestEquip);
     return longestEquip;
   };
 
@@ -226,6 +222,11 @@ export const EquipmentProvider = ({ children }) => {
   const findEquipmentById = (id) => {
     const index = equipment.findIndex((item) => item.id === id);
     return equipment[index];
+  };
+
+  const findEquipmentIndexById = (id) => {
+    const index = equipment.findIndex((item) => item.id === id);
+    return index;
   };
 
   const findEquipmentDuration = (operations) => {
@@ -278,16 +279,34 @@ export const EquipmentProvider = ({ children }) => {
     return newArray;
   };
 
+  const duplicate = (id) => {
+    const copy = findEquipmentById(id);
+    const updatedCopy = generateNewIds(copy);
+    addEquipment({ ...updatedCopy, title: copy.title + "(Copy)" });
+  };
+
+  const generateNewIds = (equipment) => {
+    const operations = equipment.operations;
+    const newOperations = operations.map((op) => {
+      return { ...op, id: generateId() };
+    });
+    const updatedEquip = {
+      ...equipment,
+      id: generateId(),
+      operations: newOperations,
+    };
+    return updatedEquip;
+  };
+
   const moveUp = (id) => {
-    const index = findEquipmentById(id);
-    console.log("Find id", index);
+    const index = findEquipmentIndexById(id);
     if (index === 0) return;
     let newArr = [...equipment];
     newArr.splice(index - 1, 0, newArr.splice(index, 1)[0]);
     setEquipment(newArr);
   };
   const moveDown = (id) => {
-    const index = findEquipmentById(id);
+    const index = findEquipmentIndexById(id);
     if (index === equipment.length - 1) return;
     let newArr = [...equipment];
     newArr.splice(index + 1, 0, newArr.splice(index, 1)[0]);
@@ -314,6 +333,7 @@ export const EquipmentProvider = ({ children }) => {
         saveEquipment,
         moveUp,
         moveDown,
+        duplicate,
         findEquipmentDuration,
         calcCycleTime,
         getMinEquipmentTime,

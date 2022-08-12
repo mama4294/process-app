@@ -9,6 +9,7 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import MenuList from "@mui/material/MenuList";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 
 const ActionMenu = ({
   open,
@@ -18,6 +19,7 @@ const ActionMenu = ({
   handleMoveUp,
   handleMoveDown,
   handleEdit,
+  handleDuplicate,
   handleDelete,
 }) => {
   return (
@@ -67,6 +69,12 @@ const ActionMenu = ({
             </ListItemIcon>
             <ListItemText>Edit</ListItemText>
           </MenuItem>
+          {/* <MenuItem onClick={handleDuplicate}>
+            <ListItemIcon>
+              <ContentCopyIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>Duplicate</ListItemText>
+          </MenuItem> */}
           <MenuItem onClick={handleDelete}>
             <ListItemIcon>
               <DeleteIcon fontSize="small" />
