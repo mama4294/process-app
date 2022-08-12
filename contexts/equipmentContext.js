@@ -207,8 +207,8 @@ export const EquipmentProvider = ({ children }) => {
     return equipment[index];
   };
 
-  const findSelectedEquipmentIndex = () => {
-    const index = equipment.findIndex((item) => item.id === selectionIds[0].id);
+  const findSelectedEquipmentIndex = (id) => {
+    const index = equipment.findIndex((item) => item.id === id);
     return index;
   };
 
@@ -267,15 +267,16 @@ export const EquipmentProvider = ({ children }) => {
     return newArray;
   };
 
-  const moveUp = () => {
-    const index = findSelectedEquipmentIndex();
+  const moveUp = (id) => {
+    const index = findSelectedEquipmentIndex(id);
+    console.log("Find id", index);
     if (index === 0) return;
     let newArr = [...equipment];
     newArr.splice(index - 1, 0, newArr.splice(index, 1)[0]);
     setEquipment(newArr);
   };
-  const moveDown = () => {
-    const index = findSelectedEquipmentIndex();
+  const moveDown = (id) => {
+    const index = findSelectedEquipmentIndex(id);
     if (index === equipment.length - 1) return;
     let newArr = [...equipment];
     newArr.splice(index + 1, 0, newArr.splice(index, 1)[0]);

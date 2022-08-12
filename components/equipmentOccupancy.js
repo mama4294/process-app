@@ -1,8 +1,9 @@
+import React, { useState, useEffect } from "react";
 import styles from "../styles/EOchart.module.css";
-import Checkbox from "@mui/material/Checkbox";
 import Tooltip from "@mui/material/Tooltip";
 import Alert from "@mui/material/Alert";
 import Stack from "@mui/material/Stack";
+import ActionMenu from "./actionMenu";
 import { useContext } from "react";
 import { EquipmentContext } from "../contexts/equipmentContext";
 import { CampaignContext } from "../contexts/campaignContext";
@@ -86,9 +87,32 @@ const UnitRow = ({ unit }) => {
   };
 
   const label = { inputProps: { "aria-label": "selection" } };
+
+  const options = ["None", "Atria", "Callisto", "Pyxis"];
+
+  const [anchorEl, setAnchorEl] = useState(null);
+  const actionMenuOpen = Boolean(anchorEl);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleCloseActionMenu = () => {
+    setAnchorEl(null);
+  };
+
+  useEffect(() => {
+    console.log("anchorEl", anchorEl);
+  }, [anchorEl]);
+
   return (
     <div className={styles.chartRow}>
-      <Checkbox checked={checked} onChange={handleChange} {...label} />
+      {/* <Checkbox checked={checked} onChange={handleChange} {...label} /> */}
+      <ActionMenu
+        open={actionMenuOpen}
+        handleClick={handleClick}
+        handleClose={handleCloseActionMenu}
+        anchorEl={anchorEl}
+      />
       <div className={styles.chartRowLabel}>{unit.title}</div>
       <ul
         className={styles.chartRowBars}
@@ -129,18 +153,24 @@ const Operation = ({
   const backgroundColor = error ? "red" : color;
   const batchOffset = batchIndex * cycleTime;
 
-  const style = {
+  const listItemStyle = {
     color: "#red",
     gridColumn: `${start + batchOffset + negativeCorrection}/${
       end + batchOffset + negativeCorrection
     }`,
+  };
+
+  const operationStyle = {
     backgroundColor: backgroundColor,
   };
 
   return (
-    <li className={`${styles.listItem} ${styles.tooltip}`} style={style}>
+    <li
+      className={`${styles.listItem} ${styles.tooltip}`}
+      style={listItemStyle}
+    >
       <Tooltip title={`Batch: ${batchIndex + 1}, Operation: ${title}`} arrow>
-        <div className={styles.taskContainer}></div>
+        <div className={styles.taskContainer} style={operationStyle}></div>
       </Tooltip>
     </li>
   );
