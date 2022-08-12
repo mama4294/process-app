@@ -20,6 +20,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import { blueGrey } from "@mui/material/colors";
 import { useWindowWide } from "../hooks/windowWidth";
 import { BatchesMenu } from "./settings/batchesMenu";
+import { ResourcesMenu } from "./settings/resourcesMenu";
 
 const Settings = ({ open, handleClose }) => {
   const menuItems = [
@@ -46,7 +47,7 @@ const Settings = ({ open, handleClose }) => {
         onClose={handleClose}
         variant="temporary"
       >
-        <Box sx={{ display: "flex" }}>
+        <Box sx={{ display: "flex", heigh: "100%" }}>
           <AppBar
             position="fixed"
             sx={{ zIndex: 1201, width: drawerWidth, left: 0 }}
@@ -127,10 +128,6 @@ const Sidebar = ({ menuItems, width, setSelectedMenu }) => {
       </Box>
     </Drawer>
   );
-};
-
-const ResourcesMenu = () => {
-  return <h6>Resources</h6>;
 };
 
 const ProfileMenu = () => {
