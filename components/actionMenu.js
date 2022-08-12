@@ -17,6 +17,7 @@ const ActionMenu = ({
   handleClose,
   handleMoveUp,
   handleMoveDown,
+  handleEdit,
   handleDelete,
 }) => {
   return (
@@ -60,7 +61,7 @@ const ActionMenu = ({
             </ListItemIcon>
             <ListItemText>Move Down</ListItemText>
           </MenuItem>
-          <MenuItem onClick={handleClose}>
+          <MenuItem onClick={handleEdit}>
             <ListItemIcon>
               <EditIcon fontSize="small" />
             </ListItemIcon>

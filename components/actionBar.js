@@ -32,34 +32,6 @@ const ActionBar = ({ handleNew, handleEdit }) => {
           <CachedIcon color="action" />
         </IconButton>
       </Tooltip>
-      {selectionIds.length === 1 && (
-        <Tooltip title="Move Up">
-          <IconButton onClick={moveUp}>
-            <ArrowUpwardIcon color="action" />
-          </IconButton>
-        </Tooltip>
-      )}
-      {selectionIds.length === 1 && (
-        <Tooltip title="Move Down">
-          <IconButton onClick={moveDown}>
-            <ArrowDownwardIcon color="action" />
-          </IconButton>
-        </Tooltip>
-      )}
-      {selectionIds.length === 1 && (
-        <Tooltip title="Edit">
-          <IconButton onClick={handleEdit}>
-            <EditIcon color="action" />
-          </IconButton>
-        </Tooltip>
-      )}
-      {selectionIds.length > 0 && (
-        <Tooltip title="Delete">
-          <IconButton onClick={deleteEquipment}>
-            <DeleteIcon color="action" />
-          </IconButton>
-        </Tooltip>
-      )}
     </div>
   );
 };

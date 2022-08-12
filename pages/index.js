@@ -2,21 +2,17 @@ import EquipmentOccupancyChart from "../components/equipmentOccupancy";
 import ActionBar from "../components/actionBar";
 import Navbar from "../components/navbar";
 import EditEquipment from "../components/editEquipment";
-import { useState } from "react";
+import { useContext } from "react";
+import { EquipmentContext } from "../contexts/equipmentContext";
 
 export default function Home() {
-  const [drawer, setDrawer] = useState({ open: false, mode: "new" });
-  const handleOpenNew = () => setDrawer({ open: true, mode: "new" });
-  const handleOpenEdit = () => setDrawer({ open: true, mode: "edit" });
-  const handleClose = () => setDrawer({ open: false, mode: "new" });
+  const { openFormNew, openFormEdit } = useContext(EquipmentContext);
+
   return (
     <>
       <Navbar />
-      <ActionBar handleNew={handleOpenNew} handleEdit={handleOpenEdit} />
+      <ActionBar handleNew={openFormNew} handleEdit={openFormEdit} />
       <EquipmentOccupancyChart />
-      {drawer.open && (
-        <EditEquipment drawer={drawer} handleClose={handleClose} />
-      )}
     </>
   );
 }

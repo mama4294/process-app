@@ -7,6 +7,7 @@ import ActionMenu from "./actionMenu";
 import { useContext } from "react";
 import { EquipmentContext } from "../contexts/equipmentContext";
 import { CampaignContext } from "../contexts/campaignContext";
+import EditEquipment from "./editEquipment";
 
 //ISA 88 Terminology
 
@@ -28,7 +29,8 @@ import { CampaignContext } from "../contexts/campaignContext";
 // Process Action
 
 const EquipmentOccupancyChart = () => {
-  const { equipment, EOerror } = useContext(EquipmentContext);
+  const { equipment, EOerror, drawer, closeForm } =
+    useContext(EquipmentContext);
   const { error, message } = EOerror;
 
   return (
@@ -39,6 +41,7 @@ const EquipmentOccupancyChart = () => {
           <ProcedureTable EquipmentData={equipment} />
         </div>
       </div>
+      {drawer.open && <EditEquipment drawer={drawer} handleClose={closeForm} />}
     </>
   );
 };
@@ -63,14 +66,13 @@ const ProcedureTable = ({ EquipmentData }) => {
 
 const UnitRow = ({ unit }) => {
   const {
-    selectionIds,
-    handleToggle,
     EOerror,
     calcCycleTime,
     getMinEquipmentTime,
     moveUp,
     moveDown,
     deleteEquipment,
+    openFormEdit,
   } = useContext(EquipmentContext);
   const { batches } = useContext(CampaignContext);
   const { ids: errorIds } = EOerror;
@@ -82,17 +84,6 @@ const UnitRow = ({ unit }) => {
   const minOperation = getMinEquipmentTime();
   const negativeCorrection = minOperation <= 0 ? Math.abs(minOperation) + 1 : 0;
   const numColumns = cycleTime * batches.length + offsetTime;
-
-  let checked = selectionIds.some((item) => item.id === unit.id);
-
-  const handleChange = () => {
-    handleToggle(unit.id);
-  };
-
-  const label = { inputProps: { "aria-label": "selection" } };
-
-  const options = ["None", "Atria", "Callisto", "Pyxis"];
-
   const [anchorEl, setAnchorEl] = useState(null);
   const actionMenuOpen = Boolean(anchorEl);
 
@@ -111,26 +102,48 @@ const UnitRow = ({ unit }) => {
     moveDown(unit.id);
   };
 
-  const handleEdit = () => {};
+  const handleEdit = () => {
+    openFormEdit(unit.id);
+    setAnchorEl(null);
+  };
 
   const handleDelete = () => {
     deleteEquipment(unit.id);
     setAnchorEl(null);
   };
 
+  //Hover logic
+  const [isHovering, setIsHovering] = useState(false);
+  const handleMouseOver = () => {
+    setIsHovering(true);
+  };
+  const handleMouseOut = () => {
+    setIsHovering(false);
+  };
+
   return (
-    <div className={styles.chartRow}>
-      {/* <Checkbox checked={checked} onChange={handleChange} {...label} /> */}
-      <ActionMenu
-        open={actionMenuOpen}
-        handleClick={handleClick}
-        handleClose={handleCloseActionMenu}
-        handleMoveUp={handleMoveUp}
-        handleMoveDown={handleMoveDown}
-        handleDelete={handleDelete}
-        anchorEl={anchorEl}
-      />
-      <div className={styles.chartRowLabel}>{unit.title}</div>
+    <div
+      className={styles.chartRow}
+      onMouseOver={handleMouseOver}
+      onMouseOut={handleMouseOut}
+    >
+      <div className={styles.chartRowLabel} style={{ marginLeft: "1rem" }}>
+        {unit.title}
+      </div>
+      {isHovering ? (
+        <ActionMenu
+          open={actionMenuOpen}
+          handleClick={handleClick}
+          handleClose={handleCloseActionMenu}
+          handleMoveUp={handleMoveUp}
+          handleMoveDown={handleMoveDown}
+          handleEdit={handleEdit}
+          handleDelete={handleDelete}
+          anchorEl={anchorEl}
+        />
+      ) : (
+        <div />
+      )}
       <ul
         className={styles.chartRowBars}
         style={{ gridTemplateColumns: `repeat(${numColumns}, 1fr)` }}
@@ -148,6 +161,7 @@ const UnitRow = ({ unit }) => {
                 batchIndex={index}
                 cycleTime={cycleTime}
                 negativeCorrection={negativeCorrection}
+                handleEdit={handleEdit}
               />
             );
           });
@@ -164,6 +178,7 @@ const Operation = ({
   batchIndex,
   cycleTime,
   negativeCorrection,
+  handleEdit,
 }) => {
   const { title, start, end } = operation;
 
@@ -185,6 +200,7 @@ const Operation = ({
     <li
       className={`${styles.listItem} ${styles.tooltip}`}
       style={listItemStyle}
+      onClick={handleEdit}
     >
       <Tooltip title={`Batch: ${batchIndex + 1}, Operation: ${title}`} arrow>
         <div className={styles.taskContainer} style={operationStyle}></div>

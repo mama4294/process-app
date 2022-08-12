@@ -117,11 +117,17 @@ export const EquipmentContext = createContext({
   setEquipment: () => null,
   defaultResuserResourcesources: null,
   setUserResources: () => null,
-  selectionIds: null,
-  setSelectionIds: () => null,
+  selectionId: null,
+  setSelectionId: () => null,
+  findSelectedEquipment: () => null,
   addEquipment: () => null,
   findEquipmentDuration: () => null,
   getMinEquipmentTime: () => null,
+  drawer: null,
+  setDrawer: () => null,
+  openFormNew: () => null,
+  openFormEdit: () => null,
+  closeForm: () => null,
 });
 
 export const EquipmentProvider = ({ children }) => {
@@ -132,7 +138,16 @@ export const EquipmentProvider = ({ children }) => {
     message: "",
   });
   const [userResources, setUserResources] = useState(defaultResources);
-  const [selectionIds, setSelectionIds] = useState([]);
+  const [selectionId, setSelectionId] = useState();
+  const [drawer, setDrawer] = useState({ open: false, mode: "new" });
+
+  //Equipment Form fuctions
+  const openFormNew = () => setDrawer({ open: true, mode: "new" });
+  const openFormEdit = (id) => {
+    setSelectionId(id);
+    setDrawer({ open: true, mode: "edit" });
+  };
+  const closeForm = () => setDrawer({ open: false, mode: "new" });
 
   //Local storage functions
 
@@ -150,16 +165,16 @@ export const EquipmentProvider = ({ children }) => {
 
   //Selection state functions
 
-  const handleToggle = (id) => {
-    setSelectionIds(toggleSelection(selectionIds, id));
-  };
+  // const handleToggle = (id) => {
+  //   setSelectionIds(toggleSelection(selectionIds, id));
+  // };
 
   //Equipment state functions
 
   const deleteEquipment = (id) => {
     console.log("delete");
     setEquipment(deleteById(equipment, id));
-    setSelectionIds([]);
+    setSelectionId(null);
   };
 
   const addEquipment = (newEquipment) => {
@@ -204,13 +219,8 @@ export const EquipmentProvider = ({ children }) => {
   };
 
   const findSelectedEquipment = () => {
-    const index = equipment.findIndex((item) => item.id === selectionIds[0].id);
+    const index = equipment.findIndex((item) => item.id === selectionId);
     return equipment[index];
-  };
-
-  const findSelectedEquipmentIndex = (id) => {
-    const index = equipment.findIndex((item) => item.id === id);
-    return index;
   };
 
   const findEquipmentById = (id) => {
@@ -269,7 +279,7 @@ export const EquipmentProvider = ({ children }) => {
   };
 
   const moveUp = (id) => {
-    const index = findSelectedEquipmentIndex(id);
+    const index = findEquipmentById(id);
     console.log("Find id", index);
     if (index === 0) return;
     let newArr = [...equipment];
@@ -277,7 +287,7 @@ export const EquipmentProvider = ({ children }) => {
     setEquipment(newArr);
   };
   const moveDown = (id) => {
-    const index = findSelectedEquipmentIndex(id);
+    const index = findEquipmentById(id);
     if (index === equipment.length - 1) return;
     let newArr = [...equipment];
     newArr.splice(index + 1, 0, newArr.splice(index, 1)[0]);
@@ -292,12 +302,11 @@ export const EquipmentProvider = ({ children }) => {
         setEquipment,
         userResources,
         setUserResources,
-        selectionIds,
-        handleToggle,
+        selectionId,
+        findSelectedEquipment,
         deleteEquipment,
         addEquipment,
         updateEquipment,
-        findSelectedEquipment,
         findEquipmentById,
         findAllEquipmentOpOptions,
         solveGantt,
@@ -308,6 +317,10 @@ export const EquipmentProvider = ({ children }) => {
         findEquipmentDuration,
         calcCycleTime,
         getMinEquipmentTime,
+        drawer,
+        openFormNew,
+        openFormEdit,
+        closeForm,
       }}
     >
       {children}
