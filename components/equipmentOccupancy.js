@@ -68,6 +68,9 @@ const UnitRow = ({ unit }) => {
     EOerror,
     calcCycleTime,
     getMinEquipmentTime,
+    moveUp,
+    moveDown,
+    deleteEquipment,
   } = useContext(EquipmentContext);
   const { batches } = useContext(CampaignContext);
   const { ids: errorIds } = EOerror;
@@ -100,9 +103,20 @@ const UnitRow = ({ unit }) => {
     setAnchorEl(null);
   };
 
-  useEffect(() => {
-    console.log("anchorEl", anchorEl);
-  }, [anchorEl]);
+  const handleMoveUp = () => {
+    moveUp(unit.id);
+  };
+
+  const handleMoveDown = () => {
+    moveDown(unit.id);
+  };
+
+  const handleEdit = () => {};
+
+  const handleDelete = () => {
+    deleteEquipment(unit.id);
+    setAnchorEl(null);
+  };
 
   return (
     <div className={styles.chartRow}>
@@ -111,6 +125,9 @@ const UnitRow = ({ unit }) => {
         open={actionMenuOpen}
         handleClick={handleClick}
         handleClose={handleCloseActionMenu}
+        handleMoveUp={handleMoveUp}
+        handleMoveDown={handleMoveDown}
+        handleDelete={handleDelete}
         anchorEl={anchorEl}
       />
       <div className={styles.chartRowLabel}>{unit.title}</div>

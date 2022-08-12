@@ -1,6 +1,3 @@
-import React, { useState, useContext, useEffect } from "react";
-import Button from "@mui/material/Button";
-import { EquipmentContext } from "../contexts/equipmentContext";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -13,7 +10,15 @@ import MenuItem from "@mui/material/MenuItem";
 import MenuList from "@mui/material/MenuList";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
-const ActionMenu = ({ open, handleClick, handleClose, anchorEl }) => {
+const ActionMenu = ({
+  open,
+  anchorEl,
+  handleClick,
+  handleClose,
+  handleMoveUp,
+  handleMoveDown,
+  handleDelete,
+}) => {
   return (
     <div style={{ display: "flex" }}>
       <IconButton
@@ -43,13 +48,13 @@ const ActionMenu = ({ open, handleClick, handleClose, anchorEl }) => {
         }}
       >
         <MenuList>
-          <MenuItem onClick={handleClose}>
+          <MenuItem onClick={handleMoveUp}>
             <ListItemIcon>
               <ArrowUpwardIcon fontSize="small" />
             </ListItemIcon>
             <ListItemText>Move Up</ListItemText>
           </MenuItem>
-          <MenuItem onClick={handleClose}>
+          <MenuItem onClick={handleMoveDown}>
             <ListItemIcon>
               <ArrowDownwardIcon fontSize="small" />
             </ListItemIcon>
@@ -61,7 +66,7 @@ const ActionMenu = ({ open, handleClick, handleClose, anchorEl }) => {
             </ListItemIcon>
             <ListItemText>Edit</ListItemText>
           </MenuItem>
-          <MenuItem onClick={handleClose}>
+          <MenuItem onClick={handleDelete}>
             <ListItemIcon>
               <DeleteIcon fontSize="small" />
             </ListItemIcon>

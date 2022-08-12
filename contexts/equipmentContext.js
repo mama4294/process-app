@@ -1,5 +1,5 @@
 import { useState, createContext, useEffect } from "react";
-import { toggleSelection, deleteByIds } from "../utils/arrayLogic";
+import { toggleSelection, deleteByIds, deleteById } from "../utils/arrayLogic";
 import { calcGanttLogic, calcEOCLogic } from "../utils/ganttLogic";
 
 const defaultResources = {
@@ -156,8 +156,9 @@ export const EquipmentProvider = ({ children }) => {
 
   //Equipment state functions
 
-  const deleteEquipment = () => {
-    setEquipment(deleteByIds(equipment, selectionIds));
+  const deleteEquipment = (id) => {
+    console.log("delete");
+    setEquipment(deleteById(equipment, id));
     setSelectionIds([]);
   };
 

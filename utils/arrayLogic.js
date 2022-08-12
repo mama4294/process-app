@@ -35,11 +35,15 @@ export const addToArray = (array, item) => {
 
 export const deleteByIds = (array, ids) => {
   if (!Array.isArray(ids)) throw new Error("id array is not an array");
-  let newArray = array;
+  let newArray = [...array];
   ids.map((selection) => {
     newArray = handleRemove(newArray, selection);
   });
   return newArray;
+};
+
+export const deleteById = (array, id) => {
+  return array.filter((x) => x.id !== id);
 };
 
 export const getArrayOptions = (array, id) => {
