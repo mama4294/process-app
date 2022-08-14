@@ -1,26 +1,24 @@
 import { useContext} from "react";
-import { CampaignContext } from "../../contexts/campaignContext";
+import { ResourceContext } from "../../contexts/resourceContext";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography"
-import DataTable from "../datatable";
+import DataTable from "./resourcesInputTable";
 
 
 export const ResourcesMenu = () => {
 
-const {batches, handleAdd, handleEdit, handleDelete} = useContext(CampaignContext);
+const {resourceOptions,handleAdd,handleEdit,handleDelete,} = useContext(ResourceContext);
 const headers = [
-    "Number",
+    "Resource",
+    "Unit",
     "Color"
   ];
     return (
       <Box sx={{ height: "100%" }}>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          Default Resources
-        </Typography>
         <Box sx={{ background: "white", p:2, mt: 3, borderRadius: 2 }}>
         <DataTable 
             headers={headers} 
-            data={batches} 
+            data={resourceOptions} 
             handleEdit={handleEdit} 
             handleAdd={handleAdd} 
             handleDelete={handleDelete}>

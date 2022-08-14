@@ -1,7 +1,6 @@
 import EquipmentOccupancyChart from "../components/equipmentOccupancy";
 import ActionBar from "../components/actionBar";
 import Navbar from "../components/navbar";
-import EditEquipment from "../components/editEquipment";
 import { useContext } from "react";
 import { EquipmentContext } from "../contexts/equipmentContext";
 

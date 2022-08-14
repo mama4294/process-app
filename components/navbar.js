@@ -8,10 +8,12 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import Settings from "../components/settings";
 import { EquipmentContext } from "../contexts/equipmentContext";
 import { CampaignContext } from "../contexts/campaignContext";
+import { ResourceContext } from "../contexts/resourceContext";
 
 const Navbar = () => {
   const { saveEquipment } = useContext(EquipmentContext);
   const { saveBatches } = useContext(CampaignContext);
+  const { saveResources } = useContext(ResourceContext);
   const [openSettings, setOpenSettings] = useState(false);
   const handleOpenSettings = () => setOpenSettings(true);
   const handleCloseSettings = () => setOpenSettings(false);
@@ -19,6 +21,7 @@ const Navbar = () => {
   const handleSave = () => {
     saveEquipment();
     saveBatches();
+    saveResources();
   };
 
   return (

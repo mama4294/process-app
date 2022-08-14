@@ -4,12 +4,12 @@ import Checkbox from "@mui/material/Checkbox";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
-import TextInput from "./inputs/textInput";
+import TextInput from "../inputs/textInput";
 import ClearIcon from "@mui/icons-material/Clear";
 import { TwitterPicker } from "react-color";
 
-import styles from "../styles/operations.module.css";
-import stylesCampaign from "../styles/campaign.module.css";
+import styles from "../../styles/operations.module.css";
+import stylesCampaign from "../../styles/campaign.module.css";
 
 const DataTable = ({ data, headers, handleEdit, handleAdd, handleDelete }) => {
   return (

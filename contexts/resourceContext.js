@@ -2,7 +2,7 @@ import { useState, createContext, useEffect } from "react";
 import { generateId } from "../utils/helperFunctions";
 import { addToArray, deleteByIds } from "../utils/arrayLogic";
 
-export const ResourcesContext = createContext({
+export const ResourceContext = createContext({
   resourceOptions: null,
   setResourceOptions: () => null,
   handleAdd: () => null,
@@ -11,7 +11,7 @@ export const ResourcesContext = createContext({
   saveDefaultReources: () => null,
 });
 
-export const CampaignProvider = ({ children }) => {
+export const ResourceProvider = ({ children }) => {
   const getRandomColor = () => {
     const colors = [
       "#FF6900",
@@ -50,7 +50,7 @@ export const CampaignProvider = ({ children }) => {
       unit: "kg/hr",
     },
     {
-      title: "Eletricity",
+      title: "Electricity",
       id: generateId(),
       color: "#FCB900",
       unit: "kW",
@@ -59,13 +59,17 @@ export const CampaignProvider = ({ children }) => {
 
   useEffect(() => {
     const getLocalData = () => {
-      const localdata = localStorage.getItem("defaultResources");
-      return localdata ? JSON.parse(localdata) : [defaultResouces];
+      const localdata = localStorage.getItem("resourceOptions");
+      return localdata ? JSON.parse(localdata) : defaultResouces;
     };
-    setresourceOptions(getLocalData());
+    setResourceOptions(getLocalData());
   }, []);
 
-  const saveDefaultReources = () => {
+  useEffect(() => {
+    console.log("resourceOptions", resourceOptions);
+  }, [resourceOptions]);
+
+  const saveResources = () => {
     localStorage.setItem("resourceOptions", JSON.stringify(resourceOptions));
   };
 
@@ -112,16 +116,16 @@ export const CampaignProvider = ({ children }) => {
   }, [resourceOptions]);
 
   return (
-    <CampaignContext.Provider
+    <ResourceContext.Provider
       value={{
         resourceOptions,
         handleAdd,
         handleEdit,
         handleDelete,
-        saveDefaultReources,
+        saveResources,
       }}
     >
       {children}
-    </CampaignContext.Provider>
+    </ResourceContext.Provider>
   );
 };

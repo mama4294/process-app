@@ -4,7 +4,7 @@ import { EquipmentContext } from "../../contexts/equipmentContext";
 import { minToFreindlyTime } from "../../utils/helperFunctions";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography"
-import DataTable from "../datatable";
+import DataTable from "./batchesInputTable";
 import TextInput from "../inputs/textInput" 
 import { margin } from "@mui/system";
 
