@@ -41,7 +41,7 @@ const TableHeader = ({ data, headers, handleAdd }) => {
   return (
     <>
       <div className={styles.titleContainer}>
-        <div className={styles.title}>Batches</div>
+        <div className={styles.title}>Add Batches</div>
 
         <IconButton onClick={handleAdd}>
           <AddIcon color="action" />

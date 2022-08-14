@@ -9,3 +9,16 @@ export const generateId = () => {
 export const sortArrayByStart = (array) => {
   return array.sort((a, b) => a.start - b.start);
 };
+
+const roundToTwo = (num) => {
+  return Math.round((num + Number.EPSILON) * 100) / 100;
+};
+
+export const minToFreindlyTime = (min) => {
+  if (min === 1) return `${roundToTwo(min)} minute`;
+  if (min < 60) return `${roundToTwo(min)} minutes`;
+  if (min < 60 * 24) return `${roundToTwo(min / 60)} hours`;
+  if (min < 60 * 24 * 7) return `${roundToTwo(min / 60 / 24)} days`;
+  if (min < 60 * 24 * 7 * 52) return `${roundToTwo(min / 60 / 24 / 7)} weeks`;
+  return `${roundToTwo(min / 60 / 24 / 7 / 52)} years`;
+};

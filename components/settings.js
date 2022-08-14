@@ -47,7 +47,7 @@ const Settings = ({ open, handleClose }) => {
         onClose={handleClose}
         variant="temporary"
       >
-        <Box sx={{ display: "flex", heigh: "100%" }}>
+        <Box sx={{ display: "flex", height: "100%" }}>
           <AppBar
             position="fixed"
             sx={{ zIndex: 1201, width: drawerWidth, left: 0 }}
