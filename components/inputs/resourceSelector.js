@@ -24,7 +24,7 @@ export const ResourceSelector = ({ value, onChange, operationId }) => {
   const customStyles = {
     control: (styles) => ({ ...styles, backgroundColor: "white" }),
     option: (styles, { data, isDisabled, isFocused, isSelected }) => {
-      const color = chroma(data.color);
+      const color = chroma(data.color) || chroma("blue");
       return {
         ...styles,
         backgroundColor: isDisabled
@@ -72,6 +72,11 @@ export const ResourceSelector = ({ value, onChange, operationId }) => {
         color: "white",
       },
     }),
+    dropdownIndicator: (styles) => ({ ...styles, width: "0%", padding: "0px" }),
+    indicatorSeparator: () => null, // Remove separator
+    indicatorsContainer: () => null,
+    Menu: () => null, // Remove menu
+    MenuList: () => null,
   };
 
   console.log("selected Resources for: ", operationId, value);
@@ -79,6 +84,10 @@ export const ResourceSelector = ({ value, onChange, operationId }) => {
     { value: "taco", label: "taco", color: "blue" },
     { value: "burrito", label: "burrito", color: "green" },
   ];
+
+  const handleChange = (event) => {
+    onChange(operationId, event);
+  };
 
   return (
     <div>
@@ -91,11 +100,16 @@ export const ResourceSelector = ({ value, onChange, operationId }) => {
       <Select
         value={value}
         isMulti
+        isClearable={false}
+        isSearchable={false}
+        placeholder="No resources"
         name="resources"
-        options={options}
+        // options={options}
+        noOptionsMessage={() => null}
         className="basic-multi-select"
         classNamePrefix="select"
         styles={customStyles}
+        onChange={handleChange}
       />
     </div>
   );
