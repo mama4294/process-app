@@ -29,6 +29,7 @@ import {
 } from "../utils/arrayLogic";
 import { generateId } from "../utils/helperFunctions";
 import { EquipmentContext } from "../contexts/equipmentContext";
+import { ResourceSelector } from "./inputs/resourceSelector";
 
 const EditEquipmentModal = ({ drawer, handleClose }) => {
   const { open, mode } = drawer;
@@ -478,6 +479,7 @@ const OperationRow = ({
         </div>
       </div>
       <div className={styles.chartRowLabel}>
+        <ResourceSelector />
         {/* <TextField
           label="Resources"
           id="resources"
