@@ -117,6 +117,8 @@ const EquipmentInputForm = ({ mode, handleClose }) => {
         label: event.label,
         external: event.external,
       };
+    } else if (targetID === "resources") {
+      alert("Resources");
     } else {
       //for text inputs
       field = event.target.id;
@@ -131,6 +133,20 @@ const EquipmentInputForm = ({ mode, handleClose }) => {
       return operation;
     });
 
+    setOperations(newState);
+  };
+
+  const handleChangeResources = (operationID, res) => {
+    console.log("id:", operationID, "Resources:", res);
+    const newState = operations.map((operation) => {
+      if (operation.id === operationID) {
+        // console.log(`Found operation with field ${field} and value ${value}`);
+        return { ...operation, resources: res };
+      }
+      //otherwise return object as is
+      return operation;
+    });
+    console.log("NewOperation", newState);
     setOperations(newState);
   };
 
@@ -207,6 +223,7 @@ const EquipmentInputForm = ({ mode, handleClose }) => {
           error={error}
           numColumns={10}
           handleChangeOperation={handleChangeOperation}
+          handleChangeResources={handleChangeResources}
           externalOptions={externalOptions}
           selectedOperations={selectedOperations}
           handleToggle={handleToggle}
@@ -238,6 +255,7 @@ const Table = ({
   operations,
   numColumns,
   handleChangeOperation,
+  handleChangeResources,
   selectedOperations,
   externalOptions,
   handleToggle,
@@ -265,6 +283,7 @@ const Table = ({
               key={operation.id}
               numColumns={numColumns}
               handleChangeOperation={handleChangeOperation}
+              handleChangeResources={handleChangeResources}
               selectedOperations={selectedOperations}
               handleToggle={handleToggle}
               error={error}
@@ -338,6 +357,7 @@ const OperationRow = ({
   operation,
   numColumns,
   handleChangeOperation,
+  handleChangeResources,
   selectedOperations,
   externalOptions,
   handleToggle,
@@ -479,28 +499,13 @@ const OperationRow = ({
         </div>
       </div>
       <div className={styles.chartRowLabel}>
-        <ResourceSelector />
-        {/* <TextField
-          label="Resources"
+        <ResourceSelector
           id="resources"
-          variant="standard"
-          sx={{ m: 1 }}
-          value={resources[0]}
-          onChange={handleChangeOperation(id)}
-        /> */}
+          value={resources}
+          operationId={id}
+          onChange={handleChangeResources}
+        />
       </div>
-      <ul
-        className={styles.chartRowBars}
-        style={{ gridTemplateColumns: `repeat(${numColumns}, 1fr)` }}
-      >
-        <li className={`${styles.listItem} ${styles.tooltip}`} style={style}>
-          <Tooltip title={operation.title} arrow>
-            <div className={styles.taskContainer}>
-              {/* <span>{title}</span> */}
-            </div>
-          </Tooltip>
-        </li>
-      </ul>
     </div>
   );
 };
