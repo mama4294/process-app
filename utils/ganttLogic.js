@@ -1,7 +1,7 @@
 import { sortArrayByStart } from "../utils/helperFunctions";
 
 const convertToMinutes = (value, unit) => {
-  if (unit.value === "min") return value;
+  if (unit.value === "min") return value * 1;
   if (unit.value === "hr") return value * 60;
   if (unit.value === "day") return value * 60 * 24;
   return alert("Error with units");
@@ -133,7 +133,7 @@ export const calcGanttLogic = (array, equipment) => {
   const error = remainingArray.length !== 0 || finishedArray.length === 0;
   const message = "Recursive Error: Could not find a solution";
 
-  console.log(message);
+  error ? console.log(message) : console.log("Success");
   console.log("Finished Array ", finishedArray);
   return {
     error: {

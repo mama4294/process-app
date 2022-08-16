@@ -21,96 +21,95 @@ const defaultResources = {
   },
 };
 
-const sterilizerOperations = [
-  {
-    id: "asldfkj",
-    title: "CIP",
-    start: 1,
-    end: 61,
-    bgColor: "#E5B8D0",
-  },
-  {
-    id: "2nmgd",
-    title: "SIP",
-    start: 62,
-    end: 153,
-    bgColor: "#E5B8D0",
-  },
-  {
-    id: "kwklj",
-    title: "Cool",
-    start: 154,
-    end: 184,
-    bgColor: "#E5B8D0",
-  },
-  {
-    id: "aanmse",
-    title: "Fill",
-    start: 184,
-    end: 250,
-    bgColor: "#E5B8D0",
-  },
-];
-
-const fermenterOperations = [
-  {
-    id: "lkajsd",
-    title: "CIP",
-    start: 1,
-    end: 31,
-    bgColor: "#E5B8D0",
-  },
-  {
-    id: "plkapsdlf",
-    title: "SIP",
-    start: 45,
-    end: 165,
-    bgColor: "#E5B8D0",
-  },
-  {
-    id: "pasldkf",
-    title: "Cool",
-    start: 166,
-    end: 183,
-    bgColor: "#E5B8D0",
-  },
-  {
-    id: "paksjdd",
-    title: "Fill",
-    start: 184,
-    end: 250,
-    bgColor: "#E5B8D0",
-  },
-  {
-    id: "asdfnmddd",
-    title: "Ferment",
-    start: 251,
-    end: 800,
-    bgColor: "#E5B8D0",
-  },
-];
-
-const decanterOperations = [
-  {
-    id: "lkjsldfj",
-    title: "CIP",
-    start: 740,
-    end: 800,
-    bgColor: "#E5B8D0",
-  },
-  {
-    id: "lkasdfjjj",
-    title: "Process",
-    start: 801,
-    end: 900,
-    bgColor: "#E5B8D0",
-  },
-];
-
 const defaultEquipmentData = [
-  { id: 1, title: "Sterilizer", operations: sterilizerOperations },
-  { id: 2, title: "Fermenter", operations: fermenterOperations },
-  { id: 3, title: "Decanter", operations: decanterOperations },
+  {
+    id: "decd93e4",
+    title: "Mixer",
+    duration: 145,
+    operations: [
+      {
+        duration: "15",
+        durationUnit: { value: "min", label: "min" },
+        end: 16,
+        id: "971dc105",
+        offset: 0,
+        offsetUnit: { value: "hr", label: "hr" },
+        parentId: "275d01f8",
+        predecessor: { value: 0, label: "Initial" },
+        resources: [],
+        start: 1,
+        title: "Load",
+        type: { value: "SF", label: "Start-to-Finish" },
+      },
+      {
+        duration: "1",
+        durationUnit: { value: "hr", label: "hr" },
+        end: 76,
+        id: "86fc6543",
+        offset: 0,
+        offsetUnit: { value: "hr", label: "hr" },
+        parentId: "275d01f8",
+        predecessor: { value: "971dc105", label: "Load" },
+        resources: [],
+        start: 16,
+        title: "Mix",
+        type: { value: "SF", label: "Start-to-Finish" },
+      },
+      {
+        duration: "10",
+        durationUnit: { value: "min", label: "min" },
+        end: 86,
+        id: "da41da6e",
+        offset: 0,
+        offsetUnit: { value: "hr", label: "hr" },
+        parentId: "275d01f8",
+        predecessor: { value: "86fc6543", label: "Mix" },
+        resources: [],
+        start: 76,
+        title: "Discharge",
+        type: { value: "SF", label: "Start-to-Finish" },
+      },
+    ],
+  },
+  {
+    title: "Former",
+    duration: 330,
+    id: "8865b56e",
+    operations: [
+      {
+        duration: "30",
+        durationUnit: { value: "min", label: "min" },
+        end: 86,
+        id: "eac61970",
+        offset: 0,
+        offsetUnit: { value: "hr", label: "hr" },
+        parentId: "8865b56e",
+        predecessor: { value: "445bee24", label: "Form" },
+        resources: [],
+        start: 56,
+        title: "Form",
+        type: { value: "FS", label: "Finish-to-Start" },
+      },
+      {
+        duration: "5",
+        durationUnit: { value: "hr", label: "hr" },
+        end: 386,
+        id: "445bee24",
+        offset: 0,
+        offsetUnit: { value: "hr", label: "hr" },
+        parentId: "8865b56e",
+        predecessor: {
+          value: "da41da6e",
+          label: "Mixer - Discharge",
+          external: true,
+        },
+        resources: [],
+        start: 86,
+        title: "Form",
+        type: { value: "SF", label: "Start-to-Finish" },
+      },
+    ],
+  },
 ];
 
 export const EquipmentContext = createContext({
