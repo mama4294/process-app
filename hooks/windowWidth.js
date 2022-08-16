@@ -17,7 +17,5 @@ export const useWindowWide = () => {
     };
   }, [setWidth]);
 
-  console.log("width", width);
-
   return width;
 };
