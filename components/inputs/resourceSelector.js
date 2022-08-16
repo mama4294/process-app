@@ -1,5 +1,5 @@
 import Select, { StylesConfig } from "react-select";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { ResourceContext } from "../../contexts/resourceContext";
 import { generateId } from "../../utils/helperFunctions";
 import chroma from "chroma-js";
@@ -21,8 +21,24 @@ export const ResourceSelector = ({ value, onChange, operationId }) => {
     };
   });
 
+  //   useEffect(() => {
+  //     console.log("anchorEl", anchorEl);
+  //   }, [anchorEl]);
+
   const customStyles = {
-    control: (styles) => ({ ...styles, backgroundColor: "white" }),
+    // control: (styles) => ({ ...styles, backgroundColor: "white" }),
+    control: (provided, state) => ({
+      ...provided,
+      height: "100%",
+      borderRadius: "0px",
+      textAlign: "left",
+      backgroundColor: "transparent",
+      border: state.isFocused ? "1px solid #0070f3" : 0,
+      boxShadow: "none",
+      "&:hover": {
+        borderBottom: "1px solid black",
+      },
+    }),
     option: (styles, { data, isDisabled, isFocused, isSelected }) => {
       const color = chroma(data.color) || chroma("blue");
       return {
@@ -72,39 +88,39 @@ export const ResourceSelector = ({ value, onChange, operationId }) => {
         color: "white",
       },
     }),
-    dropdownIndicator: (styles) => ({ ...styles, width: "0%", padding: "0px" }),
+
+    dropdownIndicator: () => ({ display: "none" }),
+    // dropdownIndicator: (styles) => ({ ...styles, width: "0%", padding: "0px" }),
     indicatorSeparator: () => null, // Remove separator
     indicatorsContainer: () => null,
     Menu: () => null, // Remove menu
     MenuList: () => null,
   };
 
-  console.log("selected Resources for: ", operationId, value);
-  const testArray = [
-    { value: "taco", label: "taco", color: "blue" },
-    { value: "burrito", label: "burrito", color: "green" },
-  ];
-
   const handleChange = (event) => {
     onChange(operationId, event);
   };
 
   return (
-    <div>
-      <AddResourceMenu
-        selectedResources={value}
-        options={options}
-        onChange={onChange}
-        operationId={operationId}
-      />
+    <div style={{ display: "flex", alignItems: "center" }}>
       <Select
         value={value}
         isMulti
         isClearable={false}
         isSearchable={false}
-        placeholder="No resources"
+        placeholder=""
         name="resources"
-        // options={options}
+        components={{
+          SelectContainer: (optionProps) => (
+            <CustomMenu
+              {...optionProps}
+              selectedResources={value}
+              options={options}
+              onChange={onChange}
+              operationId={operationId}
+            />
+          ),
+        }}
         noOptionsMessage={() => null}
         className="basic-multi-select"
         classNamePrefix="select"
@@ -125,6 +141,7 @@ const AddResourceMenu = ({
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
+    console.log("event", event);
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
@@ -132,7 +149,6 @@ const AddResourceMenu = ({
   };
 
   //For state
-
   const [resourceToAdd, setResourceToAdd] = useState({
     ...options[0],
     amount: 0,
@@ -229,20 +245,24 @@ const AddResourceMenu = ({
 
   return (
     <div>
-      <IconButton
+      <Button
         id="basic-button"
         aria-controls={open ? "basic-menu" : undefined}
         aria-haspopup="true"
         aria-expanded={open ? "true" : undefined}
+        size="small"
+        variant="outlined"
         onClick={handleClick}
+        startIcon={<AddIcon />}
       >
-        <AddIcon />
-      </IconButton>
+        Add Resource
+      </Button>
       <Menu
         id="basic-menu"
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
+        components={{ Option }}
         MenuListProps={{
           "aria-labelledby": "basic-button",
         }}
@@ -283,3 +303,23 @@ const AddResourceMenu = ({
     </div>
   );
 };
+
+const CustomMenu = ({
+  innerRef,
+  innerProps,
+  children,
+  selectedResources,
+  options,
+  onChange,
+  operationId,
+}) => (
+  <div ref={innerRef} {...innerProps} className="customReactSelectMenu">
+    {children}
+    <AddResourceMenu
+      selectedResources={selectedResources}
+      options={options}
+      onChange={onChange}
+      operationId={operationId}
+    />
+  </div>
+);
