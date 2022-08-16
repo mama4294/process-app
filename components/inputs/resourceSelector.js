@@ -1,10 +1,9 @@
-import Select, { StylesConfig } from "react-select";
+import Select from "react-select";
 import { useState, useContext, useEffect } from "react";
 import { ResourceContext } from "../../contexts/resourceContext";
 import { generateId } from "../../utils/helperFunctions";
 import chroma from "chroma-js";
-import IconButton from "@mui/material/IconButton";
-import AddIcon from "@mui/icons-material/Add";
+import styles from "../../styles/operations.module.css";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import TextField from "@mui/material/TextField";
@@ -21,10 +20,6 @@ export const ResourceSelector = ({ value, onChange, operationId }) => {
     };
   });
 
-  //   useEffect(() => {
-  //     console.log("anchorEl", anchorEl);
-  //   }, [anchorEl]);
-
   const customStyles = {
     // control: (styles) => ({ ...styles, backgroundColor: "white" }),
     control: (provided, state) => ({
@@ -35,9 +30,6 @@ export const ResourceSelector = ({ value, onChange, operationId }) => {
       backgroundColor: "transparent",
       border: state.isFocused ? "1px solid #0070f3" : 0,
       boxShadow: "none",
-      "&:hover": {
-        borderBottom: "1px solid black",
-      },
     }),
     option: (styles, { data, isDisabled, isFocused, isSelected }) => {
       const color = chroma(data.color) || chroma("blue");
@@ -244,19 +236,18 @@ const AddResourceMenu = ({
   };
 
   return (
-    <div>
-      <Button
-        id="basic-button"
+    <div style={{ display: "flex", paddingLeft: "8px" }}>
+      <button
+        id="add-resources-button"
         aria-controls={open ? "basic-menu" : undefined}
         aria-haspopup="true"
         aria-expanded={open ? "true" : undefined}
-        size="small"
         variant="outlined"
         onClick={handleClick}
-        startIcon={<AddIcon />}
+        className={styles.addResButton}
       >
         Add Resource
-      </Button>
+      </button>
       <Menu
         id="basic-menu"
         anchorEl={anchorEl}
