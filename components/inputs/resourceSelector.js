@@ -4,10 +4,20 @@ import { ResourceContext } from "../../contexts/resourceContext";
 import { generateId } from "../../utils/helperFunctions";
 import chroma from "chroma-js";
 import styles from "../../styles/operations.module.css";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
+import CheckIcon from "@mui/icons-material/Check";
 import Button from "@mui/material/Button";
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Stack from "@mui/material/Stack";
 import Menu from "@mui/material/Menu";
+import MenuList from "@mui/material/MenuList";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
+import { Popper } from "@mui/material";
 
 export const ResourceSelector = ({ value, onChange, operationId }) => {
   const { resourceOptions } = useContext(ResourceContext);
@@ -137,19 +147,19 @@ const AddResourceMenu = ({
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
+    console.log("I closeddd");
     setAnchorEl(null);
   };
 
   //For state
   const [resourceToAdd, setResourceToAdd] = useState({
     ...options[0],
-    amount: 0,
+    amount: "",
   });
 
   const handleChangeValue = (event) => {
     const amount = event.target.value;
     const newState = { ...resourceToAdd, amount: amount };
-    console.log("New data", newState);
     setResourceToAdd(newState);
   };
 
@@ -163,7 +173,6 @@ const AddResourceMenu = ({
       title,
       color,
     };
-    console.log("New data", newState);
     setResourceToAdd(newState);
   };
 
@@ -188,6 +197,7 @@ const AddResourceMenu = ({
       const color = chroma(data.color);
       return {
         ...styles,
+        zIndex: "2",
         backgroundColor: isDisabled
           ? undefined
           : isSelected
@@ -212,6 +222,12 @@ const AddResourceMenu = ({
               : color.alpha(0.3).css()
             : undefined,
         },
+      };
+    },
+    menu: (styles, { data }) => {
+      return {
+        ...styles,
+        zIndex: 2,
       };
     },
     multiValue: (styles, { data }) => {
@@ -256,40 +272,55 @@ const AddResourceMenu = ({
         components={{ Option }}
         MenuListProps={{
           "aria-labelledby": "basic-button",
+          disablePadding: true,
         }}
+        sx={{ pt: "0px", pb: "0px" }}
       >
-        <Select
-          defaultValue={resourceToAdd}
-          name="addresources"
-          options={options}
-          className="basic-multi-select"
-          classNamePrefix="select"
-          onChange={handleChangeDropdown}
-          styles={customStyles}
-        />
-        <TextField
-          id="outlined-basic"
-          label="Value"
-          variant="outlined"
-          type="number"
-          value={resourceToAdd.amount}
-          onChange={handleChangeValue}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                {resourceToAdd.unit}
-              </InputAdornment>
-            ),
-          }}
-        />
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <Button variant="outlined" onClick={handleClose}>
-            Cancel
-          </Button>
-          <Button variant="contained" onClick={handleAdd}>
-            Save
-          </Button>
-        </div>
+        <AppBar position="static">
+          <Toolbar>
+            <IconButton edge="start" color="inherit" onClick={handleClose}>
+              <CloseIcon />
+            </IconButton>
+            <Typography
+              variant="h6"
+              component="div"
+              sx={{ flexGrow: 1, textAlign: "center" }}
+            >
+              Add Resource
+            </Typography>
+            <IconButton edge="end" color="inherit" onClick={handleAdd}>
+              <CheckIcon />
+            </IconButton>
+          </Toolbar>
+        </AppBar>
+        <Box sx={{ margin: "12px" }}>
+          <Stack spacing={2}>
+            <Select
+              defaultValue={resourceToAdd}
+              name="addresources"
+              options={options}
+              className="basic-multi-select"
+              classNamePrefix="select"
+              onChange={handleChangeDropdown}
+              styles={customStyles}
+            />
+            <TextField
+              id="outlined-basic"
+              label="Value"
+              variant="outlined"
+              type="number"
+              value={resourceToAdd.amount}
+              onChange={handleChangeValue}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    {resourceToAdd.unit}
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </Stack>
+        </Box>
       </Menu>
     </div>
   );

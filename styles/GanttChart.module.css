@@ -14,67 +14,12 @@
 }
 .chartRow {  
   display: grid;      
-  grid-template-columns: 5ch 10ch 10ch 20ch 20ch 10ch 20ch 1fr;
-  border-bottom: 1px solid #6E81AD;
-  align-items: center;
+  grid-template-columns: 50px 100px 1fr;
+  background-color: #FFFFFF;
 }
-
-.error{
-  background-color: #FDEDED;
-}
-
-.dropdownGroup{
-  display: 'flex';
-  align-items: 'center';
-  justify-content: 'space-between';
-}
-
-.dropdownBadge{
-    background-color: '#EBECF0';
-    border-radius: '2em';
-    color: '#172B4D';
-    display: 'inline-block';
-    font-size: 12;
-    font-weight: 'normal';
-    line-height: '1';
-    min-width: 1;
-    padding: '0.16666666666667em 0.5em';
-    text-align: 'center';
-}
-
-/* .chartRow:hover {
+.chartRow:hover {
   background-color: #c1d3ff;
-} */
-
-.tableHeaderValue{
-  /* background-color: #6E81AD;
-  color: #fff; */
-  padding: 1rem 0;
-  text-align: left;
 }
-
-.titleContainer{
-  padding-left: 12px;
-  display: flex;
-  /* justify-content: space-between; */
-  align-items: center;
-
-}
-
-.title{
-  font-weight: 500;
-    font-size: 1.25rem;
-    line-height: 1.6;
-}
-
-.pl8{
-  padding-left: 8px;
-}
-
-.headerRow{
-  font-weight: 500;
-}
-
 .chart-period {
   color:  #D9D9D6;
   background-color:  #F2F2F2 !important;
@@ -102,22 +47,13 @@
 
 .chartRowLabel {
   color: #8c8c8c;   
-  /* padding: 20px 0; */
-  height:100%;
+  padding: 20px 0;
   font-size: 15px;
   font-weight: bold;
   text-align: center;
   font-size: 0.875rem;
   font-weight: 500;
 } 
-
-.doubleCell{
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex: 1;
-}
 
 .chartRowBars {
   list-style: none;
@@ -130,30 +66,21 @@
 .listItem {
   position: relative;
   text-align: center;
-  margin-right: 2px;
   border-radius: 5px;
   font-weight: 450;
   font-size: 15px;
   min-height: 15px;
   color: #fff;
   cursor: pointer;
+
 }
-
-/* .listItem div:hover{
-  border: 0px ;
-  background-color: #6E81AD;
-} */
-
 
 .taskContainer{
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100%;
-  background-color: #6E81AD;
 }
-
-
 
 .tooltip {
     position: relative;
@@ -182,27 +109,3 @@
   .tooltip:hover .tooltiptext {
     visibility: visible;
   }
-
-  .addResButton {
-    background-color: rgba(128, 128, 128, 0.1);
-    color: rgb(128, 128, 128);
-    border-radius: 2px;
-    padding: 3px;
-    margin: 2px;
-    font-size: 85%;
-    border: 0px;
-    cursor: pointer;
-  }
-
-  .addResButton:hover{
-    color: #f2f2f2;
-    background-color: rgb(128, 128, 128);
-  }
-
-  .AddResHeader{
-    background-color: rgba(128, 128, 128, 0.1);
-    color: rgb(128, 128, 128);
-    padding: 8px;
-    text-align: center;
-  }
-
