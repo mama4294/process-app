@@ -14,10 +14,8 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import Menu from "@mui/material/Menu";
-import MenuList from "@mui/material/MenuList";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
-import { Popper } from "@mui/material";
 
 export const ResourceSelector = ({ value, onChange, operationId }) => {
   const { resourceOptions } = useContext(ResourceContext);
@@ -71,6 +69,12 @@ export const ResourceSelector = ({ value, onChange, operationId }) => {
         },
       };
     },
+    valueContainer: (styles) => {
+      return {
+        ...styles,
+        padding: "2px 0px",
+      };
+    },
     multiValue: (styles, { data }) => {
       const color = chroma(data.color);
       return {
@@ -110,24 +114,19 @@ export const ResourceSelector = ({ value, onChange, operationId }) => {
         isMulti
         isClearable={false}
         isSearchable={false}
-        placeholder=""
+        placeholder="No resources"
         name="resources"
-        components={{
-          SelectContainer: (optionProps) => (
-            <CustomMenu
-              {...optionProps}
-              selectedResources={value}
-              options={options}
-              onChange={onChange}
-              operationId={operationId}
-            />
-          ),
-        }}
         noOptionsMessage={() => null}
         className="basic-multi-select"
         classNamePrefix="select"
         styles={customStyles}
         onChange={handleChange}
+      />
+      <AddResourceMenu
+        selectedResources={value}
+        options={options}
+        onChange={onChange}
+        operationId={operationId}
       />
     </div>
   );
@@ -147,7 +146,6 @@ const AddResourceMenu = ({
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
-    console.log("I closeddd");
     setAnchorEl(null);
   };
 
@@ -160,6 +158,7 @@ const AddResourceMenu = ({
   const handleChangeValue = (event) => {
     const amount = event.target.value;
     const newState = { ...resourceToAdd, amount: amount };
+    console.log("Added new resource, ", newState);
     setResourceToAdd(newState);
   };
 
@@ -176,7 +175,8 @@ const AddResourceMenu = ({
     setResourceToAdd(newState);
   };
 
-  const handleAdd = () => {
+  const handleAdd = (event) => {
+    event.preventDefault();
     const newRes = {
       ...resourceToAdd,
       id: generateId(),
@@ -276,72 +276,54 @@ const AddResourceMenu = ({
         }}
         sx={{ pt: "0px", pb: "0px" }}
       >
-        <AppBar position="static">
-          <Toolbar>
-            <IconButton edge="start" color="inherit" onClick={handleClose}>
-              <CloseIcon />
-            </IconButton>
-            <Typography
-              variant="h6"
-              component="div"
-              sx={{ flexGrow: 1, textAlign: "center" }}
-            >
-              Add Resource
-            </Typography>
-            <IconButton edge="end" color="inherit" onClick={handleAdd}>
-              <CheckIcon />
-            </IconButton>
-          </Toolbar>
-        </AppBar>
-        <Box sx={{ margin: "12px" }}>
-          <Stack spacing={2}>
-            <Select
-              defaultValue={resourceToAdd}
-              name="addresources"
-              options={options}
-              className="basic-multi-select"
-              classNamePrefix="select"
-              onChange={handleChangeDropdown}
-              styles={customStyles}
-            />
-            <TextField
-              id="outlined-basic"
-              label="Value"
-              variant="outlined"
-              type="number"
-              value={resourceToAdd.amount}
-              onChange={handleChangeValue}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    {resourceToAdd.unit}
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </Stack>
-        </Box>
+        <form onSubmit={handleAdd}>
+          <AppBar position="static">
+            <Toolbar>
+              <IconButton edge="start" color="inherit" onClick={handleClose}>
+                <CloseIcon />
+              </IconButton>
+              <Typography
+                variant="h6"
+                component="div"
+                sx={{ flexGrow: 1, textAlign: "center" }}
+              >
+                Add Resource
+              </Typography>
+              <IconButton edge="end" color="inherit" type="submit">
+                <CheckIcon />
+              </IconButton>
+            </Toolbar>
+          </AppBar>
+          <Box sx={{ margin: "12px" }}>
+            <Stack spacing={2}>
+              <Select
+                defaultValue={resourceToAdd}
+                name="addresources"
+                options={options}
+                className="basic-multi-select"
+                classNamePrefix="select"
+                onChange={handleChangeDropdown}
+                styles={customStyles}
+              />
+              <TextField
+                id="outlined-basic"
+                label="Value"
+                variant="outlined"
+                type="number"
+                value={resourceToAdd.amount}
+                onChange={handleChangeValue}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      {resourceToAdd.unit}
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </Stack>
+          </Box>
+        </form>
       </Menu>
     </div>
   );
 };
-
-const CustomMenu = ({
-  innerRef,
-  innerProps,
-  children,
-  selectedResources,
-  options,
-  onChange,
-  operationId,
-}) => (
-  <div ref={innerRef} {...innerProps} className="customReactSelectMenu">
-    {children}
-    <AddResourceMenu
-      selectedResources={selectedResources}
-      options={options}
-      onChange={onChange}
-      operationId={operationId}
-    />
-  </div>
-);

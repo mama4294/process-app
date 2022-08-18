@@ -137,7 +137,7 @@ const EquipmentInputForm = ({ mode, handleClose }) => {
   };
 
   const handleChangeResources = (operationID, res) => {
-    console.log("id:", operationID, "Resources:", res);
+    console.log("Resource changed...: id:", operationID, "Resources:", res);
     const newState = operations.map((operation) => {
       if (operation.id === operationID) {
         // console.log(`Found operation with field ${field} and value ${value}`);
