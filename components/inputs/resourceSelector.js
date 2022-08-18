@@ -17,16 +17,28 @@ import Menu from "@mui/material/Menu";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
 
+const filterArrayByTitle = (array, otherArray) => {
+  let newArray = [];
+  array.map((resource) => {
+    if (otherArray.some((e) => e.title === resource.title)) {
+      //skip already use resource
+    } else {
+      newArray.push({
+        ...resource,
+        label: resource.title,
+        value: resource.title,
+      });
+    }
+  });
+  return newArray;
+};
+
 export const ResourceSelector = ({ value, onChange, operationId }) => {
   const { resourceOptions } = useContext(ResourceContext);
-  const options = resourceOptions.map((resource) => {
-    const { title, unit } = resource;
-    return {
-      ...resource,
-      label: title,
-      value: title,
-    };
-  });
+  const options = filterArrayByTitle(resourceOptions, value);
+  console.log(operationId, options);
+
+  const hasValues = value.length > 0;
 
   const customStyles = {
     // control: (styles) => ({ ...styles, backgroundColor: "white" }),
@@ -38,6 +50,7 @@ export const ResourceSelector = ({ value, onChange, operationId }) => {
       backgroundColor: "transparent",
       border: state.isFocused ? "1px solid #0070f3" : 0,
       boxShadow: "none",
+      display: hasValues ? "block" : "none",
     }),
     option: (styles, { data, isDisabled, isFocused, isSelected }) => {
       const color = chroma(data.color) || chroma("blue");
@@ -138,22 +151,22 @@ const AddResourceMenu = ({
   onChange,
   operationId,
 }) => {
+  //For state
+  const defaultState = { ...options[0], amount: "" };
+  const [resourceToAdd, setResourceToAdd] = useState(defaultState);
+  console.log("resourceToAdd", resourceToAdd);
+
   //For pop up menu
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+
   const handleClick = (event) => {
-    console.log("event", event);
     setAnchorEl(event.currentTarget);
+    setResourceToAdd(defaultState);
   };
   const handleClose = () => {
     setAnchorEl(null);
   };
-
-  //For state
-  const [resourceToAdd, setResourceToAdd] = useState({
-    ...options[0],
-    amount: "",
-  });
 
   const handleChangeValue = (event) => {
     const amount = event.target.value;
@@ -175,18 +188,22 @@ const AddResourceMenu = ({
     setResourceToAdd(newState);
   };
 
-  const handleAdd = (event) => {
+  const handleValidate = (event) => {
     event.preventDefault();
-    const newRes = {
-      ...resourceToAdd,
-      id: generateId(),
-      label: `${resourceToAdd.title} - ${resourceToAdd.amount} ${resourceToAdd.unit}`,
-      value: resourceToAdd.title,
-    };
-    const newResources = [...selectedResources, newRes];
-    console.log("newResources", newResources);
-    onChange(operationId, newResources);
-    handleClose();
+    if (resourceToAdd.color) {
+      const newRes = {
+        ...resourceToAdd,
+        id: generateId(),
+        label: `${resourceToAdd.title} - ${resourceToAdd.amount} ${resourceToAdd.unit}`,
+        value: resourceToAdd.title,
+      };
+      const newResources = [...selectedResources, newRes];
+      console.log("newResources", newResources);
+      onChange(operationId, newResources);
+      handleClose();
+    } else {
+      alert("Error");
+    }
   };
 
   //For react-select styling
@@ -276,7 +293,7 @@ const AddResourceMenu = ({
         }}
         sx={{ pt: "0px", pb: "0px" }}
       >
-        <form onSubmit={handleAdd}>
+        <form onSubmit={handleValidate}>
           <AppBar position="static">
             <Toolbar>
               <IconButton edge="start" color="inherit" onClick={handleClose}>
