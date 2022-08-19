@@ -18,9 +18,9 @@ import BloodtypeIcon from "@mui/icons-material/Bloodtype";
 import MailIcon from "@mui/icons-material/Mail";
 import PersonIcon from "@mui/icons-material/Person";
 import { blueGrey } from "@mui/material/colors";
-import { useWindowWide } from "../hooks/windowWidth";
-import { BatchesMenu } from "./settings/batchesMenu";
-import { ResourcesMenu } from "./settings/resourcesMenu";
+import { useWindowWide } from "../../hooks/windowWidth";
+import { BatchesMenu } from "./batchesMenu";
+import { ResourcesMenu } from "./resourcesMenu";
 
 const Settings = ({ open, handleClose }) => {
   const menuItems = [

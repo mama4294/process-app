@@ -13,23 +13,23 @@ import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
-import styles from "../styles/operations.module.css";
+import styles from "../../styles/operations.module.css";
 import Alert from "@mui/material/Alert";
 import { blueGrey } from "@mui/material/colors";
 import { useState, useContext, useEffect, useCallback } from "react";
-import { useWindowWide } from "../hooks/windowWidth";
-import TextInput from "./inputs/textInput";
-import Dropdown from "./inputs/dropdown";
+import { useWindowWide } from "../../hooks/windowWidth";
+import TextInput from "../inputs/textInput";
+import Dropdown from "../inputs/dropdown";
 import {
   toggleSelection,
   toggleAll,
   addToArray,
   deleteByIds,
   getArrayOptions,
-} from "../utils/arrayLogic";
-import { generateId } from "../utils/helperFunctions";
-import { EquipmentContext } from "../contexts/equipmentContext";
-import { ResourceSelector } from "./inputs/resourceSelector";
+} from "../../utils/arrayLogic";
+import { generateId } from "../../utils/helperFunctions";
+import { EquipmentContext } from "../../contexts/equipmentContext";
+import { ResourceSelector } from "../inputs/resourceSelector";
 
 const EditEquipmentModal = ({ drawer, handleClose }) => {
   const { open, mode } = drawer;

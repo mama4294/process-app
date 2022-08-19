@@ -1,17 +1,20 @@
-import EquipmentOccupancyChart from "../components/equipmentOccupancy";
+import EquipmentOccupancyChart from "../components/equipment/equipmentOccupancy";
+import ResourcePage from "../components/resources/resourcePage";
 import ActionBar from "../components/actionBar";
 import Navbar from "../components/navbar";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { EquipmentContext } from "../contexts/equipmentContext";
 
 export default function Home() {
   const { openFormNew, openFormEdit } = useContext(EquipmentContext);
+  const [view, setView] = useState("Chart");
 
   return (
     <>
       <Navbar />
-      <ActionBar handleNew={openFormNew} handleEdit={openFormEdit} />
-      <EquipmentOccupancyChart />
+      <ActionBar handleNew={openFormNew} view={view} setView={setView} />
+      {view === "Chart" && <EquipmentOccupancyChart />}
+      {view === "Resources" && <ResourcePage />}
     </>
   );
 }

@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import styles from "../styles/EOchart.module.css";
+import styles from "../../styles/EOchart.module.css";
 import Tooltip from "@mui/material/Tooltip";
 import Alert from "@mui/material/Alert";
 import Stack from "@mui/material/Stack";
 import ActionMenu from "./actionMenu";
 import { useContext } from "react";
-import { EquipmentContext } from "../contexts/equipmentContext";
-import { CampaignContext } from "../contexts/campaignContext";
+import { EquipmentContext } from "../../contexts/equipmentContext";
+import { CampaignContext } from "../../contexts/campaignContext";
 import EditEquipment from "./editEquipment";
 
 //ISA 88 Terminology

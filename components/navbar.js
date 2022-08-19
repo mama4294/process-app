@@ -5,7 +5,7 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import SettingsIcon from "@mui/icons-material/Settings";
-import Settings from "../components/settings";
+import Settings from "./settings/settings";
 import { EquipmentContext } from "../contexts/equipmentContext";
 import { CampaignContext } from "../contexts/campaignContext";
 import { ResourceContext } from "../contexts/resourceContext";

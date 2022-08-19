@@ -2,7 +2,7 @@ import styles from "../styles/GanttChart.module.css";
 import Checkbox from "@mui/material/Checkbox";
 import Tooltip from "@mui/material/Tooltip";
 import { useContext } from "react";
-import { EquipmentContext } from "../contexts/equipmentContext";
+import { EquipmentContext } from "../../contexts/equipmentContext";
 
 //ISA 88 Terminology
 

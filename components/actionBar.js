@@ -15,20 +15,20 @@ import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ShowChartIcon from "@mui/icons-material/ShowChart";
 
-const ActionBar = ({ handleNew }) => {
+const ActionBar = ({ handleNew, view, setView }) => {
   const { solveEquipmentOccupancy } = useContext(EquipmentContext);
 
   return (
     <div className={styles.actionBar}>
-      <ViewSelector />
+      <ViewSelector view={view} setView={setView} />
       <Tooltip title="Add Equipment">
         <IconButton onClick={handleNew}>
-          <AddIcon />
+          <AddIcon color="primary" />
         </IconButton>
       </Tooltip>
       <Tooltip title="Recalculate schedule">
         <IconButton onClick={solveEquipmentOccupancy}>
-          <CachedIcon />
+          <CachedIcon color="primary" />
         </IconButton>
       </Tooltip>
     </div>
@@ -37,7 +37,7 @@ const ActionBar = ({ handleNew }) => {
 
 export default ActionBar;
 
-const ViewSelector = () => {
+const ViewSelector = ({ view, setView }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -45,6 +45,22 @@ const ViewSelector = () => {
   };
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const getIcon = (view) => {
+    switch (view) {
+      case "Chart":
+        return <AlignHorizontalLeftIcon />;
+      case "Resources":
+        return <ShowChartIcon />;
+      default:
+        return <AlignHorizontalLeftIcon />;
+    }
+  };
+
+  const handleSelect = (event) => {
+    setView(event.target.outerText);
+    handleClose();
   };
 
   return (
@@ -55,13 +71,13 @@ const ViewSelector = () => {
           aria-controls={open ? "demo-customized-menu" : undefined}
           aria-haspopup="true"
           aria-expanded={open ? "true" : undefined}
-          // variant="contained"
+          variant="outlined"
           disableElevation
           onClick={handleClick}
-          startIcon={<AlignHorizontalLeftIcon />}
+          startIcon={getIcon(view)}
           endIcon={<KeyboardArrowDownIcon />}
         >
-          Chart
+          {view}
         </Button>
       </Tooltip>
       <Menu
@@ -73,13 +89,13 @@ const ViewSelector = () => {
           "aria-labelledby": "basic-button",
         }}
       >
-        <MenuItem onClick={handleClose}>
+        <MenuItem onClick={handleSelect}>
           <ListItemIcon>
             <AlignHorizontalLeftIcon fontSize="small" />
           </ListItemIcon>
           <ListItemText>Chart</ListItemText>
         </MenuItem>
-        <MenuItem onClick={handleClose}>
+        <MenuItem onClick={handleSelect}>
           <ListItemIcon>
             <ShowChartIcon fontSize="small" />
           </ListItemIcon>
