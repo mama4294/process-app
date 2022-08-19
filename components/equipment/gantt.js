@@ -4,25 +4,6 @@ import Tooltip from "@mui/material/Tooltip";
 import { useContext } from "react";
 import { EquipmentContext } from "../../contexts/equipmentContext";
 
-//ISA 88 Terminology
-
-// Equipment Model
-// - Process Cell
-// - Unit (equipment)
-// - Equipment Module
-
-// Operational Model
-// - Procedure
-// - Unit Procedure
-// - Operation
-// - Phase
-
-// Process Model
-// Process
-// Process Stage
-// Process Operation
-// Process Action
-
 const GanttChart = () => {
   const { equipment } = useContext(EquipmentContext);
 
