@@ -19,6 +19,11 @@
   align-items: center;
 }
 
+.scrollX{
+  overflow-x: auto;
+}
+
+
 .error{
   background-color: #FDEDED;
 }

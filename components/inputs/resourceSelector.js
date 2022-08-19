@@ -36,7 +36,6 @@ const filterArrayByTitle = (array, otherArray) => {
 export const ResourceSelector = ({ value, onChange, operationId }) => {
   const { resourceOptions } = useContext(ResourceContext);
   const options = filterArrayByTitle(resourceOptions, value);
-  console.log(operationId, options);
 
   const hasValues = value.length > 0;
 
@@ -154,7 +153,6 @@ const AddResourceMenu = ({
   //For state
   const defaultState = { ...options[0], amount: "" };
   const [resourceToAdd, setResourceToAdd] = useState(defaultState);
-  console.log("resourceToAdd", resourceToAdd);
 
   //For pop up menu
   const [anchorEl, setAnchorEl] = useState(null);
@@ -171,7 +169,6 @@ const AddResourceMenu = ({
   const handleChangeValue = (event) => {
     const amount = event.target.value;
     const newState = { ...resourceToAdd, amount: amount };
-    console.log("Added new resource, ", newState);
     setResourceToAdd(newState);
   };
 
@@ -191,18 +188,19 @@ const AddResourceMenu = ({
   const handleValidate = (event) => {
     event.preventDefault();
     if (resourceToAdd.color) {
+      const amount = resourceToAdd.amount === "" ? 0 : resourceToAdd.amount;
       const newRes = {
         ...resourceToAdd,
         id: generateId(),
-        label: `${resourceToAdd.title} - ${resourceToAdd.amount} ${resourceToAdd.unit}`,
+        label: `${resourceToAdd.title} - ${amount} ${resourceToAdd.unit}`,
         value: resourceToAdd.title,
+        amount: amount,
       };
       const newResources = [...selectedResources, newRes];
-      console.log("newResources", newResources);
       onChange(operationId, newResources);
       handleClose();
     } else {
-      alert("Error");
+      alert("No resource selected");
     }
   };
 

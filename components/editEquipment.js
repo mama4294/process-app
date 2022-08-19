@@ -266,30 +266,34 @@ const Table = ({
 }) => {
   return (
     <>
-      <TableHeader
-        operations={operations}
-        handleToggleAll={handleToggleAll}
-        selectedOperations={selectedOperations}
+      <TableTitle
         handleAdd={handleAdd}
         handleDelete={handleDelete}
+        selectedOperations={selectedOperations}
       />
-      {operations.length > 0 &&
-        operations.map((operation) => {
-          return (
-            <OperationRow
-              operations={operations}
-              operation={operation}
-              externalOptions={externalOptions}
-              key={operation.id}
-              numColumns={numColumns}
-              handleChangeOperation={handleChangeOperation}
-              handleChangeResources={handleChangeResources}
-              selectedOperations={selectedOperations}
-              handleToggle={handleToggle}
-              error={error}
-            />
-          );
-        })}
+      <div className={styles.scrollX}>
+        <TableHeader
+          operations={operations}
+          handleToggleAll={handleToggleAll}
+        />
+        {operations.length > 0 &&
+          operations.map((operation) => {
+            return (
+              <OperationRow
+                operations={operations}
+                operation={operation}
+                externalOptions={externalOptions}
+                key={operation.id}
+                numColumns={numColumns}
+                handleChangeOperation={handleChangeOperation}
+                handleChangeResources={handleChangeResources}
+                selectedOperations={selectedOperations}
+                handleToggle={handleToggle}
+                error={error}
+              />
+            );
+          })}
+      </div>
 
       {operations.length > 0 && (
         <Button variant="outline" onClick={handleAdd} sx={{ mt: 2 }}>
@@ -300,13 +304,25 @@ const Table = ({
   );
 };
 
-const TableHeader = ({
-  operations,
-  handleToggleAll,
-  selectedOperations,
-  handleAdd,
-  handleDelete,
-}) => {
+const TableTitle = ({ handleAdd, handleDelete, selectedOperations }) => {
+  return (
+    <div className={styles.titleContainer}>
+      <div className={styles.title}>Operations</div>
+
+      {selectedOperations.length > 0 ? (
+        <IconButton onClick={handleDelete}>
+          <DeleteIcon color="action" />
+        </IconButton>
+      ) : (
+        <IconButton onClick={handleAdd}>
+          <AddIcon color="action" />
+        </IconButton>
+      )}
+    </div>
+  );
+};
+
+const TableHeader = ({ operations, handleToggleAll }) => {
   const headers = [
     "Title",
     "Duration",
@@ -321,19 +337,6 @@ const TableHeader = ({
   const label = { inputProps: { "aria-label": "selection" } };
   return (
     <>
-      <div className={styles.titleContainer}>
-        <div className={styles.title}>Operations</div>
-
-        {selectedOperations.length > 0 ? (
-          <IconButton onClick={handleDelete}>
-            <DeleteIcon color="action" />
-          </IconButton>
-        ) : (
-          <IconButton onClick={handleAdd}>
-            <AddIcon color="action" />
-          </IconButton>
-        )}
-      </div>
       {operations.length > 0 && (
         <div className={`${styles.chartRow} ${styles.headerRow}`}>
           <div>
