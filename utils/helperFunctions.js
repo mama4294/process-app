@@ -10,7 +10,7 @@ export const sortArrayByStart = (array) => {
   return array.sort((a, b) => a.start - b.start);
 };
 
-const roundToTwo = (num) => {
+export const roundToTwo = (num) => {
   return Math.round((num + Number.EPSILON) * 100) / 100;
 };
 

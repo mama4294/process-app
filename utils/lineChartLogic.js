@@ -41,28 +41,55 @@ export const createChartData = (
   resourceTitle,
   offsetTime
 ) => {
+  const labels = createDataLabels(xAxis);
+  const datasets = createDatasets(xAxis, operations, resourceTitle, offsetTime);
+  const max = calcMax(datasets);
+  const average = calcAverage(datasets);
+
   return {
-    labels: createDataLabels(xAxis),
-    datasets: createDatasets(xAxis, operations, resourceTitle, offsetTime),
+    labels: labels,
+    datasets: datasets,
+    max: max,
+    average: average,
   };
+};
+
+const calcAverage = (datasets) => {
+  const dataArray = datasets[datasets.length - 1].data;
+  let sum = 0;
+  dataArray.map((value) => {
+    sum = sum + value;
+  });
+  return sum / dataArray.length;
+};
+
+const calcMax = (datasets) => {
+  const dataArray = datasets[datasets.length - 1].data;
+  let max = -9999999;
+  dataArray.map((value) => {
+    if (value > max) max = value;
+  });
+  return max;
 };
 
 const createDataLabels = (xAxis) => {
   return xAxis.map((timepoint) => timepoint.label);
 };
 
-const calculateTotals = (dataset) => {
+const addTotalsToDataset = (dataset) => {
   let totalArray = [];
   if (!dataset[0]) return totalArray;
-  console.log("dataset", dataset);
-  const length = dataset[0].data.length;
-  let i = 0;
-  while (i < length) {
-    const subtotal = dataset.reduce((acc, set) => acc + set.data[i]);
-    totalArray.push(subtotal);
-    i++;
+  const rows = dataset.length;
+  const columns = dataset[0].data.length;
+
+  for (let i = 0; i < columns; i++) {
+    let sum = 0;
+    for (let j = 0; j < rows; j++) {
+      sum = sum + dataset[j].data[i];
+    }
+    totalArray.push(sum);
   }
-  console.log("totalArray", totalArray);
+  return totalArray;
 };
 
 const createDatasets = (xAxis, operations, resourceTitle, offsetTime) => {
@@ -80,7 +107,15 @@ const createDatasets = (xAxis, operations, resourceTitle, offsetTime) => {
       unit: resource.unit,
     });
   });
-  console.log("calculateTotals", calculateTotals(dataset));
+
+  if (operations.length > 1) {
+    //add total row
+    dataset.push({
+      label: "Total",
+      data: addTotalsToDataset(dataset),
+      unit: "Total",
+    });
+  }
   return dataset;
 };
 
