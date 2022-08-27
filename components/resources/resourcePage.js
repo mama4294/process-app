@@ -21,8 +21,8 @@ const ResourcePage = () => {
   const offsetTime = Math.abs(
     bottleneck.operations[0] ? bottleneck.operations[0].start : 0
   );
-  console.log("offsetTime", offsetTime);
   const xAxis = createXAxis(cycleTime, 2);
+  const hasOperations = operations.flatMap((op) => op.resources).length > 0;
 
   return (
     <Box
@@ -32,38 +32,55 @@ const ResourcePage = () => {
         padding: "10px 10px",
       }}
     >
-      {resourceOptions.map((resource) => {
-        return (
-          <LineChartCard
-            key={resource.id}
-            resource={resource}
-            operations={operations}
-            xAxis={xAxis}
-            offsetTime={offsetTime}
-          />
-        );
-      })}
+      {hasOperations ? (
+        resourceOptions.map((resource) => {
+          const filteredOperations = filterOperationsByResource(
+            operations,
+            resource.title
+          );
+          const hasResources = filteredOperations.length > 0;
+          if (!hasResources) return <></>;
+          return (
+            <LineChartCard
+              key={resource.id}
+              resource={resource}
+              operations={filteredOperations}
+              xAxis={xAxis}
+              offsetTime={offsetTime}
+            />
+          );
+        })
+      ) : (
+        <NoResourcesCard />
+      )}
+    </Box>
+  );
+};
+
+const NoResourcesCard = () => {
+  return (
+    <Box
+      sx={{
+        background: "white",
+        padding: "20px",
+        borderRadius: "2px",
+        mb: "20px",
+      }}
+    >
+      <h6>No operations use a resource</h6>
     </Box>
   );
 };
 
 const LineChartCard = ({ resource, operations, xAxis, offsetTime }) => {
-  const filteredOperations = filterOperationsByResource(
-    operations,
-    resource.title
-  );
-
-  const hasData = filteredOperations.length > 0;
-
   const chartData = createChartData(
     xAxis,
-    filteredOperations,
+    operations,
     resource.title,
     offsetTime
   );
 
   const chartOptions = createChartOptions(resource);
-  if (!hasData) return <></>;
   return (
     <Box
       sx={{

@@ -55,6 +55,7 @@ export const createChartData = (
 };
 
 const calcAverage = (datasets) => {
+  if (datasets.length < 1) return null;
   const dataArray = datasets[datasets.length - 1].data;
   let sum = 0;
   dataArray.map((value) => {
@@ -64,6 +65,7 @@ const calcAverage = (datasets) => {
 };
 
 const calcMax = (datasets) => {
+  if (datasets.length < 1) return null;
   const dataArray = datasets[datasets.length - 1].data;
   let max = -9999999;
   dataArray.map((value) => {
