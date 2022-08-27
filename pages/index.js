@@ -11,6 +11,11 @@ export default function Home() {
 
   return (
     <>
+      <Head>
+      <title>Resource Visualizer</title>
+      <meta name="Resource Visualizer" content="An engineering tool for visualizing processes" />       
+      <link rel="icon" href="/favicon.ico" />
+  </Head>
       <Navbar />
       <ActionBar handleNew={openFormNew} view={view} setView={setView} />
       {view === "Chart" && <EquipmentOccupancyChart />}
