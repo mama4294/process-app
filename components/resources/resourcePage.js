@@ -30,6 +30,8 @@ const ResourcePage = () => {
         minWidth: "650px",
         margin: "0 auto",
         padding: "10px 10px",
+        display: "flex",
+        flexWrap: "wrap",
       }}
     >
       {hasOperations ? (
@@ -38,6 +40,8 @@ const ResourcePage = () => {
             operations,
             resource.title
           );
+          console.log("Filtered by: ", resource.title);
+          console.log("filteredOperations", filteredOperations);
           const hasResources = filteredOperations.length > 0;
           if (!hasResources) return <></>;
           return (
@@ -86,14 +90,28 @@ const LineChartCard = ({ resource, operations, xAxis, offsetTime }) => {
       sx={{
         background: "white",
         padding: "20px",
-        borderRadius: "2px",
-        mb: "20px",
+        borderRadius: "4px",
+        m: "20px",
       }}
     >
-      <h2 style={{ color: resource.color }}>{resource.title}</h2>
-      <h6>{`Max: ${chartData.max} ${resource.unit}`}</h6>
-      <h6>{`Average: ${roundToTwo(chartData.average)} ${resource.unit}`}</h6>
+      <h2 style={{ color: resource.color, textAlign: "center" }}>
+        {resource.title}
+      </h2>
       <LineChart data={chartData} options={chartOptions} />
+      <p style={{ color: resource.color, textAlign: "center" }}>
+        Max:{" "}
+        <span
+          style={{ fontWeight: "bold" }}
+        >{`${chartData.max} ${resource.unit}`}</span>
+        <span></span>
+      </p>
+      <p style={{ color: resource.color, textAlign: "center" }}>
+        Average:
+        <span style={{ fontWeight: "bold" }}>
+          {" "}
+          {`${roundToTwo(chartData.average)} ${resource.unit}`}{" "}
+        </span>
+      </p>
     </Box>
   );
 };

@@ -148,13 +148,41 @@ const findObjectByTitle = (searchArray, title) => {
 export const createChartOptions = (resource) => {
   return {
     responsive: true,
+    scales: {
+      x: {
+        display: true,
+        title: {
+          display: false,
+          text: "Time",
+        },
+        grid: {
+          display: false,
+          drawBorder: false,
+          drawOnChartArea: false,
+          drawTicks: false,
+        },
+      },
+      y: {
+        display: true,
+        title: {
+          display: true,
+          text: resource.unit,
+        },
+        grid: {
+          display: false,
+          drawBorder: false,
+          drawOnChartArea: false,
+          drawTicks: false,
+        },
+      },
+    },
     plugins: {
       legend: {
         display: false,
         position: "top",
       },
       title: {
-        display: true,
+        display: false,
         text: resource.title,
         color: resource.color,
       },
