@@ -1,4 +1,4 @@
-import Head from 'next/head'
+import Head from "next/head";
 import EquipmentOccupancyChart from "../components/equipment/equipmentOccupancy";
 import ResourcePage from "../components/resources/resourcePage";
 import ActionBar from "../components/actionBar";
@@ -13,14 +13,19 @@ export default function Home() {
   return (
     <>
       <Head>
-      <title>Resource Visualizer</title>
-      <meta name="Resource Visualizer" content="An engineering tool for visualizing processes" />       
-      <link rel="icon" href="/favicon.ico" />
-  </Head>
+        <title>Resource Visualizer</title>
+        <meta
+          name="Resource Visualizer"
+          content="An engineering tool for visualizing processes"
+        />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
       <Navbar />
       <ActionBar handleNew={openFormNew} view={view} setView={setView} />
-      {view === "Chart" && <EquipmentOccupancyChart />}
-      {view === "Resources" && <ResourcePage />}
+      <div style={{ marginTop: "120px" }}>
+        {view === "Chart" && <EquipmentOccupancyChart />}
+        {view === "Resources" && <ResourcePage />}
+      </div>
     </>
   );
 }
