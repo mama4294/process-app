@@ -23,7 +23,7 @@ export const createXAxis = (length) => {
     timeUnit = "hr";
     timeValue = 60;
   } else if (length > 60 * 2) {
-    step = 30;
+    step = 10;
     timeUnit = "min";
   }
 
@@ -99,6 +99,8 @@ const createDatasets = (xAxis, operations, resourceTitle, offsetTime) => {
   let dataset = [];
   operations.map((operation) => {
     const resource = findObjectByTitle(operation.resources, resourceTitle);
+    console.log("");
+    console.log("-------resourceTitle-------", resourceTitle);
     dataset.push({
       label: operation.title,
       data: createResourceTimeline(
@@ -132,13 +134,27 @@ const createResourceTimeline = (
   xAxis.map((timepoint) => {
     let amount = 0;
     if (
-      timepoint.value > operation.start + offsetTime &&
+      timepoint.value >= operation.start + offsetTime &&
       timepoint.value < operation.end + offsetTime
     ) {
       amount = Number(resourceAmount);
     }
     data.push(amount);
+    console.log(operation.title);
+    console.log(
+      "timepoint: ",
+      timepoint.value,
+      " Amount: ",
+      amount,
+      "Start:",
+      operation.start,
+      "End:",
+      operation.end,
+      "Offset",
+      offsetTime
+    );
   });
+
   return data;
 };
 

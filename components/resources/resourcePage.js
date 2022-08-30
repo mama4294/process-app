@@ -19,7 +19,7 @@ const ResourcePage = () => {
   const bottleneck = calcCycleTime();
   const cycleTime = bottleneck.duration;
   const offsetTime = Math.abs(
-    bottleneck.operations[0] ? bottleneck.operations[0].start : 0
+    bottleneck.operations[0].start < 0 ? bottleneck.operations[0].start : 0
   );
   const xAxis = createXAxis(cycleTime, 2);
   const hasOperations = operations.flatMap((op) => op.resources).length > 0;
