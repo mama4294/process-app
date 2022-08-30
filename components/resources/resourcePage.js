@@ -32,6 +32,7 @@ const ResourcePage = () => {
         padding: "10px 10px",
         display: "flex",
         flexWrap: "wrap",
+        backgroundColor: "#dddddd",
       }}
     >
       {hasOperations ? (
@@ -92,6 +93,8 @@ const LineChartCard = ({ resource, operations, xAxis, offsetTime }) => {
         padding: "20px",
         borderRadius: "4px",
         m: "20px",
+        boxShadow:
+          "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
       }}
     >
       <h2 style={{ color: resource.color, textAlign: "center" }}>

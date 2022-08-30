@@ -4,6 +4,7 @@
     border: 0px;
     flex-basis: 6ch;
     background-color: transparent;
+    color: black;
 }
 
 .textInput:hover{

@@ -12,12 +12,13 @@ export const createXAxis = (length) => {
   let step = 15;
   let timeUnit = "min";
   let timeValue = 1;
+  console.log("length", length);
 
   if (length > 60 * 24 * 6) {
     step = 60 * 3;
     timeUnit = "day";
     timeValue = 60 * 24;
-  } else if (length > 60 * 4) {
+  } else if (length > 60 * 10) {
     step = 60;
     timeUnit = "hr";
     timeValue = 60;
