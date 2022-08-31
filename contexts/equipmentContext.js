@@ -231,7 +231,7 @@ export const EquipmentProvider = ({ children }) => {
   const findEquipmentDuration = (operations) => {
     const start = operations[0].start;
     const end = operations[operations.length - 1].end;
-    const duration = end - start;
+    const duration = Number(end - start);
     return duration;
   };
 

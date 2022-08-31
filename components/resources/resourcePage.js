@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import { EquipmentContext } from "../../contexts/equipmentContext";
 import { ResourceContext } from "../../contexts/resourceContext";
+import { CampaignContext } from "../../contexts/campaignContext";
 import { roundToTwo } from "../../utils/helperFunctions";
 import Box from "@mui/material/Box";
 import { LineChart } from "../charts/LineChart";
@@ -14,6 +15,7 @@ import {
 const ResourcePage = () => {
   const { equipment, calcCycleTime } = useContext(EquipmentContext);
   const { resourceOptions } = useContext(ResourceContext);
+  const { batches } = useContext(CampaignContext);
   const operations = equipment.flatMap((eq) => eq.operations);
 
   const bottleneck = calcCycleTime();
@@ -21,7 +23,7 @@ const ResourcePage = () => {
   const offsetTime = Math.abs(
     bottleneck.operations[0].start < 0 ? bottleneck.operations[0].start : 0
   );
-  const xAxis = createXAxis(cycleTime, 2);
+  const xAxis = createXAxis(cycleTime * batches.length + offsetTime);
   const hasOperations = operations.flatMap((op) => op.resources).length > 0;
 
   return (
@@ -51,7 +53,9 @@ const ResourcePage = () => {
               resource={resource}
               operations={filteredOperations}
               xAxis={xAxis}
+              cycleTime={cycleTime}
               offsetTime={offsetTime}
+              batches={batches}
             />
           );
         })
@@ -77,12 +81,21 @@ const NoResourcesCard = () => {
   );
 };
 
-const LineChartCard = ({ resource, operations, xAxis, offsetTime }) => {
+const LineChartCard = ({
+  resource,
+  operations,
+  xAxis,
+  offsetTime,
+  cycleTime,
+  batches,
+}) => {
   const chartData = createChartData(
     xAxis,
     operations,
     resource.title,
-    offsetTime
+    offsetTime,
+    cycleTime,
+    batches
   );
 
   const chartOptions = createChartOptions(resource);

@@ -16,15 +16,11 @@ const GanttChart = () => {
   );
 
   return (
-    <>
-      <div className={styles.container}>
-        <div className={styles.chart}>
-          {/* <ChartHeader numColumns={numColumns}/> */}
-          {/* <ChartLines numColumns={numColumns}/> */}
-          <ProcedureTable EquipmentData={equipment} numColumns={numColumns} />
-        </div>
+    <div className={styles.container}>
+      <div className={styles.chart}>
+        <ProcedureTable EquipmentData={equipment} numColumns={numColumns} />
       </div>
-    </>
+    </div>
   );
 };
 
@@ -86,41 +82,6 @@ const Operation = ({ operation }) => {
     </li>
   );
 };
-
-// const ChartLines = ({ numColumns }) => {
-//   var rows = [],
-//     i = 0,
-//     len = numColumns;
-//   while (++i <= len) rows.push(i);
-//   return (
-//     <div
-//       className={(styles.chartRow, styles.chartLines)}
-//       style={{ gridTemplateColumns: `50px repeat(${numColumns}, 1fr)` }}
-//     >
-//       {rows.map((column, index) => {
-//         return <span key={index}></span>;
-//       })}
-//     </div>
-//   );
-// };
-
-// const ChartHeader = ({ numColumns }) => {
-//   var rows = [],
-//     i = 0,
-//     len = numColumns;
-//   while (++i <= len) rows.push(i);
-//   return (
-//     <div
-//       className="chart-row chart-period"
-//       style={{ gridTemplateColumns: `50px repeat(${numColumns}, 1fr)` }}
-//     >
-//       <div className="chart-row-item"></div>
-//       {rows.map((column, index) => {
-//         return <span key={index}>{index + 1}</span>;
-//       })}
-//     </div>
-//   );
-// };
 
 const findLargestEndpoint = (array) => {
   return Math.max(...array.map((o) => o.end), 0);

@@ -1,3 +1,5 @@
+import { convertToMinutes } from "./ganttLogic";
+
 export const filterOperationsByResource = (operations, resource) => {
   let newArray = [];
   operations.map((op) => {
@@ -9,28 +11,36 @@ export const filterOperationsByResource = (operations, resource) => {
 };
 
 export const createXAxis = (length) => {
-  let step = 15;
-  let timeUnit = "min";
-  let timeValue = 1;
-  console.log("length", length);
+  //Old method
+  // let step = 15;
+  // let timeUnit = "min";
+  // let timeValue = 1;
+  // console.log("length", length);
 
-  if (length > 60 * 24 * 6) {
-    step = 60 * 3;
-    timeUnit = "day";
-    timeValue = 60 * 24;
-  } else if (length > 60 * 10) {
-    step = 60;
-    timeUnit = "hr";
-    timeValue = 60;
-  } else if (length > 60 * 2) {
-    step = 10;
-    timeUnit = "min";
-  }
+  // if (length > 60 * 24 * 6) {
+  //   step = 60 * 3;
+  //   timeUnit = "day";
+  //   timeValue = 60 * 24;
+  // } else if (length > 60 * 10) {
+  //   step = 60;
+  //   timeUnit = "hr";
+  //   timeValue = 60;
+  // } else if (length > 60 * 2) {
+  //   step = 10;
+  //   timeUnit = "min";
+  // }
 
+  // const xAxis = [];
+  // let i = 0;
+  // while (i < length) {
+  //   xAxis.push({ value: i, label: `${i / timeValue} ${timeUnit}` });
+  //   i = i + step;
+  // }
+  const step = 1;
   const xAxis = [];
   let i = 0;
   while (i < length) {
-    xAxis.push({ value: i, label: `${i / timeValue} ${timeUnit}` });
+    xAxis.push({ value: i, label: `${i} min` });
     i = i + step;
   }
   return xAxis;
@@ -40,10 +50,19 @@ export const createChartData = (
   xAxis,
   operations,
   resourceTitle,
-  offsetTime
+  offsetTime,
+  cycleTime,
+  batches
 ) => {
   const labels = createDataLabels(xAxis);
-  const datasets = createDatasets(xAxis, operations, resourceTitle, offsetTime);
+  const datasets = createDatasets(
+    xAxis,
+    operations,
+    resourceTitle,
+    offsetTime,
+    cycleTime,
+    batches
+  );
   const max = calcMax(datasets);
   const average = calcAverage(datasets);
 
@@ -95,8 +114,16 @@ const addTotalsToDataset = (dataset) => {
   return totalArray;
 };
 
-const createDatasets = (xAxis, operations, resourceTitle, offsetTime) => {
+const createDatasets = (
+  xAxis,
+  operations,
+  resourceTitle,
+  offsetTime,
+  cycleTime,
+  batches
+) => {
   let dataset = [];
+  const numBatches = batches.length;
   operations.map((operation) => {
     const resource = findObjectByTitle(operation.resources, resourceTitle);
     console.log("");
@@ -107,7 +134,9 @@ const createDatasets = (xAxis, operations, resourceTitle, offsetTime) => {
         operation,
         xAxis,
         resource.amount,
-        offsetTime
+        offsetTime,
+        cycleTime,
+        numBatches
       ),
       unit: resource.unit,
     });
@@ -121,6 +150,7 @@ const createDatasets = (xAxis, operations, resourceTitle, offsetTime) => {
       unit: "Total",
     });
   }
+  console.log("Dataset", dataset);
   return dataset;
 };
 
@@ -128,32 +158,28 @@ const createResourceTimeline = (
   operation,
   xAxis,
   resourceAmount,
-  offsetTime
+  offsetTime,
+  cycleTime,
+  numBatches
 ) => {
-  let data = [];
-  xAxis.map((timepoint) => {
-    let amount = 0;
-    if (
-      timepoint.value >= operation.start + offsetTime &&
-      timepoint.value < operation.end + offsetTime
-    ) {
-      amount = Number(resourceAmount);
-    }
-    data.push(amount);
-    console.log(operation.title);
-    console.log(
-      "timepoint: ",
-      timepoint.value,
-      " Amount: ",
-      amount,
-      "Start:",
-      operation.start,
-      "End:",
-      operation.end,
-      "Offset",
-      offsetTime
+  //create empty array of 0's for each minute
+  const totalCampaignDuration = cycleTime * numBatches + offsetTime;
+  let data = new Array(totalCampaignDuration);
+  for (let i = 0; i < totalCampaignDuration; ++i) data[i] = 0;
+
+  //create array of process values
+  const duration = convertToMinutes(operation.duration, operation.durationUnit);
+  let processArray = new Array(duration);
+  for (let i = 0; i < duration; ++i) processArray[i] = Number(resourceAmount);
+
+  //Combine arrays
+  for (let i = 0; i < numBatches; ++i) {
+    data.splice(
+      operation.start + i * cycleTime,
+      operation.duration,
+      ...processArray
     );
-  });
+  }
 
   return data;
 };

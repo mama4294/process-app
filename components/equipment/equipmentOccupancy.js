@@ -190,12 +190,12 @@ const Operation = ({
 
   const backgroundColor = error ? "red" : color;
   const batchOffset = batchIndex * cycleTime;
+  const correctedStart = start + batchOffset + negativeCorrection;
+  const correctedEnd = end + batchOffset + negativeCorrection;
 
   const listItemStyle = {
     color: "#red",
-    gridColumn: `${start + batchOffset + negativeCorrection}/${
-      end + batchOffset + negativeCorrection
-    }`,
+    gridColumn: `${correctedStart}/${correctedEnd}`,
   };
 
   const operationStyle = {
@@ -208,7 +208,12 @@ const Operation = ({
       style={listItemStyle}
       onClick={handleEdit}
     >
-      <Tooltip title={`Batch: ${batchIndex + 1}, Operation: ${title}`} arrow>
+      <Tooltip
+        title={`Batch: ${
+          batchIndex + 1
+        }, Operation: ${title}, Start: ${correctedStart}, End: ${correctedEnd}`}
+        arrow
+      >
         <div className={styles.taskContainer} style={operationStyle}></div>
       </Tooltip>
     </li>

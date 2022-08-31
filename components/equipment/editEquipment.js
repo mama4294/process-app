@@ -81,7 +81,7 @@ const EquipmentInputForm = ({ mode, handleClose }) => {
   const defaultOperation = {
     id: generateId(),
     title: "",
-    duration: "1",
+    duration: 1,
     durationUnit: { value: "hr", label: "hr" },
     predecessor:
       operations.length > 0

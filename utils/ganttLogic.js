@@ -1,6 +1,6 @@
 import { sortArrayByStart } from "../utils/helperFunctions";
 
-const convertToMinutes = (value, unit) => {
+export const convertToMinutes = (value, unit) => {
   if (unit.value === "min") return value * 1;
   if (unit.value === "hr") return value * 60;
   if (unit.value === "day") return value * 60 * 24;
@@ -40,10 +40,6 @@ const calcStartAndEnd = (operation, predecessor) => {
   //add lag
   const start = startMin + offsetMin;
   const end = endMin + offsetMin;
-
-  //   console.log(
-  //     `${title}--- predStart: ${predecessor.start}, predEnd: ${predecessor.end}, duration: ${durationMin}, offset: ${offsetMin}, startMin: ${startMin}, endMin: ${endMin}`
-  //   );
 
   const newOperation = { ...operation, start, end };
   return newOperation;

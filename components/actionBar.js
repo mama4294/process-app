@@ -89,13 +89,13 @@ const ViewSelector = ({ view, setView }) => {
           "aria-labelledby": "basic-button",
         }}
       >
-        <MenuItem onClick={handleSelect}>
+        <MenuItem onClick={handleSelect} selected={view === "Chart"}>
           <ListItemIcon>
             <AlignHorizontalLeftIcon fontSize="small" />
           </ListItemIcon>
           <ListItemText>Chart</ListItemText>
         </MenuItem>
-        <MenuItem onClick={handleSelect}>
+        <MenuItem onClick={handleSelect} selected={view === "Resources"}>
           <ListItemIcon>
             <ShowChartIcon fontSize="small" />
           </ListItemIcon>
