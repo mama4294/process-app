@@ -97,7 +97,6 @@ const LineChartCard = ({
     cycleTime,
     batches
   );
-
   const chartOptions = createChartOptions(resource);
   return (
     <Box

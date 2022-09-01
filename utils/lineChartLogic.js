@@ -1,4 +1,6 @@
 import { convertToMinutes } from "./ganttLogic";
+import { useContext } from "react";
+import { EquipmentContext } from "../contexts/equipmentContext";
 
 export const filterOperationsByResource = (operations, resource) => {
   let newArray = [];
@@ -124,12 +126,12 @@ const createDatasets = (
 ) => {
   let dataset = [];
   const numBatches = batches.length;
+  const { findEquipmentById } = useContext(EquipmentContext);
   operations.map((operation) => {
     const resource = findObjectByTitle(operation.resources, resourceTitle);
-    console.log("");
-    console.log("-------resourceTitle-------", resourceTitle);
+    const parentEquipment = findEquipmentById(operation.parentId);
     dataset.push({
-      label: operation.title,
+      label: `${parentEquipment.title} - ${operation.title}`,
       data: createResourceTimeline(
         operation,
         xAxis,
@@ -139,15 +141,23 @@ const createDatasets = (
         numBatches
       ),
       unit: resource.unit,
+      borderColor: "gray",
+      pointRadius: 1,
+      borderWidth: 1,
+      fill: true,
     });
   });
 
   if (operations.length > 1) {
     //add total row
     dataset.push({
-      label: "Total",
+      label: "Sum",
       data: addTotalsToDataset(dataset),
       unit: "Total",
+      borderColor: "#EB144C",
+      borderDash: [1, 1],
+      borderWidth: 1,
+      pointRadius: 0,
     });
   }
   console.log("Dataset", dataset);
@@ -229,6 +239,31 @@ export const createChartOptions = (resource) => {
         text: resource.title,
         color: resource.color,
       },
+      tooltip: {
+        callbacks: {
+          label: function (context) {
+            let label = context.dataset.label || "";
+
+            if (label) {
+              label += ": ";
+            }
+            if (context.parsed.y !== null) {
+              label += `${context.parsed.y} ${resource.unit}`;
+            }
+            return label;
+          },
+          // footer: footer,
+        },
+      },
     },
   };
+};
+
+const footer = (tooltipItems) => {
+  let sum = 0;
+
+  tooltipItems.forEach(function (tooltipItem) {
+    sum += tooltipItem.parsed.y;
+  });
+  return "Sum: " + sum;
 };
