@@ -41,7 +41,7 @@ const EquipmentOccupancyChart = () => {
           <ProcedureTable EquipmentData={equipment} />
         </div>
       </div>
-      {drawer.open && <EditEquipment drawer={drawer} handleClose={closeForm} />}
+      <EditEquipment drawer={drawer} handleClose={closeForm} />
     </>
   );
 };

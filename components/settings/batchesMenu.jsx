@@ -27,7 +27,7 @@ const headers = [
 
     return (
       <Box sx={{ height: "100%" }}>
-        <Box sx={{ background: "white", p:2, mt: 3, borderRadius: 2 }}>
+        <Box sx={{ background: "white", p:2, mb: 3, borderRadius: 2 }}>
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
           Campaign Information
         </Typography>
@@ -38,7 +38,7 @@ const headers = [
         </Box>
 
         </Box>
-        <Box sx={{ background: "white", p:2, mt: 3, borderRadius: 2 }}>
+        <Box sx={{ background: "white", p:2, mb: 3, borderRadius: 2 }}>
         <DataTable 
             headers={headers} 
             data={batches} 

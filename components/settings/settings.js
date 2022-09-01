@@ -45,7 +45,7 @@ const Settings = ({ open, handleClose }) => {
         }}
         open={open}
         onClose={handleClose}
-        variant="temporary"
+        // transitionDuration={10000}
       >
         <Box sx={{ display: "flex", height: "100%" }}>
           <AppBar
@@ -70,9 +70,14 @@ const Settings = ({ open, handleClose }) => {
           />
           <Box
             component="main"
-            sx={{ flexGrow: 1, p: 3, background: "#DDDDDD" }}
+            sx={{
+              flexGrow: 1,
+              p: 3,
+              background: "#DDDDDD",
+              overflow: "hidden",
+              marginTop: "64px",
+            }}
           >
-            <Toolbar />
             {selectedMenu === "Batches" && <BatchesMenu />}
             {selectedMenu === "Resources" && <ResourcesMenu />}
             {selectedMenu === "Profile" && <ProfileMenu />}

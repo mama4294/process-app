@@ -46,9 +46,7 @@ const Navbar = () => {
           </Button>
         </Toolbar>
       </AppBar>
-      {openSettings && (
-        <Settings open={openSettings} handleClose={handleCloseSettings} />
-      )}
+      <Settings open={openSettings} handleClose={handleCloseSettings} />
     </>
   );
 };
