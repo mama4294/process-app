@@ -68,6 +68,10 @@ export const createChartData = (
   const max = calcMax(datasets);
   const average = calcAverage(datasets);
 
+  console.log(resourceTitle);
+  console.log("average: ", average);
+  console.log("dataset", datasets);
+
   return {
     labels: labels,
     datasets: datasets,
@@ -79,6 +83,7 @@ export const createChartData = (
 const calcAverage = (datasets) => {
   if (datasets.length < 1) return null;
   const dataArray = datasets[datasets.length - 1].data;
+  console.log("dataArray", dataArray);
   let sum = 0;
   dataArray.map((value) => {
     sum = sum + value;
@@ -105,6 +110,7 @@ const addTotalsToDataset = (dataset) => {
   if (!dataset[0]) return totalArray;
   const rows = dataset.length;
   const columns = dataset[0].data.length;
+  console.log("Columsn", columns);
 
   for (let i = 0; i < columns; i++) {
     let sum = 0;
@@ -182,14 +188,13 @@ const createResourceTimeline = (
   let processArray = new Array(duration);
   for (let i = 0; i < duration; ++i) processArray[i] = Number(resourceAmount);
 
+  console.log("Datapoints before", data.length);
   //Combine arrays
   for (let i = 0; i < numBatches; ++i) {
-    data.splice(
-      operation.start + i * cycleTime,
-      operation.duration,
-      ...processArray
-    );
+    data.splice(operation.start + i * cycleTime, duration, ...processArray);
   }
+  console.log("Datapoints After", data.length);
+  console.log("done...");
 
   return data;
 };
