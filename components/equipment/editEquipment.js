@@ -88,8 +88,9 @@ const EquipmentInputForm = ({ mode, handleClose }) => {
         ? {
             value: operations[operations.length - 1].id,
             label: operations[operations.length - 1].title,
+            external: false,
           }
-        : { value: 0, label: "Initial" },
+        : { value: 0, label: "Initial", external: false },
     offset: 0,
     offsetUnit: { value: "hr", label: "hr" },
     type: { value: "SF", label: "Start-to-Finish" },
@@ -108,6 +109,7 @@ const EquipmentInputForm = ({ mode, handleClose }) => {
   const handleChangeOperation = (operationID, targetID) => (event) => {
     let field = null;
     let value = null;
+    console.log("Event", event);
     if (event.target === undefined) {
       //for dropdowns
       field = targetID;
@@ -117,8 +119,6 @@ const EquipmentInputForm = ({ mode, handleClose }) => {
         label: event.label,
         external: event.external,
       };
-    } else if (targetID === "resources") {
-      alert("Resources");
     } else {
       //for text inputs
       field = event.target.id;
@@ -390,6 +390,7 @@ const OperationRow = ({
     { label: "Internal", options: internalOptions },
     { label: "External", options: externalOptions },
   ];
+
   const handleChange = () => {
     handleToggle(id);
   };

@@ -281,6 +281,7 @@ export const EquipmentProvider = ({ children }) => {
   const duplicate = (id) => {
     const copy = findEquipmentById(id);
     const updatedCopy = generateNewIds(copy);
+    // const modifedCopy = alignPredecessorIds(updatedCopy);
     addEquipment({ ...updatedCopy, title: copy.title + " (Copy)" });
   };
 
@@ -288,7 +289,13 @@ export const EquipmentProvider = ({ children }) => {
     const newId = generateId();
     const operations = equipment.operations;
     const newOperations = operations.map((op) => {
-      return { ...op, parentId: newId, id: generateId() };
+      const newPredecessor = { ...op.predecessor, duplicatedId: op.id };
+      return {
+        ...op,
+        parentId: newId,
+        id: generateId(),
+        predecessor: newPredecessor,
+      };
     });
     const updatedEquip = {
       ...equipment,
@@ -296,6 +303,20 @@ export const EquipmentProvider = ({ children }) => {
       operations: newOperations,
     };
     return updatedEquip;
+  };
+
+  const alignPredecessorIds = (equipment) => {
+    //To finish
+    const operations = equipment.operations;
+    const newOperations = operations.map((op) => {
+      const newPredecessor = { ...op.predecessor, duplicatedId: op.id };
+      return {
+        ...op,
+        parentId: newId,
+        id: generateId(),
+        predecessor: newPredecessor,
+      };
+    });
   };
 
   const moveUp = (id) => {
