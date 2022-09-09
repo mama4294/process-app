@@ -69,12 +69,12 @@ const ActionMenu = ({
             </ListItemIcon>
             <ListItemText>Edit</ListItemText>
           </MenuItem>
-          {/* <MenuItem onClick={handleDuplicate}>
+          <MenuItem onClick={handleDuplicate}>
             <ListItemIcon>
               <ContentCopyIcon fontSize="small" />
             </ListItemIcon>
             <ListItemText>Duplicate</ListItemText>
-          </MenuItem> */}
+          </MenuItem>
           <MenuItem onClick={handleDelete}>
             <ListItemIcon>
               <DeleteIcon fontSize="small" />

@@ -281,17 +281,18 @@ export const EquipmentProvider = ({ children }) => {
   const duplicate = (id) => {
     const copy = findEquipmentById(id);
     const updatedCopy = generateNewIds(copy);
-    addEquipment({ ...updatedCopy, title: copy.title + "(Copy)" });
+    addEquipment({ ...updatedCopy, title: copy.title + " (Copy)" });
   };
 
   const generateNewIds = (equipment) => {
+    const newId = generateId();
     const operations = equipment.operations;
     const newOperations = operations.map((op) => {
-      return { ...op, id: generateId() };
+      return { ...op, parentId: newId, id: generateId() };
     });
     const updatedEquip = {
       ...equipment,
-      id: generateId(),
+      id: newId,
       operations: newOperations,
     };
     return updatedEquip;

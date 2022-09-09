@@ -217,7 +217,7 @@ const EquipmentInputForm = ({ mode, handleClose }) => {
         />
       </Box>
       <Divider />
-      <Box sx={{ p: 2 }}>
+      <Box sx={{ pl: 2, pt: 2, pb: 2 }}>
         <Table
           operations={operations}
           error={error}
@@ -271,6 +271,7 @@ const Table = ({
         handleDelete={handleDelete}
         selectedOperations={selectedOperations}
       />
+
       <div className={styles.scrollX}>
         <TableHeader
           operations={operations}

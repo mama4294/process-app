@@ -17,10 +17,12 @@
   grid-template-columns: 5ch 10ch 10ch 20ch 20ch 10ch 20ch 1fr;
   border-bottom: 1px solid #6E81AD;
   align-items: center;
+  width: fit-content;
 }
 
 .scrollX{
   overflow-x: auto;
+  padding-bottom: 20px;
 }
 
 

@@ -46,6 +46,7 @@ const Dropdown = ({ disabled, ...props }) => {
       styles={customStyles}
       className={styles.dropdown}
       isDisabled={disabled}
+      menuPosition="fixed"
       {...props}
     />
   );
