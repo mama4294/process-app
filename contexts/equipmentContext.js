@@ -280,21 +280,20 @@ export const EquipmentProvider = ({ children }) => {
 
   const duplicate = (id) => {
     const copy = findEquipmentById(id);
-    const updatedCopy = generateNewIds(copy);
-    // const modifedCopy = alignPredecessorIds(updatedCopy);
-    addEquipment({ ...updatedCopy, title: copy.title + " (Copy)" });
+    const copyWithNewIds = generateNewIds(copy);
+    const finalizedCopy = alignPredecessorIds(copyWithNewIds);
+    addEquipment({ ...finalizedCopy, title: copy.title + " (Copy)" });
   };
 
   const generateNewIds = (equipment) => {
     const newId = generateId();
     const operations = equipment.operations;
     const newOperations = operations.map((op) => {
-      const newPredecessor = { ...op.predecessor, duplicatedId: op.id };
       return {
         ...op,
         parentId: newId,
         id: generateId(),
-        predecessor: newPredecessor,
+        ancestorId: op.id,
       };
     });
     const updatedEquip = {
@@ -306,17 +305,40 @@ export const EquipmentProvider = ({ children }) => {
   };
 
   const alignPredecessorIds = (equipment) => {
-    //To finish
+    //For each operation with internal references, change the reference id to the duplicatedId
     const operations = equipment.operations;
+    console.log("OPerations", operations);
     const newOperations = operations.map((op) => {
-      const newPredecessor = { ...op.predecessor, duplicatedId: op.id };
-      return {
-        ...op,
-        parentId: newId,
-        id: generateId(),
-        predecessor: newPredecessor,
-      };
+      if (op.predecessor.value === 0) {
+        return op;
+      }
+      if (!op.predecessor.external) {
+        console.log(
+          "Looking for an op with this value: ",
+          op.predecessor.value
+        );
+        const referenceOp = operations.find(
+          (item) => item.ancestorId === op.predecessor.value
+        );
+        console.log("referenceOp", referenceOp);
+        const newPredId = referenceOp.id;
+
+        return {
+          ...op,
+          predecessor: {
+            ...op.predecessor,
+            value: newPredId,
+          },
+        };
+      } else {
+        return op;
+      }
     });
+    const updatedEquip = {
+      ...equipment,
+      operations: newOperations,
+    };
+    return updatedEquip;
   };
 
   const moveUp = (id) => {

@@ -94,6 +94,7 @@ export const calcGanttLogic = (array, equipment) => {
       console.log("remaining array:", remainingArray);
       console.log("finished array:", finishedArray);
       const predecessorId = operation.predecessor.value;
+      console.log("predecessorId", predecessorId);
       const predecessorObj = findPredecessor(
         operation,
         predecessorId,
