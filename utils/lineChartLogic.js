@@ -54,7 +54,8 @@ export const createChartData = (
   resourceTitle,
   offsetTime,
   cycleTime,
-  batches
+  batches,
+  findEquipmentById
 ) => {
   const labels = createDataLabels(xAxis);
   const datasets = createDatasets(
@@ -63,7 +64,8 @@ export const createChartData = (
     resourceTitle,
     offsetTime,
     cycleTime,
-    batches
+    batches,
+    findEquipmentById
   );
   const max = calcMax(datasets);
   const average = calcAverage(datasets);
@@ -128,14 +130,16 @@ const createDatasets = (
   resourceTitle,
   offsetTime,
   cycleTime,
-  batches
+  batches,
+  findEquipmentById
 ) => {
   let dataset = [];
   const numBatches = batches.length;
-  const { findEquipmentById } = useContext(EquipmentContext);
+
   operations.map((operation) => {
     const resource = findObjectByTitle(operation.resources, resourceTitle);
     const parentEquipment = findEquipmentById(operation.parentId);
+
     dataset.push({
       label: `${parentEquipment.title} - ${operation.title}`,
       data: createResourceTimeline(

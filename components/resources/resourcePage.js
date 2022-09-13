@@ -1,10 +1,11 @@
-import React, { useContext } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { EquipmentContext } from "../../contexts/equipmentContext";
 import { ResourceContext } from "../../contexts/resourceContext";
 import { CampaignContext } from "../../contexts/campaignContext";
 import { roundToTwo } from "../../utils/helperFunctions";
 import Box from "@mui/material/Box";
 import { LineChart } from "../charts/LineChart";
+import CircularProgress from "@mui/material/CircularProgress";
 import {
   filterOperationsByResource,
   createXAxis,
@@ -89,46 +90,84 @@ const LineChartCard = ({
   cycleTime,
   batches,
 }) => {
-  const chartData = createChartData(
-    xAxis,
-    operations,
-    resource.title,
-    offsetTime,
-    cycleTime,
-    batches
-  );
-  const chartOptions = createChartOptions(resource);
-  return (
-    <Box
-      sx={{
-        background: "white",
-        padding: "20px",
-        borderRadius: "4px",
-        m: "20px",
-        boxShadow:
-          "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
-      }}
-    >
-      <h2 style={{ color: resource.color, textAlign: "center" }}>
-        {resource.title}
-      </h2>
-      <LineChart data={chartData} options={chartOptions} />
-      <p style={{ color: resource.color, textAlign: "center" }}>
-        Max:{" "}
-        <span
-          style={{ fontWeight: "bold" }}
-        >{`${chartData.max} ${resource.unit}`}</span>
-        <span></span>
-      </p>
-      <p style={{ color: resource.color, textAlign: "center" }}>
-        Average:
-        <span style={{ fontWeight: "bold" }}>
-          {" "}
-          {`${roundToTwo(chartData.average)} ${resource.unit}`}{" "}
-        </span>
-      </p>
-    </Box>
-  );
+  const { findEquipmentById } = useContext(EquipmentContext);
+  const [isLoading, setIsLoading] = useState(true);
+  const [chartData, setChartData] = useState(null);
+
+  useEffect(() => {
+    setIsLoading(true);
+    setChartData({ data: loadData(), options: createChartOptions(resource) });
+    setIsLoading(false);
+  }, []);
+
+  const loadData = () => {
+    const data = createChartData(
+      xAxis,
+      operations,
+      resource.title,
+      offsetTime,
+      cycleTime,
+      batches,
+      findEquipmentById
+    );
+
+    return data;
+  };
+
+  if (isLoading) {
+    return (
+      <Box
+        sx={{
+          background: "white",
+          width: "340px",
+          height: "342.328px",
+          padding: "20px",
+          borderRadius: "4px",
+          m: "20px",
+          boxShadow:
+            "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+  } else {
+    const { data, options } = chartData;
+    return (
+      <Box
+        sx={{
+          background: "white",
+          padding: "20px",
+          borderRadius: "4px",
+          m: "20px",
+          boxShadow:
+            "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
+        }}
+      >
+        <h2 style={{ color: resource.color, textAlign: "center" }}>
+          {resource.title}
+        </h2>
+        <LineChart data={data} options={options} />
+        <p style={{ color: resource.color, textAlign: "center" }}>
+          Max:{" "}
+          <span
+            style={{ fontWeight: "bold" }}
+          >{`${data.max} ${resource.unit}`}</span>
+          <span></span>
+        </p>
+        <p style={{ color: resource.color, textAlign: "center" }}>
+          Average:
+          <span style={{ fontWeight: "bold" }}>
+            {" "}
+            {`${roundToTwo(data.average)} ${resource.unit}`}{" "}
+          </span>
+        </p>
+      </Box>
+    );
+  }
 };
 
 export default ResourcePage;
