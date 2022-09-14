@@ -9,7 +9,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { Line } from "react-chartjs-2";
+import { Line, Scatter } from "react-chartjs-2";
 
 ChartJS.register(
   CategoryScale,
@@ -22,5 +22,6 @@ ChartJS.register(
 );
 
 export const LineChart = ({ options, data }) => {
-  return <Line options={options} data={data} />;
+  console.log("Line chart Data: ", data);
+  return <Scatter options={options} data={data} />;
 };

@@ -12,12 +12,15 @@ import {
   createChartData,
   createChartOptions,
 } from "../../utils/lineChartLogic";
+import { AlignVerticalCenterTwoTone } from "@mui/icons-material";
 
 const ResourcePage = () => {
-  const { equipment, calcCycleTime } = useContext(EquipmentContext);
+  const { equipment, calcCycleTime, getMaxEndpoint } =
+    useContext(EquipmentContext);
   const { resourceOptions } = useContext(ResourceContext);
   const { batches } = useContext(CampaignContext);
   const operations = equipment.flatMap((eq) => eq.operations);
+  const endPoint = getMaxEndpoint();
 
   const bottleneck = calcCycleTime();
   const cycleTime = bottleneck.duration;
@@ -57,6 +60,7 @@ const ResourcePage = () => {
               cycleTime={cycleTime}
               offsetTime={offsetTime}
               batches={batches}
+              endPoint={endPoint}
             />
           );
         })
@@ -89,6 +93,7 @@ const LineChartCard = ({
   offsetTime,
   cycleTime,
   batches,
+  endPoint,
 }) => {
   const { findEquipmentById } = useContext(EquipmentContext);
   const [isLoading, setIsLoading] = useState(true);
@@ -108,7 +113,8 @@ const LineChartCard = ({
       offsetTime,
       cycleTime,
       batches,
-      findEquipmentById
+      findEquipmentById,
+      endPoint
     );
 
     return data;

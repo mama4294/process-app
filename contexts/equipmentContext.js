@@ -198,6 +198,15 @@ export const EquipmentProvider = ({ children }) => {
     return longestEquip;
   };
 
+  const getMaxEndpoint = () => {
+    if (equipment.length === 0) return 0;
+    const operations = equipment.flatMap((eq) => eq.operations);
+    let lastOperation = operations.reduce((max, obj) =>
+      max.duration > obj.end ? max : obj
+    );
+    return lastOperation.end;
+  };
+
   const calcCycleTime = () => {
     return getLongestEquipmentDuration(equipment);
   };
@@ -384,6 +393,7 @@ export const EquipmentProvider = ({ children }) => {
         openFormNew,
         openFormEdit,
         closeForm,
+        getMaxEndpoint,
       }}
     >
       {children}

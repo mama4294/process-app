@@ -1,6 +1,5 @@
+import { LocalConvenienceStoreOutlined } from "@mui/icons-material";
 import { convertToMinutes } from "./ganttLogic";
-import { useContext } from "react";
-import { EquipmentContext } from "../contexts/equipmentContext";
 
 export const filterOperationsByResource = (operations, resource) => {
   let newArray = [];
@@ -55,7 +54,8 @@ export const createChartData = (
   offsetTime,
   cycleTime,
   batches,
-  findEquipmentById
+  findEquipmentById,
+  endPoint
 ) => {
   const labels = createDataLabels(xAxis);
   const datasets = createDatasets(
@@ -65,7 +65,8 @@ export const createChartData = (
     offsetTime,
     cycleTime,
     batches,
-    findEquipmentById
+    findEquipmentById,
+    endPoint
   );
   const max = calcMax(datasets);
   const average = calcAverage(datasets);
@@ -131,7 +132,8 @@ const createDatasets = (
   offsetTime,
   cycleTime,
   batches,
-  findEquipmentById
+  findEquipmentById,
+  endPoint
 ) => {
   let dataset = [];
   const numBatches = batches.length;
@@ -142,36 +144,43 @@ const createDatasets = (
 
     dataset.push({
       label: `${parentEquipment.title} - ${operation.title}`,
-      data: createResourceTimeline(
+      data: createResourceXYvalues(
         operation,
-        xAxis,
         resource.amount,
-        offsetTime,
         cycleTime,
-        numBatches
+        numBatches,
+        endPoint
       ),
       unit: resource.unit,
       borderColor: "gray",
       pointRadius: 1,
       borderWidth: 1,
       fill: true,
+      showLine: true,
     });
   });
 
-  if (operations.length > 1) {
-    //add total row
-    dataset.push({
-      label: "Sum",
-      data: addTotalsToDataset(dataset),
-      unit: "Total",
-      borderColor: "#EB144C",
-      borderDash: [1, 1],
-      borderWidth: 1,
-      pointRadius: 0,
-    });
-  }
+  // if (operations.length > 1) {
+  //   //add total row
+  //   dataset.push({
+  //     label: "Sum",
+  //     data: addTotalsToDataset(dataset),
+  //     unit: "Total",
+  //     borderColor: "#EB144C",
+  //     borderDash: [1, 1],
+  //     borderWidth: 1,
+  //     pointRadius: 0,
+  //   });
+  // }
   console.log("Dataset", dataset);
   return dataset;
+};
+
+const createDummyData = () => {
+  const duration = 1000;
+  let data = new Array(duration);
+  for (let i = 0; i < duration; ++i) data[i] = { x: i, y: 69 };
+  return data;
 };
 
 const createResourceTimeline = (
@@ -192,14 +201,75 @@ const createResourceTimeline = (
   let processArray = new Array(duration);
   for (let i = 0; i < duration; ++i) processArray[i] = Number(resourceAmount);
 
-  console.log("Datapoints before", data.length);
   //Combine arrays
   for (let i = 0; i < numBatches; ++i) {
     data.splice(operation.start + i * cycleTime, duration, ...processArray);
   }
-  console.log("Datapoints After", data.length);
-  console.log("done...");
 
+  console.log("Old Method");
+  console.log("data", data);
+  return data;
+};
+
+const createResourceXYvalues = (
+  operation,
+  resourceAmount,
+  cycleTime,
+  numBatches,
+  endPoint
+) => {
+  //creates an array of x and y objects for an operation resource based on its process value, and operation start and end time.
+
+  const value = Number(resourceAmount);
+  let data = [];
+
+  if (operation.start !== 0) {
+    data.push({ x: 0, y: 0 });
+  }
+  for (let j = 0; j < numBatches; ++j) {
+    const p0 = { x: operation.start - 1 + j * cycleTime, y: 0 };
+    const p1 = { x: operation.start + j * cycleTime, y: value };
+    const p2 = { x: operation.end + j * cycleTime, y: value };
+    const p3 = { x: operation.end + 1 + j * cycleTime, y: 0 };
+    console.log("Last Point:", p3);
+    data.push(p0, p1, p2, p3);
+  }
+
+  if (operation.end !== endPoint) {
+    data.push({ x: endPoint + cycleTime * (numBatches - 1), y: 0 });
+  }
+  console.log("New Method");
+  console.log("data", data);
+  return data;
+};
+
+const createResourceTimelineObjs = (
+  operation,
+  xAxis,
+  resourceAmount,
+  offsetTime,
+  cycleTime,
+  numBatches
+) => {
+  //create empty array of 0's for each minute
+  const totalCampaignDuration = cycleTime * numBatches + offsetTime;
+  const duration = convertToMinutes(operation.duration, operation.durationUnit);
+  const value = Number(resourceAmount);
+  let data = new Array(totalCampaignDuration);
+  for (let j = 0; j < numBatches; ++j) {
+    for (let i = 1; i < totalCampaignDuration + 1; ++i) {
+      if (
+        i >= operation.start + j * cycleTime &&
+        i < operation.end + j * cycleTime
+      ) {
+        data[i] = { x: i, y: value };
+      } else {
+        data[i] = { x: i, y: 0 };
+      }
+    }
+  }
+  console.log("New Method");
+  console.log("data", data);
   return data;
 };
 
@@ -209,7 +279,15 @@ const findObjectByTitle = (searchArray, title) => {
 
 export const createChartOptions = (resource) => {
   return {
-    responsive: true,
+    // responsive: true,
+    parsing: false,
+    // normalized: true,
+    animation: true,
+    // interaction: {
+    //   mode: "nearest",
+    //   axis: "x",
+    //   intersect: false,
+    // },
     scales: {
       x: {
         display: true,
@@ -239,6 +317,11 @@ export const createChartOptions = (resource) => {
       },
     },
     plugins: {
+      decimation: {
+        enabled: true,
+        algorithm: "lttb",
+        samples: 10,
+      },
       legend: {
         display: false,
         position: "top",
@@ -257,7 +340,7 @@ export const createChartOptions = (resource) => {
               label += ": ";
             }
             if (context.parsed.y !== null) {
-              label += `${context.parsed.y} ${resource.unit}`;
+              label += `${context.parsed.y} ${resource.unit}, time: ${context.parsed.x}`;
             }
             return label;
           },
