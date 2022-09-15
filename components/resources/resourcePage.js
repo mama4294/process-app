@@ -12,7 +12,10 @@ import {
   createChartData,
   createChartOptions,
 } from "../../utils/lineChartLogic";
-import { AlignVerticalCenterTwoTone } from "@mui/icons-material";
+import {
+  AlignVerticalCenterTwoTone,
+  ReorderOutlined,
+} from "@mui/icons-material";
 
 const ResourcePage = () => {
   const { equipment, calcCycleTime, getMaxEndpoint } =
@@ -96,29 +99,30 @@ const LineChartCard = ({
   const { findEquipmentById } = useContext(EquipmentContext);
   const [isLoading, setIsLoading] = useState(true);
   const [chartData, setChartData] = useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [showTotals, setShowTotals] = useState(false);
+  const actionMenuOpen = Boolean(anchorEl);
 
   useEffect(() => {
     setIsLoading(true);
     setChartData({ data: loadData(), options: createChartOptions(resource) });
     setIsLoading(false);
-  }, []);
+  }, [showTotals, batches]);
 
   const loadData = () => {
-    const data = createChartData(
-      operations,
-      resource.title,
-      offsetTime,
-      cycleTime,
-      batches,
-      findEquipmentById,
-      endPoint
-    );
+    const data = createChartData({
+      operations: operations,
+      resourceTitle: resource.title,
+      offsetTime: offsetTime,
+      cycleTime: cycleTime,
+      batches: batches,
+      findEquipmentById: findEquipmentById,
+      endPoint: endPoint,
+      showTotals: showTotals,
+    });
 
     return data;
   };
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [showTotals, setShowTotals] = useState(false);
-  const actionMenuOpen = Boolean(anchorEl);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -129,6 +133,7 @@ const LineChartCard = ({
 
   const handleToggleTotals = () => {
     setShowTotals((prev) => !prev);
+    setAnchorEl(null);
   };
 
   if (isLoading) {
@@ -164,17 +169,20 @@ const LineChartCard = ({
             "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
         }}
       >
-        <ActionMenu
-          open={actionMenuOpen}
-          handleClick={handleClick}
-          handleClose={handleCloseActionMenu}
-          anchorEl={anchorEl}
-          showTotals={showTotals}
-          handleToggleTotals={handleToggleTotals}
-        />
-        <h2 style={{ color: resource.color, textAlign: "center" }}>
-          {resource.title}
-        </h2>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <ActionMenu
+            open={actionMenuOpen}
+            handleClick={handleClick}
+            handleClose={handleCloseActionMenu}
+            anchorEl={anchorEl}
+            showTotals={showTotals}
+            handleToggleTotals={handleToggleTotals}
+          />
+          <h2 style={{ color: resource.color, textAlign: "center" }}>
+            {resource.title}
+          </h2>
+          <div style={{ width: "24px", height: "24px" }} />
+        </div>
         <LineChart data={data} options={options} />
         <p style={{ color: resource.color, textAlign: "center" }}>
           Max:{" "}

@@ -1,15 +1,16 @@
 import { LocalConvenienceStoreOutlined } from "@mui/icons-material";
 import { convertToMinutes } from "./ganttLogic";
 
-const createDatasets = (
+const createDatasets = ({
   operations,
   resourceTitle,
   offsetTime,
   cycleTime,
   batches,
   findEquipmentById,
-  endPoint
-) => {
+  endPoint,
+  showTotals,
+}) => {
   let dataset = [];
   operations.map((operation) => {
     const resource = findObjectByTitle(operation.resources, resourceTitle);
@@ -39,18 +40,20 @@ const createDatasets = (
   const totalPoints = createTotalsFromLines(batchedLines);
   const totalsWithEnds = addEndsToPoints(totalPoints, endPoint);
 
-  if (operations.length > 1) {
+  if (showTotals) {
     //add total row
-    dataset.push({
-      label: "Sum",
-      data: totalsWithEnds,
-      unit: "Total",
-      borderColor: "#EB144C",
-      borderDash: [1, 1],
-      borderWidth: 1,
-      pointRadius: 1,
-      showLine: true,
-    });
+    dataset = [
+      {
+        label: "Sum",
+        data: totalsWithEnds,
+        unit: "Total",
+        borderColor: "#EB144C",
+        borderDash: [1, 1],
+        borderWidth: 1,
+        pointRadius: 1,
+        showLine: true,
+      },
+    ];
   }
   console.log("Dataset", dataset);
   return dataset;
@@ -66,26 +69,28 @@ export const filterOperationsByResource = (operations, resource) => {
   return newArray;
 };
 
-export const createChartData = (
+export const createChartData = ({
   operations,
   resourceTitle,
   offsetTime,
   cycleTime,
   batches,
   findEquipmentById,
-  endPoint
-) => {
-  const datasets = createDatasets(
-    operations,
-    resourceTitle,
-    offsetTime,
-    cycleTime,
-    batches,
-    findEquipmentById,
-    endPoint
-  );
+  endPoint,
+  showTotals,
+}) => {
+  const datasets = createDatasets({
+    operations: operations,
+    resourceTitle: resourceTitle,
+    offsetTime: offsetTime,
+    cycleTime: cycleTime,
+    batches: batches,
+    findEquipmentById: findEquipmentById,
+    endPoint: endPoint,
+    showTotals: showTotals,
+  });
   const max = calcMax(datasets);
-  const average = calcAverage(datasets);
+  const average = calcAverage({ datasets: datasets, showTotals: showTotals });
 
   return {
     datasets: datasets,
@@ -190,20 +195,31 @@ const createTotalsFromLines = (lines) => {
   return totalsPoints;
 };
 
-const calcAverage = (datasets) => {
+const calcAverage = ({ datasets, showTotals = false }) => {
   if (datasets.length < 1) return null;
-  const dataArray = datasets[datasets.length - 1].data;
-  console.log("dataArray", dataArray);
 
   let numerator = 0;
-  let demomenator = dataArray[dataArray.length - 1].x;
-  for (let i = 0; i < dataArray.length - 1; i++) {
-    if (dataArray[i + 1].y === dataArray[i].y) {
-      const minutes = dataArray[i + 1].x - dataArray[i].x;
-      numerator = numerator + minutes * dataArray[i].y;
+  const lastDataArray = datasets[datasets.length - 1].data; //This is the totals array if showTotals is true
+  let demomenator = lastDataArray[lastDataArray.length - 1].x; //Last point from last dataArray
+
+  if (showTotals) {
+    for (let i = 0; i < lastDataArray.length - 1; i++) {
+      if (lastDataArray[i + 1].y === lastDataArray[i].y) {
+        const minutes = lastDataArray[i + 1].x - lastDataArray[i].x;
+        numerator = numerator + minutes * lastDataArray[i].y;
+      }
+    }
+  } else {
+    for (let j = 0; j < datasets.length; j++) {
+      const dataArray = datasets[j].data;
+      for (let i = 0; i < dataArray.length - 1; i++) {
+        if (dataArray[i + 1].y === dataArray[i].y) {
+          const minutes = dataArray[i + 1].x - dataArray[i].x;
+          numerator = numerator + minutes * dataArray[i].y;
+        }
+      }
     }
   }
-
   return numerator / demomenator;
 };
 
