@@ -1,4 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
+import ActionMenu from "./actionmenu";
 import { EquipmentContext } from "../../contexts/equipmentContext";
 import { ResourceContext } from "../../contexts/resourceContext";
 import { CampaignContext } from "../../contexts/campaignContext";
@@ -8,7 +9,6 @@ import { LineChart } from "../charts/LineChart";
 import CircularProgress from "@mui/material/CircularProgress";
 import {
   filterOperationsByResource,
-  createXAxis,
   createChartData,
   createChartOptions,
 } from "../../utils/lineChartLogic";
@@ -116,6 +116,20 @@ const LineChartCard = ({
 
     return data;
   };
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [showTotals, setShowTotals] = useState(false);
+  const actionMenuOpen = Boolean(anchorEl);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleCloseActionMenu = () => {
+    setAnchorEl(null);
+  };
+
+  const handleToggleTotals = () => {
+    setShowTotals((prev) => !prev);
+  };
 
   if (isLoading) {
     return (
@@ -150,6 +164,14 @@ const LineChartCard = ({
             "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
         }}
       >
+        <ActionMenu
+          open={actionMenuOpen}
+          handleClick={handleClick}
+          handleClose={handleCloseActionMenu}
+          anchorEl={anchorEl}
+          showTotals={showTotals}
+          handleToggleTotals={handleToggleTotals}
+        />
         <h2 style={{ color: resource.color, textAlign: "center" }}>
           {resource.title}
         </h2>
