@@ -1,6 +1,59 @@
 import { LocalConvenienceStoreOutlined } from "@mui/icons-material";
 import { convertToMinutes } from "./ganttLogic";
 
+const createDatasets = (
+  xAxis,
+  operations,
+  resourceTitle,
+  offsetTime,
+  cycleTime,
+  batches,
+  findEquipmentById,
+  endPoint
+) => {
+  let dataset = [];
+  operations.map((operation) => {
+    const resource = findObjectByTitle(operation.resources, resourceTitle);
+    const parentEquipment = findEquipmentById(operation.parentId);
+    const lines = createLinesFromOp(operation, resourceTitle);
+    const batchedLines = multiplyLinesByBatches(lines, batches, cycleTime);
+    const points = convertLinesToPoints(batchedLines);
+    const pointsWithEnds = addEndsToPoints(points, endPoint);
+
+    dataset.push({
+      label: `${parentEquipment.title} - ${operation.title}`,
+      data: pointsWithEnds,
+      unit: resource.unit,
+      borderColor: "gray",
+      pointRadius: 1,
+      borderWidth: 1,
+      fill: true,
+      showLine: true,
+    });
+  });
+
+  const lines = createLinesFromOps(operations, resourceTitle);
+  const batchedLines = multiplyLinesByBatches(lines, batches, cycleTime);
+  const totalPoints = createTotalsFromLines(batchedLines);
+  const totalsWithEnds = addEndsToPoints(totalPoints, endPoint);
+
+  if (operations.length > 1) {
+    //add total row
+    dataset.push({
+      label: "Sum",
+      data: totalsWithEnds,
+      unit: "Total",
+      borderColor: "#EB144C",
+      borderDash: [1, 1],
+      borderWidth: 1,
+      pointRadius: 1,
+      showLine: true,
+    });
+  }
+  console.log("Dataset", dataset);
+  return dataset;
+};
+
 export const filterOperationsByResource = (operations, resource) => {
   let newArray = [];
   operations.map((op) => {
@@ -12,31 +65,6 @@ export const filterOperationsByResource = (operations, resource) => {
 };
 
 export const createXAxis = (length) => {
-  //Old method
-  // let step = 15;
-  // let timeUnit = "min";
-  // let timeValue = 1;
-  // console.log("length", length);
-
-  // if (length > 60 * 24 * 6) {
-  //   step = 60 * 3;
-  //   timeUnit = "day";
-  //   timeValue = 60 * 24;
-  // } else if (length > 60 * 10) {
-  //   step = 60;
-  //   timeUnit = "hr";
-  //   timeValue = 60;
-  // } else if (length > 60 * 2) {
-  //   step = 10;
-  //   timeUnit = "min";
-  // }
-
-  // const xAxis = [];
-  // let i = 0;
-  // while (i < length) {
-  //   xAxis.push({ value: i, label: `${i / timeValue} ${timeUnit}` });
-  //   i = i + step;
-  // }
   const step = 1;
   const xAxis = [];
   let i = 0;
@@ -71,10 +99,6 @@ export const createChartData = (
   const max = calcMax(datasets);
   const average = calcAverage(datasets);
 
-  console.log(resourceTitle);
-  console.log("average: ", average);
-  console.log("dataset", datasets);
-
   return {
     labels: labels,
     datasets: datasets,
@@ -83,10 +107,105 @@ export const createChartData = (
   };
 };
 
+const createLinesFromOp = (operation, resourceTitle) => {
+  let lines = [];
+  const resource = operation.resources.find(
+    (res) => res.title === resourceTitle
+  );
+
+  const value = Number(resource.amount);
+  const start = { x: operation.start, y: value };
+  const end = { x: operation.end, y: value };
+  lines.push({ start, end });
+  return lines;
+};
+
+const createLinesFromOps = (operations, resourceTitle) => {
+  let lines = [];
+  operations.map((operation) => {
+    const resource = operation.resources.find(
+      (res) => res.title === resourceTitle
+    );
+
+    const value = Number(resource.amount);
+    const start = { x: operation.start, y: value };
+    const end = { x: operation.end, y: value };
+    lines.push({ start, end });
+  });
+  return lines;
+};
+
+const multiplyLinesByBatches = (lines, batches, cycleTime) => {
+  const array = [];
+  const numBatches = batches.length;
+
+  for (let i = 0; i < numBatches; i++) {
+    lines.map((line) => {
+      const { start, end } = line;
+      const newStart = { x: start.x + i * cycleTime, y: start.y };
+      const newEnd = { x: end.x + i * cycleTime, y: end.y };
+      array.push({ start: newStart, end: newEnd });
+    });
+  }
+
+  return array;
+};
+
+const convertLinesToPoints = (lines) => {
+  const points = [];
+  lines.map((line) => {
+    const p0 = { x: line.start.x - 1, y: 0 };
+    const p1 = line.start;
+    const p2 = line.end;
+    const p3 = { x: line.end.x + 1, y: 0 };
+
+    points.push(p0, p1, p2, p3);
+  });
+  return points;
+};
+
+const addEndsToPoints = (points, endpoint) => {
+  return [{ x: 0, y: 0 }, ...points, { x: endpoint, y: 0 }];
+};
+
+const createTotalsFromLines = (lines) => {
+  //create array of x-values of interest from lines
+  let xValues = [];
+  lines.map((line) => {
+    const xstart = line.start.x;
+    const xend = line.end.x;
+    xValues.push(xstart - 1, xstart, xend, xend + 1);
+  });
+
+  //remove duplicates
+  const uniqueXvalues = [...new Set(xValues)];
+  console.log("uniqueXvalues", uniqueXvalues);
+
+  //sort array
+  uniqueXvalues.sort(function (a, b) {
+    return a - b;
+  });
+
+  //Loop through each unique x and sum the totals
+  let totalsPoints = [];
+  uniqueXvalues.map((x) => {
+    let total = 0;
+    lines.map((line) => {
+      const { start, end } = line;
+      if (start.x <= x && end.x >= x) {
+        total = total + start.y;
+      }
+    });
+    totalsPoints.push({ x, y: total });
+  });
+
+  console.log("totalsPoints", totalsPoints);
+  return totalsPoints;
+};
+
 const calcAverage = (datasets) => {
   if (datasets.length < 1) return null;
   const dataArray = datasets[datasets.length - 1].data;
-  console.log("dataArray", dataArray);
   let sum = 0;
   dataArray.map((value) => {
     sum = sum + value;
@@ -99,7 +218,7 @@ const calcMax = (datasets) => {
   const dataArray = datasets[datasets.length - 1].data;
   let max = -9999999;
   dataArray.map((value) => {
-    if (value > max) max = value;
+    if (value.y > max) max = value.y;
   });
   return max;
 };
@@ -113,7 +232,6 @@ const addTotalsToDataset = (dataset) => {
   if (!dataset[0]) return totalArray;
   const rows = dataset.length;
   const columns = dataset[0].data.length;
-  console.log("Columsn", columns);
 
   for (let i = 0; i < columns; i++) {
     let sum = 0;
@@ -125,93 +243,46 @@ const addTotalsToDataset = (dataset) => {
   return totalArray;
 };
 
-const createDatasets = (
-  xAxis,
-  operations,
-  resourceTitle,
-  offsetTime,
+const addCriticalPointsToData = (
+  data,
+  operation,
+  resourceAmount,
   cycleTime,
-  batches,
-  findEquipmentById,
+  numBatches,
   endPoint
 ) => {
-  let dataset = [];
-  const numBatches = batches.length;
+  let newArr = [];
 
-  operations.map((operation) => {
-    const resource = findObjectByTitle(operation.resources, resourceTitle);
-    const parentEquipment = findEquipmentById(operation.parentId);
-
-    dataset.push({
-      label: `${parentEquipment.title} - ${operation.title}`,
-      data: createResourceXYvalues(
-        operation,
-        resource.amount,
-        cycleTime,
-        numBatches,
-        endPoint
-      ),
-      unit: resource.unit,
-      borderColor: "gray",
-      pointRadius: 1,
-      borderWidth: 1,
-      fill: true,
-      showLine: true,
-    });
+  data.map((point) => {
+    if (point.type === "startPoint") {
+      const startPoint = { x: point.x - 1, y: 0 };
+      newArr.push(startPoint, point);
+    }
   });
 
-  // if (operations.length > 1) {
-  //   //add total row
-  //   dataset.push({
-  //     label: "Sum",
-  //     data: addTotalsToDataset(dataset),
-  //     unit: "Total",
-  //     borderColor: "#EB144C",
-  //     borderDash: [1, 1],
-  //     borderWidth: 1,
-  //     pointRadius: 0,
-  //   });
-  // }
-  console.log("Dataset", dataset);
-  return dataset;
-};
-
-const createDummyData = () => {
-  const duration = 1000;
-  let data = new Array(duration);
-  for (let i = 0; i < duration; ++i) data[i] = { x: i, y: 69 };
-  return data;
-};
-
-const createResourceTimeline = (
-  operation,
-  xAxis,
-  resourceAmount,
-  offsetTime,
-  cycleTime,
-  numBatches
-) => {
-  //create empty array of 0's for each minute
-  const totalCampaignDuration = cycleTime * numBatches + offsetTime;
-  let data = new Array(totalCampaignDuration);
-  for (let i = 0; i < totalCampaignDuration; ++i) data[i] = 0;
-
-  //create array of process values
-  const duration = convertToMinutes(operation.duration, operation.durationUnit);
-  let processArray = new Array(duration);
-  for (let i = 0; i < duration; ++i) processArray[i] = Number(resourceAmount);
-
-  //Combine arrays
-  for (let i = 0; i < numBatches; ++i) {
-    data.splice(operation.start + i * cycleTime, duration, ...processArray);
+  if (operation.start !== 0) {
+    data.push({ x: 0, y: 0, type: null });
   }
 
-  console.log("Old Method");
-  console.log("data", data);
+  for (let j = 0; j < numBatches; ++j) {
+    const p0 = { x: operation.start - 1 + j * cycleTime, y: 0, type: null };
+    const p1 = {
+      x: operation.start + j * cycleTime,
+      y: value,
+      type: "startPoint",
+    };
+    const p2 = { x: operation.end + j * cycleTime, y: value, type: "endPoint" };
+    const p3 = { x: operation.end + 1 + j * cycleTime, y: 0, type: null };
+    data.push(p0, p1, p2, p3);
+  }
+
+  if (operation.end !== endPoint) {
+    data.push({ x: endPoint + cycleTime * (numBatches - 1), y: 0, type: null });
+  }
   return data;
 };
 
-const createResourceXYvalues = (
+const createIndividualChartPoints = (
   operation,
   resourceAmount,
   cycleTime,
@@ -223,53 +294,15 @@ const createResourceXYvalues = (
   const value = Number(resourceAmount);
   let data = [];
 
-  if (operation.start !== 0) {
-    data.push({ x: 0, y: 0 });
-  }
   for (let j = 0; j < numBatches; ++j) {
-    const p0 = { x: operation.start - 1 + j * cycleTime, y: 0 };
-    const p1 = { x: operation.start + j * cycleTime, y: value };
-    const p2 = { x: operation.end + j * cycleTime, y: value };
-    const p3 = { x: operation.end + 1 + j * cycleTime, y: 0 };
-    console.log("Last Point:", p3);
-    data.push(p0, p1, p2, p3);
+    const p1 = {
+      x: operation.start + j * cycleTime,
+      y: value,
+      type: "startPoint",
+    };
+    const p2 = { x: operation.end + j * cycleTime, y: value, type: "endPoint" };
+    data.push(p1, p2);
   }
-
-  if (operation.end !== endPoint) {
-    data.push({ x: endPoint + cycleTime * (numBatches - 1), y: 0 });
-  }
-  console.log("New Method");
-  console.log("data", data);
-  return data;
-};
-
-const createResourceTimelineObjs = (
-  operation,
-  xAxis,
-  resourceAmount,
-  offsetTime,
-  cycleTime,
-  numBatches
-) => {
-  //create empty array of 0's for each minute
-  const totalCampaignDuration = cycleTime * numBatches + offsetTime;
-  const duration = convertToMinutes(operation.duration, operation.durationUnit);
-  const value = Number(resourceAmount);
-  let data = new Array(totalCampaignDuration);
-  for (let j = 0; j < numBatches; ++j) {
-    for (let i = 1; i < totalCampaignDuration + 1; ++i) {
-      if (
-        i >= operation.start + j * cycleTime &&
-        i < operation.end + j * cycleTime
-      ) {
-        data[i] = { x: i, y: value };
-      } else {
-        data[i] = { x: i, y: 0 };
-      }
-    }
-  }
-  console.log("New Method");
-  console.log("data", data);
   return data;
 };
 
