@@ -2,7 +2,6 @@ import { LocalConvenienceStoreOutlined } from "@mui/icons-material";
 import { convertToMinutes } from "./ganttLogic";
 
 const createDatasets = (
-  xAxis,
   operations,
   resourceTitle,
   offsetTime,
@@ -18,7 +17,10 @@ const createDatasets = (
     const lines = createLinesFromOp(operation, resourceTitle);
     const batchedLines = multiplyLinesByBatches(lines, batches, cycleTime);
     const points = convertLinesToPoints(batchedLines);
-    const pointsWithEnds = addEndsToPoints(points, endPoint);
+    const pointsWithEnds = addEndsToPoints(
+      points,
+      endPoint + cycleTime * (batches.length - 1)
+    );
 
     dataset.push({
       label: `${parentEquipment.title} - ${operation.title}`,
@@ -64,19 +66,7 @@ export const filterOperationsByResource = (operations, resource) => {
   return newArray;
 };
 
-export const createXAxis = (length) => {
-  const step = 1;
-  const xAxis = [];
-  let i = 0;
-  while (i < length) {
-    xAxis.push({ value: i, label: `${i} min` });
-    i = i + step;
-  }
-  return xAxis;
-};
-
 export const createChartData = (
-  xAxis,
   operations,
   resourceTitle,
   offsetTime,
@@ -85,9 +75,7 @@ export const createChartData = (
   findEquipmentById,
   endPoint
 ) => {
-  const labels = createDataLabels(xAxis);
   const datasets = createDatasets(
-    xAxis,
     operations,
     resourceTitle,
     offsetTime,
@@ -100,7 +88,6 @@ export const createChartData = (
   const average = calcAverage(datasets);
 
   return {
-    labels: labels,
     datasets: datasets,
     max: max,
     average: average,
@@ -206,11 +193,18 @@ const createTotalsFromLines = (lines) => {
 const calcAverage = (datasets) => {
   if (datasets.length < 1) return null;
   const dataArray = datasets[datasets.length - 1].data;
-  let sum = 0;
-  dataArray.map((value) => {
-    sum = sum + value;
-  });
-  return sum / dataArray.length;
+  console.log("dataArray", dataArray);
+
+  let numerator = 0;
+  let demomenator = dataArray[dataArray.length - 1].x;
+  for (let i = 0; i < dataArray.length - 1; i++) {
+    if (dataArray[i + 1].y === dataArray[i].y) {
+      const minutes = dataArray[i + 1].x - dataArray[i].x;
+      numerator = numerator + minutes * dataArray[i].y;
+    }
+  }
+
+  return numerator / demomenator;
 };
 
 const calcMax = (datasets) => {
@@ -221,89 +215,6 @@ const calcMax = (datasets) => {
     if (value.y > max) max = value.y;
   });
   return max;
-};
-
-const createDataLabels = (xAxis) => {
-  return xAxis.map((timepoint) => timepoint.label);
-};
-
-const addTotalsToDataset = (dataset) => {
-  let totalArray = [];
-  if (!dataset[0]) return totalArray;
-  const rows = dataset.length;
-  const columns = dataset[0].data.length;
-
-  for (let i = 0; i < columns; i++) {
-    let sum = 0;
-    for (let j = 0; j < rows; j++) {
-      sum = sum + dataset[j].data[i];
-    }
-    totalArray.push(sum);
-  }
-  return totalArray;
-};
-
-const addCriticalPointsToData = (
-  data,
-  operation,
-  resourceAmount,
-  cycleTime,
-  numBatches,
-  endPoint
-) => {
-  let newArr = [];
-
-  data.map((point) => {
-    if (point.type === "startPoint") {
-      const startPoint = { x: point.x - 1, y: 0 };
-      newArr.push(startPoint, point);
-    }
-  });
-
-  if (operation.start !== 0) {
-    data.push({ x: 0, y: 0, type: null });
-  }
-
-  for (let j = 0; j < numBatches; ++j) {
-    const p0 = { x: operation.start - 1 + j * cycleTime, y: 0, type: null };
-    const p1 = {
-      x: operation.start + j * cycleTime,
-      y: value,
-      type: "startPoint",
-    };
-    const p2 = { x: operation.end + j * cycleTime, y: value, type: "endPoint" };
-    const p3 = { x: operation.end + 1 + j * cycleTime, y: 0, type: null };
-    data.push(p0, p1, p2, p3);
-  }
-
-  if (operation.end !== endPoint) {
-    data.push({ x: endPoint + cycleTime * (numBatches - 1), y: 0, type: null });
-  }
-  return data;
-};
-
-const createIndividualChartPoints = (
-  operation,
-  resourceAmount,
-  cycleTime,
-  numBatches,
-  endPoint
-) => {
-  //creates an array of x and y objects for an operation resource based on its process value, and operation start and end time.
-
-  const value = Number(resourceAmount);
-  let data = [];
-
-  for (let j = 0; j < numBatches; ++j) {
-    const p1 = {
-      x: operation.start + j * cycleTime,
-      y: value,
-      type: "startPoint",
-    };
-    const p2 = { x: operation.end + j * cycleTime, y: value, type: "endPoint" };
-    data.push(p1, p2);
-  }
-  return data;
 };
 
 const findObjectByTitle = (searchArray, title) => {

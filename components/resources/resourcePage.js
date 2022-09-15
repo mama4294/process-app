@@ -27,7 +27,7 @@ const ResourcePage = () => {
   const offsetTime = Math.abs(
     bottleneck.operations[0].start < 0 ? bottleneck.operations[0].start : 0
   );
-  const xAxis = createXAxis(cycleTime * batches.length + offsetTime);
+  // const xAxis = createXAxis(cycleTime * batches.length + offsetTime);
   const hasOperations = operations.flatMap((op) => op.resources).length > 0;
 
   return (
@@ -56,7 +56,6 @@ const ResourcePage = () => {
               key={resource.id}
               resource={resource}
               operations={filteredOperations}
-              xAxis={xAxis}
               cycleTime={cycleTime}
               offsetTime={offsetTime}
               batches={batches}
@@ -89,7 +88,6 @@ const NoResourcesCard = () => {
 const LineChartCard = ({
   resource,
   operations,
-  xAxis,
   offsetTime,
   cycleTime,
   batches,
@@ -107,7 +105,6 @@ const LineChartCard = ({
 
   const loadData = () => {
     const data = createChartData(
-      xAxis,
       operations,
       resource.title,
       offsetTime,
