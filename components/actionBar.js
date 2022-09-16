@@ -21,11 +21,13 @@ const ActionBar = ({ handleNew, view, setView }) => {
   return (
     <div className={styles.actionBar}>
       <ViewSelector view={view} setView={setView} />
-      <Tooltip title="Add Equipment">
-        <IconButton onClick={handleNew}>
-          <AddIcon color="primary" />
-        </IconButton>
-      </Tooltip>
+      {view === "Chart" && (
+        <Tooltip title="Add Equipment">
+          <IconButton onClick={handleNew}>
+            <AddIcon color="primary" />
+          </IconButton>
+        </Tooltip>
+      )}
       <Tooltip title="Recalculate schedule">
         <IconButton onClick={solveEquipmentOccupancy}>
           <CachedIcon color="primary" />

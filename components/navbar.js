@@ -4,7 +4,7 @@ import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import SettingsIcon from "@mui/icons-material/Settings";
+import MenuIcon from "@mui/icons-material/Menu";
 import Settings from "./settings/settings";
 import { EquipmentContext } from "../contexts/equipmentContext";
 import { CampaignContext } from "../contexts/campaignContext";
@@ -26,7 +26,7 @@ const Navbar = () => {
 
   return (
     <>
-      <AppBar position="fixed">
+      <AppBar position="fixed" sx={{ boxShadow: "none" }}>
         <Toolbar>
           <IconButton
             size="large"
@@ -36,7 +36,7 @@ const Navbar = () => {
             sx={{ mr: 2 }}
             onClick={handleOpenSettings}
           >
-            <SettingsIcon />
+            <MenuIcon />
           </IconButton>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Process
