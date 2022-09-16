@@ -133,6 +133,7 @@ const UnitRow = ({ unit }) => {
       className={styles.chartRow}
       onMouseOver={handleMouseOver}
       onMouseOut={handleMouseOut}
+      onClick={handleEdit}
     >
       <div className={styles.chartRowLabel} style={{ marginLeft: "1rem" }}>
         {unit.title}
