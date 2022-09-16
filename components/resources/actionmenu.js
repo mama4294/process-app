@@ -1,16 +1,13 @@
 import IconButton from "@mui/material/IconButton";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
+
 import ListItemIcon from "@mui/material/ListItemIcon";
-import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
-import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import ListItemText from "@mui/material/ListItemText";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import MenuList from "@mui/material/MenuList";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import FunctionsIcon from "@mui/icons-material/Functions";
+import BarChartIcon from "@mui/icons-material/BarChart";
 
 const ActionMenu = ({
   open,
@@ -49,14 +46,21 @@ const ActionMenu = ({
         }}
       >
         <MenuList>
-          <MenuItem onClick={handleToggleTotals}>
-            <ListItemIcon>
-              <FunctionsIcon fontSize="small" />
-            </ListItemIcon>
-            <ListItemText>
-              {showTotals ? "Hide Totals" : "Show Totals"}
-            </ListItemText>
-          </MenuItem>
+          {showTotals ? (
+            <MenuItem onClick={handleToggleTotals}>
+              <ListItemIcon>
+                <BarChartIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Show Individual Operations</ListItemText>
+            </MenuItem>
+          ) : (
+            <MenuItem onClick={handleToggleTotals}>
+              <ListItemIcon>
+                <FunctionsIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Show Summation</ListItemText>
+            </MenuItem>
+          )}
         </MenuList>
       </Menu>
     </div>

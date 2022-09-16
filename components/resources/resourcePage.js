@@ -12,10 +12,7 @@ import {
   createChartData,
   createChartOptions,
 } from "../../utils/lineChartLogic";
-import {
-  AlignVerticalCenterTwoTone,
-  ReorderOutlined,
-} from "@mui/icons-material";
+import styles from "../../styles/lineChart.module.css";
 
 const ResourcePage = () => {
   const { equipment, calcCycleTime, getMaxEndpoint } =
@@ -145,7 +142,7 @@ const LineChartCard = ({
           height: "342.328px",
           padding: "20px",
           borderRadius: "4px",
-          m: "20px",
+          margin: "20px",
           boxShadow:
             "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
           display: "flex",
@@ -159,30 +156,41 @@ const LineChartCard = ({
   } else {
     const { data, options } = chartData;
     return (
-      <Box
-        sx={{
-          background: "white",
-          padding: "20px",
-          borderRadius: "4px",
-          m: "20px",
-          boxShadow:
-            "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
-        }}
-      >
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <ActionMenu
-            open={actionMenuOpen}
-            handleClick={handleClick}
-            handleClose={handleCloseActionMenu}
-            anchorEl={anchorEl}
-            showTotals={showTotals}
-            handleToggleTotals={handleToggleTotals}
-          />
-          <h2 style={{ color: resource.color, textAlign: "center" }}>
+      <div className={styles.cardContainer}>
+        <div className={styles.headerContainer}>
+          <div className={styles.appearOnHover}>
+            <ActionMenu
+              open={actionMenuOpen}
+              handleClick={handleClick}
+              handleClose={handleCloseActionMenu}
+              anchorEl={anchorEl}
+              showTotals={showTotals}
+              handleToggleTotals={handleToggleTotals}
+            />
+          </div>
+          <h2
+            style={{
+              color: resource.color,
+              textAlign: "center",
+              marginBottom: "0px",
+              marginTop: "0px",
+            }}
+          >
             {resource.title}
           </h2>
           <div style={{ width: "24px", height: "24px" }} />
         </div>
+        <p
+          style={{
+            color: "gray",
+            textAlign: "center",
+            margin: "0px",
+            marginBottom: "24px",
+            fontSize: "small",
+          }}
+        >
+          {showTotals ? "Total Consumption" : "Individual Operations"}
+        </p>
         <LineChart data={data} options={options} />
         <p style={{ color: resource.color, textAlign: "center" }}>
           Max:{" "}
@@ -198,7 +206,7 @@ const LineChartCard = ({
             {`${roundToTwo(data.average)} ${resource.unit}`}{" "}
           </span>
         </p>
-      </Box>
+      </div>
     );
   }
 };
