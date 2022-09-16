@@ -22,3 +22,16 @@ export const minToFreindlyTime = (min) => {
   if (min < 60 * 24 * 7 * 52) return `${roundToTwo(min / 60 / 24 / 7)} weeks`;
   return `${roundToTwo(min / 60 / 24 / 7 / 52)} years`;
 };
+
+export const exportToJsonFile = (jsonData) => {
+  let dataStr = JSON.stringify(jsonData);
+  let dataUri =
+    "data:application/json;charset=utf-8," + encodeURIComponent(dataStr);
+
+  let exportFileDefaultName = "data.json";
+
+  let linkElement = document.createElement("a");
+  linkElement.setAttribute("href", dataUri);
+  linkElement.setAttribute("download", exportFileDefaultName);
+  linkElement.click();
+};

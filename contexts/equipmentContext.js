@@ -1,7 +1,7 @@
 import { useState, createContext, useEffect } from "react";
 import { toggleSelection, deleteByIds, deleteById } from "../utils/arrayLogic";
 import { calcGanttLogic, calcEOCLogic } from "../utils/ganttLogic";
-import { generateId } from "../utils/helperFunctions";
+import { generateId, exportToJsonFile } from "../utils/helperFunctions";
 
 const defaultResources = {
   steam: {
@@ -162,6 +162,7 @@ export const EquipmentProvider = ({ children }) => {
 
   const saveEquipment = () => {
     localStorage.setItem("equipment", JSON.stringify(equipment));
+    // exportToJsonFile(equipment);
   };
 
   //Equipment state functions
