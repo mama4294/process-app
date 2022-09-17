@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import Box from "@mui/material/Box";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
@@ -136,7 +136,40 @@ const Sidebar = ({ menuItems, width, setSelectedMenu }) => {
 };
 
 const ProfileMenu = () => {
-  return <h6>Profile</h6>;
+  const inputFile = useRef(null);
+
+  const loadFile = () => {
+    // `current` points to the mounted file input element
+    inputFile.current.click();
+  };
+
+  function readImage(file) {
+    // Check if the file is an image.
+    if (file.type && !file.type.startsWith("json/")) {
+      console.log("File is not a JSON", file.type, file);
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.addEventListener("load", (event) => {
+      img.src = event.target.result;
+    });
+    reader.readAsDataURL(file);
+  }
+
+  return (
+    <>
+      <h6>Profile</h6>
+      <input
+        type="file"
+        id="file"
+        accept=".json"
+        ref={inputFile}
+        style={{ display: "none" }}
+      />
+      <button onClick={loadFile}>Load</button>
+    </>
+  );
 };
 
 export default Settings;

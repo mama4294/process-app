@@ -5,18 +5,20 @@ import ActionBar from "../components/actionBar";
 import Navbar from "../components/navbar";
 import { useContext, useState } from "react";
 import { EquipmentContext } from "../contexts/equipmentContext";
+import { TitleContext } from "../contexts/titleContext";
 
 export default function Home() {
   const { openFormNew } = useContext(EquipmentContext);
+  const { projectTitle } = useContext(TitleContext);
   const [view, setView] = useState("Chart");
 
   return (
     <>
       <Head>
-        <title>Resource Visualizer</title>
+        <title>{projectTitle}</title>
         <meta
           name="Resource Visualizer"
-          content="An engineering tool for visualizing processes"
+          content="An engineering tool for visualizing batch equipment, operations, and resources"
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
