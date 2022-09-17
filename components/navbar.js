@@ -23,25 +23,70 @@ import { EquipmentContext } from "../contexts/equipmentContext";
 import { CampaignContext } from "../contexts/campaignContext";
 import { ResourceContext } from "../contexts/resourceContext";
 import { TitleContext } from "../contexts/titleContext";
+import { loadFromJSON, saveAsJSON } from "../utils/fileSystem";
 
 const Navbar = () => {
-  const { saveEquipment } = useContext(EquipmentContext);
-  const { saveBatches } = useContext(CampaignContext);
-  const { saveResources } = useContext(ResourceContext);
-  const { saveTitle, projectTitle, setProjectTitle } = useContext(TitleContext);
+  const { equipment, setEquipment, saveEquipment } =
+    useContext(EquipmentContext);
+  const { batches, setBatches, saveBatches } = useContext(CampaignContext);
+  const { resourceOptions, setResourceOptions, saveResources } =
+    useContext(ResourceContext);
+  const { projectTitle, setProjectTitle, saveTitle } = useContext(TitleContext);
   const [openSettings, setOpenSettings] = useState(false);
   const handleOpenSettings = () => setOpenSettings(true);
   const handleCloseSettings = () => setOpenSettings(false);
 
+  console.log("Resource Options", resourceOptions);
+
+  const setProject = (data) => {
+    setEquipment(data.equipment);
+    setBatches(data.batches);
+    setResourceOptions(data.resourceOptions);
+    setProjectTitle(data.projectTitle);
+    storeDataInLocalStorage(data);
+  };
+
+  const storeDataInLocalStorage = (data) => {
+    saveTitle(data.projectTitle);
+    saveEquipment(data.equipment);
+    saveBatches(data.batches);
+    saveResources(data.resourceOptions);
+  };
+
   const handleSave = () => {
-    saveTitle();
-    saveEquipment();
-    saveBatches();
-    saveResources();
+    const saveObj = { projectTitle, equipment, batches, resourceOptions };
+    saveAsJSON(saveObj, window.handle)
+      .then(() => storeDataInLocalStorage(saveObj))
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  const handleSaveAs = () => {
+    const saveObj = { projectTitle, equipment, batches, resourceOptions };
+    saveAsJSON(saveObj, null).catch((error) => {
+      console.error(error);
+    });
   };
 
   const handleChangeTitle = (e) => {
     setProjectTitle(e.target.value);
+  };
+
+  const handleOpenFile = () => {
+    loadFromJSON()
+      .then((data) => {
+        console.log(data);
+        setProject(data);
+      })
+      .catch((error) => {
+        // if user cancels, ignore the error
+        if (error.name === "AbortError") {
+          return;
+        } else {
+          console.error(error);
+        }
+      });
   };
 
   return (
@@ -58,7 +103,11 @@ const Navbar = () => {
           >
             <MenuIcon />
           </IconButton>
-          <MenuDropdown />
+          <MenuDropdown
+            handleSave={handleSave}
+            handleSaveAs={handleSaveAs}
+            handleOpenFile={handleOpenFile}
+          />
           <TextInput
             className={styles.projectTitle}
             value={projectTitle}
@@ -76,12 +125,8 @@ const Navbar = () => {
   );
 };
 
-const MenuDropdown = ({ view, setView }) => {
-  //confirmation modal
-  const [confirmationOpen, setConfirmationOpen] = useState(false);
-  const handleOpenConfirmation = () => setConfirmationOpen(true);
-  const handleCloseConfirmation = () => setConfirmationOpen(false);
-
+const MenuDropdown = ({ handleSave, handleSaveAs, handleOpenFile }) => {
+  //Dropdown placement
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -90,6 +135,11 @@ const MenuDropdown = ({ view, setView }) => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  //confirmation modal
+  const [confirmationOpen, setConfirmationOpen] = useState(false);
+  const handleOpenConfirmation = () => setConfirmationOpen(true);
+  const handleCloseConfirmation = () => setConfirmationOpen(false);
 
   const handleNothing = (event) => {
     alert("function not made yet");
@@ -100,6 +150,7 @@ const MenuDropdown = ({ view, setView }) => {
       <ConfirmationModal
         open={confirmationOpen}
         handleClose={handleCloseConfirmation}
+        handleOpenFile={handleOpenFile}
       />
       <Tooltip title="Menu">
         <IconButton
@@ -140,13 +191,13 @@ const MenuDropdown = ({ view, setView }) => {
           </ListItemIcon>
           <ListItemText>Open</ListItemText>
         </MenuItem>
-        <MenuItem onClick={handleNothing}>
+        <MenuItem onClick={handleSave}>
           <ListItemIcon>
             <SaveIcon fontSize="small" />
           </ListItemIcon>
           <ListItemText>Save</ListItemText>
         </MenuItem>
-        <MenuItem onClick={handleNothing}>
+        <MenuItem onClick={handleSaveAs}>
           <ListItemIcon>
             <SaveAsIcon fontSize="small" />
           </ListItemIcon>
@@ -213,7 +264,11 @@ const FileUpload = () => {
   );
 };
 
-const ConfirmationModal = ({ open, handleClose }) => {
+const ConfirmationModal = ({ open, handleClose, handleOpenFile }) => {
+  const handleNoSave = () => {
+    handleOpenFile();
+    handleClose();
+  };
   return (
     <div>
       <Modal
@@ -257,7 +312,7 @@ const ConfirmationModal = ({ open, handleClose }) => {
           >
             <Button onClick={handleClose}>Cancel</Button>
             <div style={{ flexShrink: "0" }}>
-              <Button>No</Button>
+              <Button onClick={handleNoSave}>No</Button>
               <Button variant="contained">Yes</Button>
             </div>
           </div>

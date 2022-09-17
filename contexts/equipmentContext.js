@@ -160,8 +160,8 @@ export const EquipmentProvider = ({ children }) => {
     setEquipment(getLocalEquipment());
   }, []);
 
-  const saveEquipment = () => {
-    localStorage.setItem("equipment", JSON.stringify(equipment));
+  const saveEquipment = (data) => {
+    localStorage.setItem("equipment", JSON.stringify(data));
     // exportToJsonFile(equipment);
   };
 

@@ -1,0 +1,4 @@
+{
+  "https://unpkg.com/browser-fs-access": { "resolved": "https://unpkg.com/browser-fs-access@0.31.0/dist/index.modern.js", "integrity": "sha512-oEonlMm5gucb+XuAVK+6r0Z4tmPMfdgor79jrhNP8mUZIeCe89KipPkqmlS6M2ymhkCQO1MJw0sDmXjUYMZWiw==", "contentType": "application/javascript; charset=utf-8" },
+  "version": 1
+}

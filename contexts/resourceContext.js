@@ -69,8 +69,8 @@ export const ResourceProvider = ({ children }) => {
     console.log("resourceOptions", resourceOptions);
   }, [resourceOptions]);
 
-  const saveResources = () => {
-    localStorage.setItem("resourceOptions", JSON.stringify(resourceOptions));
+  const saveResources = (data) => {
+    localStorage.setItem("resourceOptions", JSON.stringify(data));
   };
 
   const handleAdd = () => {
@@ -119,6 +119,7 @@ export const ResourceProvider = ({ children }) => {
     <ResourceContext.Provider
       value={{
         resourceOptions,
+        setResourceOptions,
         handleAdd,
         handleEdit,
         handleDelete,

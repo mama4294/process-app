@@ -10,16 +10,16 @@ export const TitleProvider = ({ children }) => {
 
   //Local storage functions
 
-  useEffect(() => {
-    const getLocalData = () => {
-      const localdata = localStorage.getItem("projectTitle");
-      return localdata ? JSON.parse(localdata) : "Untitled Project";
-    };
-    setProjectTitle(getLocalData());
-  }, []);
+  // useEffect(() => {
+  //   const getLocalData = () => {
+  //     const localdata = localStorage.getItem("projectTitle");
+  //     return localdata ? JSON.parse(localdata) : "Untitled Project";
+  //   };
+  //   setProjectTitle(getLocalData());
+  // }, []);
 
-  const saveTitle = () => {
-    localStorage.setItem("projectTitle", JSON.stringify(projectTitle));
+  const saveTitle = (data) => {
+    localStorage.setItem("projectTitle", JSON.stringify(data));
   };
 
   return (

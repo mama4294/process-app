@@ -41,8 +41,8 @@ export const CampaignProvider = ({ children }) => {
     setBatches(getLocalData());
   }, []);
 
-  const saveBatches = () => {
-    localStorage.setItem("batches", JSON.stringify(batches));
+  const saveBatches = (data) => {
+    localStorage.setItem("batches", JSON.stringify(data));
   };
 
   const handleAdd = () => {
