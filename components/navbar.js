@@ -8,6 +8,7 @@ import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import SettingsIcon from "@mui/icons-material/Settings";
+import LoadingButton from "@mui/lab/LoadingButton";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -36,11 +37,7 @@ const Navbar = () => {
   const { projectTitle, setProjectTitle, saveTitle, resetTitle } =
     useContext(TitleContext);
 
-  const [openSettings, setOpenSettings] = useState(false);
-  const handleOpenSettings = () => setOpenSettings(true);
-  const handleCloseSettings = () => setOpenSettings(false);
-
-  console.log("Resource Options", resourceOptions);
+  const [saveLoading, setSaveLoading] = useState(false);
 
   const setProject = (data) => {
     setEquipment(data.equipment);
@@ -61,6 +58,10 @@ const Navbar = () => {
     });
   };
 
+  const loadingIimer = () => {
+    setTimeout(() => setSaveLoading(false), 1000);
+  };
+
   const save = async (callback) => {
     const runCallback = () => {
       console.log("saved project");
@@ -68,11 +69,14 @@ const Navbar = () => {
       console.log("handle after saving:", window.handle);
     };
 
+    setSaveLoading(true);
     console.log("handle before saving:", window.handle);
     const saveObj = { projectTitle, equipment, batches, resourceOptions };
-    return await saveAsJSON(saveObj, window.handle).then(() =>
+    const result = await saveAsJSON(saveObj, window.handle).then(() =>
       storeDataInLocalStorage(saveObj).then(runCallback)
     );
+    loadingIimer();
+    return result;
   };
 
   const saveAs = async () => {
@@ -113,16 +117,6 @@ const Navbar = () => {
     <>
       <AppBar position="fixed" sx={{ boxShadow: "none" }}>
         <Toolbar>
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2 }}
-            onClick={handleOpenSettings}
-          >
-            <SettingsIcon />
-          </IconButton>
           <MenuDropdown
             save={save}
             saveAs={saveAs}
@@ -136,12 +130,23 @@ const Navbar = () => {
             type="text"
             placeholder="Project Title"
           />
-          <Button color="inherit" onClick={save}>
-            Save
-          </Button>
+          {saveLoading ? (
+            <LoadingButton
+              loading
+              loadingPosition="start"
+              color="inherit"
+              startIcon={<SaveIcon />}
+              variant="outlined"
+            >
+              Save
+            </LoadingButton>
+          ) : (
+            <Button color="inherit" onClick={save}>
+              Save
+            </Button>
+          )}
         </Toolbar>
       </AppBar>
-      <Settings open={openSettings} handleClose={handleCloseSettings} />
     </>
   );
 };
@@ -158,10 +163,8 @@ const MenuDropdown = ({ save, saveAs, openFile, newProject }) => {
   };
 
   const handleSave = () => {
-    return new Promise(function (resolve, reject) {
-      save().then(resolve).catch(reject);
-      // handleClose();
-    });
+    save();
+    handleClose();
   };
 
   const handleSaveAs = () => {
