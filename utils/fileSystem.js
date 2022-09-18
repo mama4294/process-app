@@ -15,16 +15,13 @@ const serializeAsJSON = (saveObj) => {
 };
 
 export const saveAsJSON = async (saveObj, handle) => {
-  console.log("Save Object: ", saveObj);
   const serialized = serializeAsJSON(saveObj);
-  console.log("serialized", serialized);
   const blob = new Blob([serialized], {
     type: "application/json",
   });
-
   const name = `${saveObj.projectTitle}.processvis`;
 
-  window.handle = await fileSave(
+  const potentialHandle = await fileSave(
     blob,
     {
       fileName: name,
@@ -32,14 +29,24 @@ export const saveAsJSON = async (saveObj, handle) => {
       extensions: [".processvis"],
     },
     handle || null
-  );
+  ).catch((error) => {
+    if ((error = "The user aborted a request")) {
+      console.log("aborted");
+    } else {
+      alert("SaveAsJSON Error", error);
+      console.error(error);
+    }
+  });
+
+  console.log("FileSave Result", potentialHandle);
+  if (potentialHandle != undefined) window.handle = potentialHandle;
 };
 
 export const loadFromJSON = async () => {
   console.log("Loading from Json");
   const blob = await fileOpen({
     description: "Process visualizer file",
-    extensions: [".json", ".processvis"],
+    extensions: [".processvis"],
     mimeTypes: ["application/json"],
   });
   return loadFromBlob(blob);
@@ -48,6 +55,7 @@ export const loadFromJSON = async () => {
 export const loadFromBlob = async (blob) => {
   //Set handle so future saves will go to this file
   if (blob.handle) {
+    console.log("Blob had a handle", blob.handle);
     window.handle = blob.handle;
   }
 

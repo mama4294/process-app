@@ -50,30 +50,33 @@ const Navbar = () => {
   };
 
   const storeDataInLocalStorage = (data) => {
-    saveTitle(data.projectTitle);
-    saveEquipment(data.equipment);
-    saveBatches(data.batches);
-    saveResources(data.resourceOptions);
+    return new Promise((resolve, reject) => {
+      console.log("Storing in local storage");
+      saveTitle(data.projectTitle);
+      saveEquipment(data.equipment);
+      saveBatches(data.batches);
+      saveResources(data.resourceOptions);
+      resolve();
+    });
   };
 
-  const save = () => {
+  const save = async (callback) => {
+    const runCallback = () => {
+      console.log("saved project");
+      typeof callback === "function" && callback();
+      console.log("handle after saving:", window.handle);
+    };
+
+    console.log("handle before saving:", window.handle);
     const saveObj = { projectTitle, equipment, batches, resourceOptions };
-    saveAsJSON(saveObj, window.handle)
-      .then(() => storeDataInLocalStorage(saveObj))
-      .catch((error) => {
-        alert(error);
-        reject;
-      });
+    return await saveAsJSON(saveObj, window.handle).then(() =>
+      storeDataInLocalStorage(saveObj).then(runCallback)
+    );
   };
 
-  const saveAs = () => {
+  const saveAs = async () => {
     const saveObj = { projectTitle, equipment, batches, resourceOptions };
-    saveAsJSON(saveObj, null)
-      .then(resolve)
-      .catch((error) => {
-        console.error(error);
-        reject;
-      });
+    await saveAsJSON(saveObj, null);
   };
 
   const newProject = () => {
@@ -256,9 +259,11 @@ const ConfirmationModal = ({
   handleOpenFile,
   handleSave,
   handleNewProject,
+  save,
 }) => {
   const handleConfirmation = async (saveSelected) => {
     const handleNextStep = () => {
+      console.log("Handling next step");
       if (modal.type === "new") {
         handleNewProject();
       } else if (modal.type === "open") {
@@ -268,15 +273,14 @@ const ConfirmationModal = ({
       }
     };
 
-    handleNextStep();
-
-    //Fix this
-
-    // if (saveSelected) {
-    //   await save().then(handleNextStep());
-    // } else {
-    //   handleNextStep();
-    // }
+    console.log("Determining if sace is selected");
+    if (saveSelected) {
+      console.log("Save selected");
+      await save(handleNextStep);
+    } else {
+      console.log("Save NOT selected");
+      handleNextStep();
+    }
 
     handleClose();
   };
