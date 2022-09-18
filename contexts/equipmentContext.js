@@ -155,7 +155,7 @@ export const EquipmentProvider = ({ children }) => {
   useEffect(() => {
     const getLocalEquipment = () => {
       const localdata = localStorage.getItem("equipment");
-      return localdata ? JSON.parse(localdata) : defaultEquipmentData;
+      return localdata ? JSON.parse(localdata) : [];
     };
     setEquipment(getLocalEquipment());
   }, []);
@@ -163,6 +163,10 @@ export const EquipmentProvider = ({ children }) => {
   const saveEquipment = (data) => {
     localStorage.setItem("equipment", JSON.stringify(data));
     // exportToJsonFile(equipment);
+  };
+
+  const resetEquipment = () => {
+    setEquipment([]);
   };
 
   //Equipment state functions
@@ -395,6 +399,7 @@ export const EquipmentProvider = ({ children }) => {
         openFormEdit,
         closeForm,
         getMaxEndpoint,
+        resetEquipment,
       }}
     >
       {children}

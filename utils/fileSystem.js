@@ -22,8 +22,6 @@ export const saveAsJSON = async (saveObj, handle) => {
     type: "application/json",
   });
 
-  console.log("save as", saveObj.projectTitle);
-
   const name = `${saveObj.projectTitle}.processvis`;
 
   window.handle = await fileSave(

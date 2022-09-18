@@ -26,12 +26,15 @@ import { TitleContext } from "../contexts/titleContext";
 import { loadFromJSON, saveAsJSON } from "../utils/fileSystem";
 
 const Navbar = () => {
-  const { equipment, setEquipment, saveEquipment } =
+  const { equipment, setEquipment, saveEquipment, resetEquipment } =
     useContext(EquipmentContext);
-  const { batches, setBatches, saveBatches } = useContext(CampaignContext);
-  const { resourceOptions, setResourceOptions, saveResources } =
+  const { batches, setBatches, saveBatches, resetBatches } =
+    useContext(CampaignContext);
+  const { resourceOptions, setResourceOptions, saveResources, resetResources } =
     useContext(ResourceContext);
-  const { projectTitle, setProjectTitle, saveTitle } = useContext(TitleContext);
+  const { projectTitle, setProjectTitle, saveTitle, resetTitle } =
+    useContext(TitleContext);
+
   const [openSettings, setOpenSettings] = useState(false);
   const handleOpenSettings = () => setOpenSettings(true);
   const handleCloseSettings = () => setOpenSettings(false);
@@ -53,27 +56,40 @@ const Navbar = () => {
     saveResources(data.resourceOptions);
   };
 
-  const handleSave = () => {
+  const save = () => {
     const saveObj = { projectTitle, equipment, batches, resourceOptions };
     saveAsJSON(saveObj, window.handle)
       .then(() => storeDataInLocalStorage(saveObj))
       .catch((error) => {
-        console.error(error);
+        alert(error);
+        reject;
       });
   };
 
-  const handleSaveAs = () => {
+  const saveAs = () => {
     const saveObj = { projectTitle, equipment, batches, resourceOptions };
-    saveAsJSON(saveObj, null).catch((error) => {
-      console.error(error);
-    });
+    saveAsJSON(saveObj, null)
+      .then(resolve)
+      .catch((error) => {
+        console.error(error);
+        reject;
+      });
+  };
+
+  const newProject = () => {
+    resetBatches();
+    resetEquipment();
+    resetResources();
+    resetTitle();
+    localStorage.clear();
+    window.location.reload();
   };
 
   const handleChangeTitle = (e) => {
     setProjectTitle(e.target.value);
   };
 
-  const handleOpenFile = () => {
+  const openFile = () => {
     loadFromJSON()
       .then((data) => {
         console.log(data);
@@ -104,9 +120,10 @@ const Navbar = () => {
             <MenuIcon />
           </IconButton>
           <MenuDropdown
-            handleSave={handleSave}
-            handleSaveAs={handleSaveAs}
-            handleOpenFile={handleOpenFile}
+            save={save}
+            saveAs={saveAs}
+            openFile={openFile}
+            newProject={newProject}
           />
           <TextInput
             className={styles.projectTitle}
@@ -115,7 +132,7 @@ const Navbar = () => {
             type="text"
             placeholder="Project Title"
           />
-          <Button color="inherit" onClick={handleSave}>
+          <Button color="inherit" onClick={save}>
             Save
           </Button>
         </Toolbar>
@@ -125,7 +142,7 @@ const Navbar = () => {
   );
 };
 
-const MenuDropdown = ({ handleSave, handleSaveAs, handleOpenFile }) => {
+const MenuDropdown = ({ save, saveAs, openFile, newProject }) => {
   //Dropdown placement
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -136,21 +153,47 @@ const MenuDropdown = ({ handleSave, handleSaveAs, handleOpenFile }) => {
     setAnchorEl(null);
   };
 
-  //confirmation modal
-  const [confirmationOpen, setConfirmationOpen] = useState(false);
-  const handleOpenConfirmation = () => setConfirmationOpen(true);
-  const handleCloseConfirmation = () => setConfirmationOpen(false);
-
-  const handleNothing = (event) => {
-    alert("function not made yet");
+  const handleSave = () => {
+    return new Promise(function (resolve, reject) {
+      save().then(resolve).catch(reject);
+      // handleClose();
+    });
   };
+
+  const handleSaveAs = () => {
+    saveAs();
+    handleClose();
+  };
+
+  const handleNewProject = () => {
+    newProject();
+    handleClose();
+  };
+
+  const handleOpenFile = () => {
+    openFile();
+    handleClose();
+  };
+
+  //confirmation modal
+  const [confirmationModal, setConfirmationModal] = useState({
+    open: false,
+    type: null,
+  });
+  const handleOpenConfirmation = (type) =>
+    setConfirmationModal({ open: true, type: type });
+  const handleCloseConfirmation = () =>
+    setConfirmationModal({ open: false, type: null });
 
   return (
     <div>
       <ConfirmationModal
-        open={confirmationOpen}
+        modal={confirmationModal}
         handleClose={handleCloseConfirmation}
         handleOpenFile={handleOpenFile}
+        handleSave={handleSave}
+        handleNewProject={handleNewProject}
+        save={save}
       />
       <Tooltip title="Menu">
         <IconButton
@@ -164,7 +207,6 @@ const MenuDropdown = ({ handleSave, handleSaveAs, handleOpenFile }) => {
           aria-haspopup="true"
           aria-expanded={open ? "true" : undefined}
           variant="outlined"
-          disableElevation
           onClick={handleClick}
         >
           <MenuIcon />
@@ -179,13 +221,13 @@ const MenuDropdown = ({ handleSave, handleSaveAs, handleOpenFile }) => {
           "aria-labelledby": "basic-button",
         }}
       >
-        <MenuItem onClick={handleNothing}>
+        <MenuItem onClick={() => handleOpenConfirmation("new")}>
           <ListItemIcon>
             <LaunchIcon fontSize="small" />
           </ListItemIcon>
           <ListItemText>New Project</ListItemText>
         </MenuItem>
-        <MenuItem onClick={handleOpenConfirmation}>
+        <MenuItem onClick={() => handleOpenConfirmation("open")}>
           <ListItemIcon>
             <FileOpenIcon fontSize="small" />
           </ListItemIcon>
@@ -203,76 +245,46 @@ const MenuDropdown = ({ handleSave, handleSaveAs, handleOpenFile }) => {
           </ListItemIcon>
           <ListItemText>Save As..</ListItemText>
         </MenuItem>
-        <MenuItem>
-          <FileUpload />
-        </MenuItem>
       </Menu>
     </div>
   );
 };
 
-const FileUpload = () => {
-  const [selectedFile, setSelectedFile] = useState();
-  const [isFilePicked, setIsFilePicked] = useState(false);
+const ConfirmationModal = ({
+  modal,
+  handleClose,
+  handleOpenFile,
+  handleSave,
+  handleNewProject,
+}) => {
+  const handleConfirmation = async (saveSelected) => {
+    const handleNextStep = () => {
+      if (modal.type === "new") {
+        handleNewProject();
+      } else if (modal.type === "open") {
+        handleOpenFile();
+      } else {
+        console.error("Modal action not recognized");
+      }
+    };
 
-  const changeHandler = (event) => {
-    setSelectedFile(event.target.files[0]);
-    setIsFilePicked(true);
-  };
+    handleNextStep();
 
-  const handleSubmission = () => {
-    alert("Submit");
-    // const formData = new FormData();
-    // formData.append('File', selectedFile);
+    //Fix this
 
-    // fetch(
-    // 	'https://freeimage.host/api/1/upload?key=<YOUR_API_KEY>',
-    // 	{
-    // 		method: 'POST',
-    // 		body: formData,
-    // 	}
-    // )
-    // 	.then((response) => response.json())
-    // 	.then((result) => {
-    // 		console.log('Success:', result);
-    // 	})
-    // 	.catch((error) => {
-    // 		console.error('Error:', error);
-    // 	});
-  };
+    // if (saveSelected) {
+    //   await save().then(handleNextStep());
+    // } else {
+    //   handleNextStep();
+    // }
 
-  return (
-    <div>
-      <input type="file" name="file" onChange={changeHandler} />
-      {isFilePicked ? (
-        <div>
-          <p>Filename: {selectedFile.name}</p>
-          <p>Filetype: {selectedFile.type}</p>
-          <p>Size in bytes: {selectedFile.size}</p>
-          <p>
-            lastModifiedDate:{" "}
-            {selectedFile.lastModifiedDate.toLocaleDateString()}
-          </p>
-        </div>
-      ) : (
-        <p>Select a file to show details</p>
-      )}
-      <div>
-        <button onClick={handleSubmission}>Submit</button>
-      </div>
-    </div>
-  );
-};
-
-const ConfirmationModal = ({ open, handleClose, handleOpenFile }) => {
-  const handleNoSave = () => {
-    handleOpenFile();
     handleClose();
   };
+
   return (
     <div>
       <Modal
-        open={open}
+        open={modal.open}
         onClose={handleClose}
         aria-labelledby="confirmation modal"
         aria-describedby="confirmation modal"
@@ -312,8 +324,13 @@ const ConfirmationModal = ({ open, handleClose, handleOpenFile }) => {
           >
             <Button onClick={handleClose}>Cancel</Button>
             <div style={{ flexShrink: "0" }}>
-              <Button onClick={handleNoSave}>No</Button>
-              <Button variant="contained">Yes</Button>
+              <Button onClick={() => handleConfirmation(false)}>No</Button>
+              <Button
+                onClick={() => handleConfirmation(true)}
+                variant="contained"
+              >
+                Yes
+              </Button>
             </div>
           </div>
         </div>

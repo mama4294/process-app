@@ -74,7 +74,7 @@ const ViewSelector = ({ view, setView }) => {
           aria-haspopup="true"
           aria-expanded={open ? "true" : undefined}
           variant="outlined"
-          disableElevation
+          // disableelevation
           onClick={handleClick}
           startIcon={getIcon(view)}
           endIcon={<KeyboardArrowDownIcon />}

@@ -45,6 +45,10 @@ export const CampaignProvider = ({ children }) => {
     localStorage.setItem("batches", JSON.stringify(data));
   };
 
+  const resetBatches = () => {
+    setBatches([defaultBatch]);
+  };
+
   const handleAdd = () => {
     if (batches.length < 10) {
       setBatches(addToArray(batches, defaultBatch));
@@ -97,6 +101,7 @@ export const CampaignProvider = ({ children }) => {
         handleEdit,
         handleDelete,
         saveBatches,
+        resetBatches,
       }}
     >
       {children}

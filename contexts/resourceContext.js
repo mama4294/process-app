@@ -65,12 +65,12 @@ export const ResourceProvider = ({ children }) => {
     setResourceOptions(getLocalData());
   }, []);
 
-  useEffect(() => {
-    console.log("resourceOptions", resourceOptions);
-  }, [resourceOptions]);
-
   const saveResources = (data) => {
     localStorage.setItem("resourceOptions", JSON.stringify(data));
+  };
+
+  const resetResources = () => {
+    setResourceOptions(defaultResouces);
   };
 
   const handleAdd = () => {
@@ -124,6 +124,7 @@ export const ResourceProvider = ({ children }) => {
         handleEdit,
         handleDelete,
         saveResources,
+        resetResources,
       }}
     >
       {children}

@@ -5,21 +5,27 @@ export const TitleContext = createContext({
   setProjectTitle: () => null,
 });
 
+const defaultTitle = "Untitled Project";
+
 export const TitleProvider = ({ children }) => {
-  const [projectTitle, setProjectTitle] = useState("Untitled Project");
+  const [projectTitle, setProjectTitle] = useState(defaultTitle);
 
   //Local storage functions
 
-  // useEffect(() => {
-  //   const getLocalData = () => {
-  //     const localdata = localStorage.getItem("projectTitle");
-  //     return localdata ? JSON.parse(localdata) : "Untitled Project";
-  //   };
-  //   setProjectTitle(getLocalData());
-  // }, []);
+  useEffect(() => {
+    const getLocalData = () => {
+      const localdata = localStorage.getItem("projectTitle");
+      return localdata ? JSON.parse(localdata) : defaultTitle;
+    };
+    setProjectTitle(getLocalData());
+  }, []);
 
   const saveTitle = (data) => {
     localStorage.setItem("projectTitle", JSON.stringify(data));
+  };
+
+  const resetTitle = () => {
+    setProjectTitle(defaultTitle);
   };
 
   return (
@@ -28,6 +34,7 @@ export const TitleProvider = ({ children }) => {
         projectTitle,
         setProjectTitle,
         saveTitle,
+        resetTitle,
       }}
     >
       {children}
