@@ -7,6 +7,7 @@ import Tooltip from "@mui/material/Tooltip";
 import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
+import SettingsIcon from "@mui/icons-material/Settings";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -120,7 +121,7 @@ const Navbar = () => {
             sx={{ mr: 2 }}
             onClick={handleOpenSettings}
           >
-            <MenuIcon />
+            <SettingsIcon />
           </IconButton>
           <MenuDropdown
             save={save}

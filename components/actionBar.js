@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { EquipmentContext } from "../contexts/equipmentContext";
 import Button from "@mui/material/Button";
+import Modal from "@mui/material/Modal";
 import { useContext } from "react";
 import styles from "../styles/ActionBar.module.css";
 import IconButton from "@mui/material/IconButton";
@@ -11,24 +12,44 @@ import MenuItem from "@mui/material/MenuItem";
 import CachedIcon from "@mui/icons-material/Cached";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import AlignHorizontalLeftIcon from "@mui/icons-material/AlignHorizontalLeft";
+import ClearAllIcon from "@mui/icons-material/ClearAll";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ShowChartIcon from "@mui/icons-material/ShowChart";
+import { BatchesMenu } from "./settings/batchesMenu";
+
+export const viewSelectorOptions = {
+  equipment: "Equipment",
+  resources: "Resources",
+};
 
 const ActionBar = ({ handleNew, view, setView }) => {
   const { solveEquipmentOccupancy } = useContext(EquipmentContext);
 
+  const [openBatchesModal, setOpenBatchesModal] = useState(false);
+  const closeBatchesModal = () => {
+    setOpenBatchesModal(false);
+  };
+
   return (
     <div className={styles.actionBar}>
       <ViewSelector view={view} setView={setView} />
-      {view === "Chart" && (
-        <Tooltip title="Add Equipment">
-          <IconButton onClick={handleNew}>
-            <AddIcon color="primary" />
-          </IconButton>
-        </Tooltip>
+      <BatchesModal open={openBatchesModal} handleClose={closeBatchesModal} />
+      {view === viewSelectorOptions.equipment && (
+        <>
+          <Tooltip title="Add Equipment">
+            <IconButton onClick={handleNew}>
+              <AddIcon color="primary" />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Batches">
+            <IconButton onClick={() => setOpenBatchesModal(true)}>
+              <ClearAllIcon color="primary" />
+            </IconButton>
+          </Tooltip>
+        </>
       )}
-      <Tooltip title="Recalculate schedule">
+      <Tooltip title="Refresh">
         <IconButton onClick={solveEquipmentOccupancy}>
           <CachedIcon color="primary" />
         </IconButton>
@@ -91,13 +112,19 @@ const ViewSelector = ({ view, setView }) => {
           "aria-labelledby": "basic-button",
         }}
       >
-        <MenuItem onClick={handleSelect} selected={view === "Chart"}>
+        <MenuItem
+          onClick={handleSelect}
+          selected={view === viewSelectorOptions.equipment}
+        >
           <ListItemIcon>
             <AlignHorizontalLeftIcon fontSize="small" />
           </ListItemIcon>
-          <ListItemText>Chart</ListItemText>
+          <ListItemText>Equipment</ListItemText>
         </MenuItem>
-        <MenuItem onClick={handleSelect} selected={view === "Resources"}>
+        <MenuItem
+          onClick={handleSelect}
+          selected={view === viewSelectorOptions.resources}
+        >
           <ListItemIcon>
             <ShowChartIcon fontSize="small" />
           </ListItemIcon>
@@ -105,5 +132,35 @@ const ViewSelector = ({ view, setView }) => {
         </MenuItem>
       </Menu>
     </div>
+  );
+};
+
+const BatchesModal = ({ open, handleClose }) => {
+  return (
+    <Modal
+      open={open}
+      onClose={handleClose}
+      aria-labelledby="Batches modal"
+      aria-describedby="Batches modal"
+    >
+      <div
+        style={{
+          background: "white",
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          width: "400px",
+          bgcolor: "background.paper",
+          padding: "16px",
+          borderRadius: "12px",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+        }}
+      >
+        <BatchesMenu handleClose={handleClose} />
+      </div>
+    </Modal>
   );
 };

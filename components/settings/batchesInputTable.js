@@ -11,7 +11,14 @@ import { TwitterPicker } from "react-color";
 import styles from "../../styles/operations.module.css";
 import stylesCampaign from "../../styles/campaign.module.css";
 
-const DataTable = ({ data, headers, handleEdit, handleAdd, handleDelete }) => {
+const DataTable = ({
+  data,
+  headers,
+  handleEdit,
+  handleAdd,
+  handleDelete,
+  handleClose,
+}) => {
   return (
     <>
       <TableHeader data={data} headers={headers} handleAdd={handleAdd} />
@@ -29,9 +36,14 @@ const DataTable = ({ data, headers, handleEdit, handleAdd, handleDelete }) => {
         })}
 
       {data.length > 0 && (
-        <Button variant="outline" onClick={handleAdd} sx={{ mt: 2 }}>
-          Add
-        </Button>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <Button onClick={handleClose} sx={{ mt: 2 }}>
+            Close
+          </Button>
+          <Button variant="outlined" onClick={handleAdd} sx={{ mt: 2 }}>
+            New
+          </Button>
+        </div>
       )}
     </>
   );
@@ -41,17 +53,14 @@ const TableHeader = ({ data, headers, handleAdd }) => {
   return (
     <>
       <div className={styles.titleContainer}>
-        <div className={styles.title}>Add Batches</div>
+        <div className={styles.title}>Batches</div>
 
-        <IconButton onClick={handleAdd}>
+        {/* <IconButton onClick={handleAdd}>
           <AddIcon color="action" />
-        </IconButton>
+        </IconButton> */}
       </div>
       {data.length > 0 && (
         <div className={`${stylesCampaign.chartRow} ${styles.headerRow}`}>
-          {/* <div>
-            <Checkbox {...label} onChange={handleChange} />
-          </div> */}
           {headers.map((header, index) => {
             return (
               <div className={stylesCampaign.tableHeaderValue} key={index}>

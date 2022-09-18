@@ -3,14 +3,19 @@ import EquipmentOccupancyChart from "../components/equipment/equipmentOccupancy"
 import ResourcePage from "../components/resources/resourcePage";
 import ActionBar from "../components/actionBar";
 import Navbar from "../components/navbar";
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { EquipmentContext } from "../contexts/equipmentContext";
 import { TitleContext } from "../contexts/titleContext";
+import { viewSelectorOptions } from "../components/actionBar";
 
 export default function Home() {
   const { openFormNew } = useContext(EquipmentContext);
   const { projectTitle } = useContext(TitleContext);
-  const [view, setView] = useState("Chart");
+  const [view, setView] = useState(viewSelectorOptions.equipment);
+
+  useEffect(() => {
+    console.log("view", view);
+  }, [view]);
 
   return (
     <>
@@ -25,8 +30,8 @@ export default function Home() {
       <Navbar />
       <ActionBar handleNew={openFormNew} view={view} setView={setView} />
       <div style={{ marginTop: "120px" }}>
-        {view === "Chart" && <EquipmentOccupancyChart />}
-        {view === "Resources" && <ResourcePage />}
+        {view === viewSelectorOptions.equipment && <EquipmentOccupancyChart />}
+        {view === viewSelectorOptions.resources && <ResourcePage />}
       </div>
     </>
   );
