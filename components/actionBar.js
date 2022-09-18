@@ -17,6 +17,7 @@ import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ShowChartIcon from "@mui/icons-material/ShowChart";
 import { BatchesMenu } from "./settings/batchesMenu";
+import { ResourcesMenu } from "./settings/resourcesMenu";
 
 export const viewSelectorOptions = {
   equipment: "Equipment",
@@ -31,10 +32,19 @@ const ActionBar = ({ handleNew, view, setView }) => {
     setOpenBatchesModal(false);
   };
 
+  const [openResourceModal, setOpenResourceModal] = useState(false);
+  const closeResourceModal = () => {
+    setOpenResourceModal(false);
+  };
+
   return (
     <div className={styles.actionBar}>
       <ViewSelector view={view} setView={setView} />
       <BatchesModal open={openBatchesModal} handleClose={closeBatchesModal} />
+      <ResourcesModal
+        open={openResourceModal}
+        handleClose={closeResourceModal}
+      />
       {view === viewSelectorOptions.equipment && (
         <>
           <Tooltip title="Add Equipment">
@@ -45,6 +55,15 @@ const ActionBar = ({ handleNew, view, setView }) => {
           <Tooltip title="Batches">
             <IconButton onClick={() => setOpenBatchesModal(true)}>
               <ClearAllIcon color="primary" />
+            </IconButton>
+          </Tooltip>
+        </>
+      )}
+      {view === viewSelectorOptions.resources && (
+        <>
+          <Tooltip title="Add Resource">
+            <IconButton onClick={() => setOpenResourceModal(true)}>
+              <AddIcon color="primary" />
             </IconButton>
           </Tooltip>
         </>
@@ -160,6 +179,36 @@ const BatchesModal = ({ open, handleClose }) => {
         }}
       >
         <BatchesMenu handleClose={handleClose} />
+      </div>
+    </Modal>
+  );
+};
+
+const ResourcesModal = ({ open, handleClose }) => {
+  return (
+    <Modal
+      open={open}
+      onClose={handleClose}
+      aria-labelledby="Batches modal"
+      aria-describedby="Batches modal"
+    >
+      <div
+        style={{
+          background: "white",
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          width: "600px",
+          bgcolor: "background.paper",
+          padding: "16px",
+          borderRadius: "12px",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+        }}
+      >
+        <ResourcesMenu handleClose={handleClose} />
       </div>
     </Modal>
   );

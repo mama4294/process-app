@@ -5,7 +5,7 @@ import Typography from "@mui/material/Typography"
 import DataTable from "./resourcesInputTable";
 
 
-export const ResourcesMenu = () => {
+export const ResourcesMenu = ({handleClose}) => {
 
 const {resourceOptions,handleAdd,handleEdit,handleDelete,} = useContext(ResourceContext);
 const headers = [
@@ -21,7 +21,8 @@ const headers = [
             data={resourceOptions} 
             handleEdit={handleEdit} 
             handleAdd={handleAdd} 
-            handleDelete={handleDelete}>
+            handleDelete={handleDelete}
+            handleClose={handleClose}>
         </DataTable>
         </Box>
       </Box>

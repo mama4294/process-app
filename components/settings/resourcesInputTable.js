@@ -9,7 +9,14 @@ import { TwitterPicker } from "react-color";
 import styles from "../../styles/operations.module.css";
 import stylesCampaign from "../../styles/campaign.module.css";
 
-const DataTable = ({ data, headers, handleEdit, handleAdd, handleDelete }) => {
+const DataTable = ({
+  data,
+  headers,
+  handleEdit,
+  handleAdd,
+  handleDelete,
+  handleClose,
+}) => {
   console.log("Data", data);
   return (
     <>
@@ -28,9 +35,14 @@ const DataTable = ({ data, headers, handleEdit, handleAdd, handleDelete }) => {
         })}
 
       {data.length > 0 && (
-        <Button variant="outline" onClick={handleAdd} sx={{ mt: 2 }}>
-          Add
-        </Button>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <Button onClick={handleClose} sx={{ mt: 2 }}>
+            Close
+          </Button>
+          <Button variant="outlined" onClick={handleAdd} sx={{ mt: 2 }}>
+            New
+          </Button>
+        </div>
       )}
     </>
   );
@@ -40,7 +52,7 @@ const TableHeader = ({ data, headers, handleAdd }) => {
   return (
     <>
       <div className={styles.titleContainer}>
-        <div className={styles.title}>Add Default Resources</div>
+        <div className={styles.title}>Resources</div>
 
         <IconButton onClick={handleAdd}>
           <AddIcon color="action" />

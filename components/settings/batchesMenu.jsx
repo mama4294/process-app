@@ -21,7 +21,7 @@ const headers = [
             handleEdit={handleEdit} 
             handleAdd={handleAdd} 
             handleDelete={handleDelete}
-              handleClose={handleClose}>
+            handleClose={handleClose}>
         </DataTable>
         </Box>
       </Box>
