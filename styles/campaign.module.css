@@ -6,6 +6,13 @@
   align-items: center;
 }
 
+.chartRowRes {  
+  display: grid;      
+  grid-template-columns: 10ch 10ch 25ch 1fr;
+  border-bottom: 1px solid #6E81AD;
+  align-items: center;
+}
+
 
 .tableHeaderValue{
   /* background-color: #6E81AD;

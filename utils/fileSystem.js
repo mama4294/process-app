@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import { fileOpen, fileSave } from "https://unpkg.com/browser-fs-access";
 
 export const openFile = async () => {
@@ -15,13 +16,17 @@ const serializeAsJSON = (saveObj) => {
 };
 
 export const saveAsJSON = async (saveObj, handle) => {
+  // let state = {
+  //   loading: true,
+  //   error: null,
+  // };
+
   const serialized = serializeAsJSON(saveObj);
   const blob = new Blob([serialized], {
     type: "application/json",
   });
   const name = `${saveObj.projectTitle}.processvis`;
-
-  const potentialHandle = await fileSave(
+  const newHandle = await fileSave(
     blob,
     {
       fileName: name,
@@ -29,17 +34,15 @@ export const saveAsJSON = async (saveObj, handle) => {
       extensions: [".processvis"],
     },
     handle || null
-  ).catch((error) => {
-    if ((error = "The user aborted a request")) {
-      console.log("aborted");
-    } else {
-      alert("SaveAsJSON Error", error);
-      console.error(error);
-    }
-  });
-
-  console.log("FileSave Result", potentialHandle);
-  if (potentialHandle != undefined) window.handle = potentialHandle;
+  )
+    .then((result) => {
+      if (result != undefined) window.handle = result;
+      return result;
+    })
+    .catch((error) => {
+      return error;
+    });
+  return newHandle;
 };
 
 export const loadFromJSON = async () => {

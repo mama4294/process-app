@@ -8,6 +8,8 @@ import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import SettingsIcon from "@mui/icons-material/Settings";
+import CircularProgress from "@mui/material/CircularProgress";
+import CheckIcon from "@mui/icons-material/Check";
 import LoadingButton from "@mui/lab/LoadingButton";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
@@ -26,6 +28,8 @@ import { CampaignContext } from "../contexts/campaignContext";
 import { ResourceContext } from "../contexts/resourceContext";
 import { TitleContext } from "../contexts/titleContext";
 import { loadFromJSON, saveAsJSON } from "../utils/fileSystem";
+import { Alert } from "@mui/material";
+import { LocalConvenienceStoreOutlined } from "@mui/icons-material";
 
 const Navbar = () => {
   const { equipment, setEquipment, saveEquipment, resetEquipment } =
@@ -38,6 +42,7 @@ const Navbar = () => {
     useContext(TitleContext);
 
   const [saveLoading, setSaveLoading] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
 
   const setProject = (data) => {
     setEquipment(data.equipment);
@@ -59,24 +64,35 @@ const Navbar = () => {
   };
 
   const loadingIimer = () => {
-    setTimeout(() => setSaveLoading(false), 1000);
+    setSaveLoading(true);
+    setTimeout(() => {
+      setSaveLoading(false);
+      saveSuccessTimer();
+    }, 1000);
+  };
+
+  const saveSuccessTimer = () => {
+    setSaveSuccess(true);
+    setTimeout(() => setSaveSuccess(false), 1000);
   };
 
   const save = async (callback) => {
     const runCallback = () => {
-      console.log("saved project");
+      storeDataInLocalStorage(saveObj);
       typeof callback === "function" && callback();
-      console.log("handle after saving:", window.handle);
     };
 
-    setSaveLoading(true);
-    console.log("handle before saving:", window.handle);
     const saveObj = { projectTitle, equipment, batches, resourceOptions };
-    const result = await saveAsJSON(saveObj, window.handle).then(() =>
-      storeDataInLocalStorage(saveObj).then(runCallback)
-    );
-    loadingIimer();
-    return result;
+
+    await saveAsJSON(saveObj, window.handle)
+      .then((result) => {
+        if (result.message) {
+          console.error(result.message);
+        } else {
+          loadingIimer();
+        }
+      })
+      .then(runCallback);
   };
 
   const saveAs = async () => {
@@ -100,7 +116,6 @@ const Navbar = () => {
   const openFile = () => {
     loadFromJSON()
       .then((data) => {
-        console.log(data);
         setProject(data);
       })
       .catch((error) => {
@@ -111,6 +126,12 @@ const Navbar = () => {
           console.error(error);
         }
       });
+  };
+
+  const saveButtonIcon = ({ loading, success }) => {
+    if (loading) return <CircularProgress color="inherit" size={24} />;
+    if (success) return <CheckIcon />;
+    return;
   };
 
   return (
@@ -130,21 +151,37 @@ const Navbar = () => {
             type="text"
             placeholder="Project Title"
           />
-          {saveLoading ? (
-            <LoadingButton
-              loading
-              loadingPosition="start"
-              color="inherit"
-              startIcon={<SaveIcon />}
-              variant="outlined"
-            >
-              Save
-            </LoadingButton>
-          ) : (
-            <Button color="inherit" onClick={save}>
-              Save
-            </Button>
-          )}
+
+          <Button
+            onClick={save}
+            variant="outlined"
+            color="inherit"
+            sx={
+              saveSuccess && {
+                bgcolor: "rgb(76, 175, 80)",
+                "&:hover": { bgcolor: "rgb(56, 142, 60)" },
+              }
+            }
+            startIcon={saveButtonIcon({
+              loading: saveLoading,
+              success: saveSuccess,
+            })}
+          >
+            {saveLoading ? "Saving" : saveSuccess ? "Saved" : "Save"}
+          </Button>
+          {/* {saveLoading && (
+            <CircularProgress
+              size={24}
+              sx={{
+                color: "rgb(76, 175, 80)",
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                marginTop: "-12px",
+                marginLeft: "-12px",
+              }}
+            />
+          )} */}
         </Toolbar>
       </AppBar>
     </>
@@ -267,7 +304,6 @@ const ConfirmationModal = ({
 }) => {
   const handleConfirmation = async (saveSelected) => {
     const handleNextStep = () => {
-      console.log("Handling next step");
       if (modal.type === "new") {
         handleNewProject();
       } else if (modal.type === "open") {
@@ -277,12 +313,9 @@ const ConfirmationModal = ({
       }
     };
 
-    console.log("Determining if sace is selected");
     if (saveSelected) {
-      console.log("Save selected");
       await save(handleNextStep);
     } else {
-      console.log("Save NOT selected");
       handleNextStep();
     }
 

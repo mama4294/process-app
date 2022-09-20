@@ -126,8 +126,6 @@ const UnitRow = ({ unit }) => {
     setIsHovering(false);
   };
 
-  console.log("Equipment", unit);
-
   return (
     <div
       className={styles.chartRow}

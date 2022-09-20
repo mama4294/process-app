@@ -53,13 +53,9 @@ const TableHeader = ({ data, headers, handleAdd }) => {
     <>
       <div className={styles.titleContainer}>
         <div className={styles.title}>Resources</div>
-
-        <IconButton onClick={handleAdd}>
-          <AddIcon color="action" />
-        </IconButton>
       </div>
       {data.length > 0 && (
-        <div className={`${stylesCampaign.chartRow} ${styles.headerRow}`}>
+        <div className={`${stylesCampaign.chartRowRes} ${styles.headerRow}`}>
           {headers.map((header, index) => {
             return (
               <div className={stylesCampaign.tableHeaderValue} key={index}>
