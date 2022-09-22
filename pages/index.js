@@ -4,12 +4,10 @@ import ResourcePage from "../components/resources/resourcePage";
 import ActionBar from "../components/actionBar";
 import Navbar from "../components/navbar";
 import { useContext, useState, useEffect } from "react";
-import { EquipmentContext } from "../contexts/equipmentContext";
 import { TitleContext } from "../contexts/titleContext";
 import { viewSelectorOptions } from "../components/actionBar";
 
 export default function Home() {
-  const { openFormNew } = useContext(EquipmentContext);
   const { projectTitle } = useContext(TitleContext);
   const [view, setView] = useState(viewSelectorOptions.equipment);
 
@@ -28,7 +26,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Navbar />
-      <ActionBar handleNew={openFormNew} view={view} setView={setView} />
+      <ActionBar view={view} setView={setView} />
       <div style={{ marginTop: "120px" }}>
         {view === viewSelectorOptions.equipment && <EquipmentOccupancyChart />}
         {view === viewSelectorOptions.resources && <ResourcePage />}

@@ -24,8 +24,10 @@ export const viewSelectorOptions = {
   resources: "Resources",
 };
 
-const ActionBar = ({ handleNew, view, setView }) => {
-  const { solveEquipmentOccupancy } = useContext(EquipmentContext);
+const ActionBar = ({ view, setView }) => {
+  // const { openFormNew: handleNew } = useContext(EquipmentContext);
+  const { solveEquipmentOccupancy, openFormNew: handleNew } =
+    useContext(EquipmentContext);
 
   const [openBatchesModal, setOpenBatchesModal] = useState(false);
   const closeBatchesModal = () => {

@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import styles from "../../styles/EOchart.module.css";
 import Tooltip from "@mui/material/Tooltip";
 import Alert from "@mui/material/Alert";
 import Stack from "@mui/material/Stack";
+import IconButton from "@mui/material/IconButton";
+import AddIcon from "@mui/icons-material/Add";
 import ActionMenu from "./actionMenu";
 import { useContext } from "react";
 import { EquipmentContext } from "../../contexts/equipmentContext";
@@ -55,12 +57,43 @@ const Notification = ({ message }) => {
 };
 
 const ProcedureTable = ({ EquipmentData }) => {
+  if (EquipmentData.length > 0) {
+    EquipmentData.map((unit) => {
+      return <UnitRow unit={unit} key={unit.id} />;
+    });
+  } else {
+    return <NoEquipment />;
+  }
+};
+
+const NoEquipment = () => {
+  const { openFormNew } = useContext(EquipmentContext);
   return (
-    <>
-      {EquipmentData.map((unit) => {
-        return <UnitRow unit={unit} key={unit.id} />;
-      })}
-    </>
+    <div
+      style={{
+        background: "white",
+        display: "flex",
+        alignItems: "center",
+        padding: "12px",
+      }}
+    >
+      <div
+        style={{
+          color: "gray",
+          marginRight: "16px",
+          fontSize: "1.25rem",
+          lineHeight: "1.6",
+          letterSpacing: "0.0075em",
+        }}
+      >
+        No Equipment
+      </div>
+      <Tooltip title="Add Equipment">
+        <IconButton onClick={openFormNew}>
+          <AddIcon color="primary" />
+        </IconButton>
+      </Tooltip>
+    </div>
   );
 };
 

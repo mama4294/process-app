@@ -24,9 +24,11 @@ const ResourcePage = () => {
 
   const bottleneck = calcCycleTime();
   const cycleTime = bottleneck.duration;
-  const offsetTime = Math.abs(
-    bottleneck.operations[0].start < 0 ? bottleneck.operations[0].start : 0
-  );
+  const offsetTime = bottleneck.operations
+    ? Math.abs(
+        bottleneck.operations[0].start < 0 ? bottleneck.operations[0].start : 0
+      )
+    : 0;
   // const xAxis = createXAxis(cycleTime * batches.length + offsetTime);
   const hasOperations = operations.flatMap((op) => op.resources).length > 0;
 
@@ -72,16 +74,26 @@ const ResourcePage = () => {
 
 const NoResourcesCard = () => {
   return (
-    <Box
-      sx={{
-        background: "white",
-        padding: "20px",
-        borderRadius: "2px",
-        mb: "20px",
-      }}
-    >
-      <h6>No operations use a resource</h6>
-    </Box>
+    <div className={styles.chart}>
+      <div
+        style={{
+          background: "white",
+          padding: "12px",
+        }}
+      >
+        <div
+          style={{
+            color: "gray",
+            marginRight: "16px",
+            fontSize: "1.25rem",
+            lineHeight: "1.6",
+            letterSpacing: "0.0075em",
+          }}
+        >
+          No operations use a resource
+        </div>
+      </div>
+    </div>
   );
 };
 
