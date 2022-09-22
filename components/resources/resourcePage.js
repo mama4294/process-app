@@ -88,6 +88,9 @@ const NoResourcesCard = () => {
             fontSize: "1.25rem",
             lineHeight: "1.6",
             letterSpacing: "0.0075em",
+            height: "40px",
+            display: "flex",
+            alignItems: "center",
           }}
         >
           No operations use a resource

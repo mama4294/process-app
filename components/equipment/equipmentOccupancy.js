@@ -58,7 +58,7 @@ const Notification = ({ message }) => {
 
 const ProcedureTable = ({ EquipmentData }) => {
   if (EquipmentData.length > 0) {
-    EquipmentData.map((unit) => {
+    return EquipmentData.map((unit) => {
       return <UnitRow unit={unit} key={unit.id} />;
     });
   } else {
