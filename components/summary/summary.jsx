@@ -1,8 +1,14 @@
 import styles from "../../styles/EOchart.module.css";
-import { useContext} from "react";
+import { useContext, useState} from "react";
 import { CampaignContext } from "../../contexts/campaignContext";
 import { EquipmentContext } from "../../contexts/equipmentContext";
 import { minToFreindlyTime } from "../../utils/helperFunctions";
+import Tooltip from "@mui/material/Tooltip";
+import Button from "@mui/material/Button";
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import FilterListIcon from '@mui/icons-material/FilterList';
+import IconButton from "@mui/material/IconButton";
 import Box from "@mui/material/Box";
 
 
@@ -44,28 +50,70 @@ const IndicatorCard = ({title,value, footerValue, footerLabel}) =>{
 
 const EquipmentUtilizationTable = () =>{
 
+    const sortOptions =[
+        {title: "none", text:  "No filter applied"},
+        {title: "asc", text:"Filtered Ascending"},
+        {title: "desc", text:"Filtered Decending"}]
+
+    const [sortIndex, setSortIndex] = useState(0)
+
+    const cycleFilter = () =>{
+        if(sortIndex < 2){
+            setSortIndex(prev => prev + 1)
+        }else{
+            setSortIndex(0)
+        }
+    }
+
+    const getIcon = (index) => {
+        switch (index) {
+          case 0:
+            return <FilterListIcon />;
+          case 1:
+            return <KeyboardArrowUpIcon />;
+          case 2:
+            return <KeyboardArrowDownIcon />;
+          default:
+            return <FilterListIcon />;
+        }
+      };
+
     const data = [
 
-        {title: "Mixer", utilization: "20%"},
-        {title: "Filler", utilization: "60%"},
-        {title: "Packaging", utilization: "90%"},
+        {title: "Mixer", utilization: 20},
+        {title: "Filler", utilization: 60},
+        {title: "Packaging", utilization: 90},
     ]
+
 
     return(
         <Card>
+            <div style={{display: "flex", alignItems:"center"}}>
+            <p className={styles.summaryChartTile}>Equipment Utilization</p>
+            <Tooltip title={sortOptions[sortIndex].text}>
+                <IconButton onClick={cycleFilter}>
+                {getIcon(sortIndex)}
+            </IconButton>
+        </Tooltip>
+            </div>
+
             <div className={styles.utilizationContainer}>
                 <div className={styles.utilizationChart} >   
                 {data.map((equip)=>{
                       const listItemStyle = {
                         background: "#red",
-                        gridColumn: `5/100`,
+                        gridColumn: `1/${equip.utilization}`,
                       };
                     return(
                         <>
-                        <div className={styles.chartRowLabel} style={{ marginLeft: "1rem" }}>
+                        <div className={styles.chartRowLabel}>
                             {equip.title} 
                         </div>
-                        <div className={styles.indicator} style={{listItemStyle}}> </div>   
+                        <div className={styles.indicator} >
+                        <Tooltip title={`${equip.utilization}%`} placement="top">
+                            <div className={styles.bar} style={listItemStyle}/>
+                        </Tooltip> 
+                         </div>   
                         </>
                     )
                 })}           
