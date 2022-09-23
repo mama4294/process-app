@@ -22,6 +22,7 @@ import { ResourcesMenu } from "./settings/resourcesMenu";
 export const viewSelectorOptions = {
   equipment: "Equipment",
   resources: "Resources",
+  summary: "Summary",
 };
 
 const ActionBar = ({ view, setView }) => {
@@ -150,6 +151,15 @@ const ViewSelector = ({ view, setView }) => {
             <ShowChartIcon fontSize="small" />
           </ListItemIcon>
           <ListItemText>Resources</ListItemText>
+        </MenuItem>
+        <MenuItem
+          onClick={handleSelect}
+          selected={view === viewSelectorOptions.summary}
+        >
+          <ListItemIcon>
+            <ShowChartIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>Summary</ListItemText>
         </MenuItem>
       </Menu>
     </div>

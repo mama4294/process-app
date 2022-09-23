@@ -116,3 +116,40 @@
   .tooltip:hover .tooltiptext {
     visibility: visible;
   }
+
+  .summaryChartTile {
+    color: #A1A1B5;
+    margin-bottom: 8px;
+    font-Size: 12px;
+    line-height: 18px;
+    margin: 0px;
+    margin-top: 2px;
+  }
+
+  .summaryChartValue {
+    color: #43436B;
+    margin-bottom: 8px;
+    font-Size: 24px;
+    line-height: 28px;
+    letter-spacing: -0.06px;
+    margin: 0px;
+    margin-top: 6px;
+  }
+
+  .summaryChartFooterValue {
+    color: #51D084;
+    margin-bottom: 8px;
+    font-Size: 12px;
+    line-height: 18px;
+    margin: 0px;
+    margin-top: 2px;
+  }
+  .summaryChartFooterLabel {
+    color: #A1A1B5;
+    margin-bottom: 8px;
+    font-Size: 12px;
+    line-height: 18px;
+    margin: 0px;
+    margin-top: 2px;
+    margin-left: 4px;
+  }

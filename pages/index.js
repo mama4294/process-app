@@ -6,6 +6,7 @@ import Navbar from "../components/navbar";
 import { useContext, useState, useEffect } from "react";
 import { TitleContext } from "../contexts/titleContext";
 import { viewSelectorOptions } from "../components/actionBar";
+import { SummaryPage } from "../components/summary/summary";
 
 export default function Home() {
   const { projectTitle } = useContext(TitleContext);
@@ -30,6 +31,7 @@ export default function Home() {
       <div style={{ marginTop: "120px" }}>
         {view === viewSelectorOptions.equipment && <EquipmentOccupancyChart />}
         {view === viewSelectorOptions.resources && <ResourcePage />}
+        {view === viewSelectorOptions.summary && <SummaryPage />}
       </div>
     </>
   );
