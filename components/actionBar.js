@@ -12,6 +12,7 @@ import MenuItem from "@mui/material/MenuItem";
 import CachedIcon from "@mui/icons-material/Cached";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import AlignHorizontalLeftIcon from "@mui/icons-material/AlignHorizontalLeft";
+import SummarizeIcon from "@mui/icons-material/Summarize";
 import ClearAllIcon from "@mui/icons-material/ClearAll";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
@@ -94,10 +95,12 @@ const ViewSelector = ({ view, setView }) => {
 
   const getIcon = (view) => {
     switch (view) {
-      case "Chart":
+      case viewSelectorOptions.equipment:
         return <AlignHorizontalLeftIcon />;
-      case "Resources":
+      case viewSelectorOptions.resources:
         return <ShowChartIcon />;
+      case viewSelectorOptions.summary:
+        return <SummarizeIcon />;
       default:
         return <AlignHorizontalLeftIcon />;
     }
@@ -157,7 +160,7 @@ const ViewSelector = ({ view, setView }) => {
           selected={view === viewSelectorOptions.summary}
         >
           <ListItemIcon>
-            <ShowChartIcon fontSize="small" />
+            <SummarizeIcon fontSize="small" />
           </ListItemIcon>
           <ListItemText>Summary</ListItemText>
         </MenuItem>

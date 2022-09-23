@@ -153,3 +153,30 @@
     margin-top: 2px;
     margin-left: 4px;
   }
+
+  .utilizationContainer {
+    min-width: 650px;
+    margin: 0 auto;   
+    padding: 10px 10px;  
+    display: grid;
+}
+
+.utilizationChart {
+  display: grid;
+  position: relative;
+  overflow: hidden;  
+  border-top: 2px solid #6E81AD;
+  grid-template-columns: 100px 1fr;
+
+}
+
+.indicator{
+  display: grid;
+  list-style: none;
+  padding: 5px 0;
+  margin: 0;
+  justify-items: stretch;
+  grid-template-rows: 100%;
+  grid-template-columns: repeat(100, 1fr);
+  background-color: #c1d3ff;
+}

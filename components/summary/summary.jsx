@@ -20,6 +20,7 @@ export const SummaryPage = ()=>{
             <IndicatorCard title="Number of Batches" value={batches.length}/>
             <IndicatorCard title="Total Duration" value={totalTime}/>
             <IndicatorCard title="Bottleneck" value={bottleneck.title} footerValue={bottleneck.duration} footerLabel="min"/>
+            <EquipmentUtilizationTable/>
             </div>
         </div>
     )
@@ -41,12 +42,35 @@ const IndicatorCard = ({title,value, footerValue, footerLabel}) =>{
 }
 
 
-const EquipmentEfficienyTable = () =>{
+const EquipmentUtilizationTable = () =>{
+
+    const data = [
+
+        {title: "Mixer", utilization: "20%"},
+        {title: "Filler", utilization: "60%"},
+        {title: "Packaging", utilization: "90%"},
+    ]
+
     return(
         <Card>
-        <div style={{background: "white"}}>
-             <p>EquipmentEfficienyTable</p>   
-        </div>
+            <div className={styles.utilizationContainer}>
+                <div className={styles.utilizationChart} >   
+                {data.map((equip)=>{
+                      const listItemStyle = {
+                        background: "#red",
+                        gridColumn: `5/100`,
+                      };
+                    return(
+                        <>
+                        <div className={styles.chartRowLabel} style={{ marginLeft: "1rem" }}>
+                            {equip.title} 
+                        </div>
+                        <div className={styles.indicator} style={{listItemStyle}}> </div>   
+                        </>
+                    )
+                })}           
+                </div>
+            </div>
         </Card>
     )
 }
