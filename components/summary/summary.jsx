@@ -51,9 +51,9 @@ const IndicatorCard = ({title,value, footerValue, footerLabel}) =>{
 const EquipmentUtilizationTable = () =>{
 
     const sortOptions =[
-        {title: "none", text:  "No filter applied"},
-        {title: "asc", text:"Filtered Ascending"},
-        {title: "desc", text:"Filtered Decending"}]
+        {title: "none", text: "Sort"},
+        {title: "asc", text:"Ascending"},
+        {title: "desc", text:"Decending"}]
 
     const [sortIndex, setSortIndex] = useState(0)
 
@@ -78,12 +78,32 @@ const EquipmentUtilizationTable = () =>{
         }
       };
 
+
+     const compare = (a, b, asc = true) =>{
+        let direction = 1;
+        if (!asc) direction = -1;
+
+        if(a.utilization < b.utilization) return -1*direction;
+        if(a.utilization > b.utilization) return 1*direction;
+        return 0;
+     }
+
+
+
     const data = [
 
         {title: "Mixer", utilization: 20},
         {title: "Filler", utilization: 60},
         {title: "Packaging", utilization: 90},
     ]
+
+    const getSortedData = (data, sortIndex) =>{
+        if(sortIndex===1) return data.sort((a,b)=> a.utilization-b.utilization)
+        if(sortIndex===2) return data.sort((a,b)=> b.utilization-a.utilization)
+        return data
+    }
+
+    const sortedData = getSortedData(data, sortIndex)
 
 
     return(
@@ -99,7 +119,7 @@ const EquipmentUtilizationTable = () =>{
 
             <div className={styles.utilizationContainer}>
                 <div className={styles.utilizationChart} >   
-                {data.map((equip)=>{
+                {sortedData.map((equip)=>{
                       const listItemStyle = {
                         background: "#red",
                         gridColumn: `1/${equip.utilization}`,
