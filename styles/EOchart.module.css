@@ -176,7 +176,7 @@
   margin: 5px 0;
   justify-items: stretch;
   grid-template-rows: 100%;
-  grid-template-columns: repeat(100, 1fr);
+  grid-template-columns: repeat(99, 1fr);
   background-color: #c1d3ff;
   border-radius: 100px;
 }

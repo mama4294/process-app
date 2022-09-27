@@ -10,11 +10,12 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import IconButton from "@mui/material/IconButton";
 import Box from "@mui/material/Box";
+import { convertToMinutes } from "../../utils/ganttLogic";
 
 
 export const SummaryPage = ()=>{
     const {batches} = useContext(CampaignContext);
-    const {calcCycleTime} = useContext(EquipmentContext);
+    const {equipment, calcCycleTime} = useContext(EquipmentContext);
     const bottleneck = calcCycleTime();
     const batchTime = minToFreindlyTime(bottleneck.duration)
     const totalTime = minToFreindlyTime(bottleneck.duration*batches.length)
@@ -25,8 +26,8 @@ export const SummaryPage = ()=>{
             <IndicatorCard title="Batch Duration" value={batchTime}/>
             <IndicatorCard title="Number of Batches" value={batches.length}/>
             <IndicatorCard title="Total Duration" value={totalTime}/>
-            <IndicatorCard title="Bottleneck" value={bottleneck.title} footerValue={bottleneck.duration} footerLabel="min"/>
-            <EquipmentUtilizationTable/>
+            <IndicatorCard title="Bottleneck" value={bottleneck.title} footerLabel={batchTime}/>
+            <EquipmentUtilizationTable equipment={equipment} bottleneckDuration={bottleneck.duration}/>
             </div>
         </div>
     )
@@ -48,7 +49,39 @@ const IndicatorCard = ({title,value, footerValue, footerLabel}) =>{
 }
 
 
-const EquipmentUtilizationTable = () =>{
+const EquipmentUtilizationTable = ({equipment, bottleneckDuration}) =>{
+    console.log("equipment")
+    console.table(equipment)
+
+    const calculateUtilization = ({equipment, bottleneckDuration}) =>{
+
+            // const data = [
+    //     {title: "Mixer", utilization: 20},
+    //     {title: "Filler", utilization: 60},
+    //     {title: "Packaging", utilization: 90},
+    // ]
+
+        const calcUtilFromEquip = (operations, bottleneckDuration) =>{
+            const minutesUsed = operations.reduce((acc, op)=>{
+                return acc + convertToMinutes(op.duration, op.durationUnit)
+            },0)
+            
+            return Math.round(minutesUsed/bottleneckDuration*100)
+        }
+
+        if (!equipment) return []
+        let data = []
+        equipment.map((equip)=>{
+            data.push({
+                id: equip.id,
+                title: equip.title, 
+                utilization: calcUtilFromEquip(equip.operations, bottleneckDuration)
+            })
+        })
+        return data
+
+   
+    }
 
     const sortOptions =[
         {title: "none", text: "Sort"},
@@ -79,23 +112,11 @@ const EquipmentUtilizationTable = () =>{
       };
 
 
-     const compare = (a, b, asc = true) =>{
-        let direction = 1;
-        if (!asc) direction = -1;
 
-        if(a.utilization < b.utilization) return -1*direction;
-        if(a.utilization > b.utilization) return 1*direction;
-        return 0;
-     }
+     const data = calculateUtilization({equipment: equipment, bottleneckDuration: bottleneckDuration})
+     console.table(data)
 
 
-
-    const data = [
-
-        {title: "Mixer", utilization: 20},
-        {title: "Filler", utilization: 60},
-        {title: "Packaging", utilization: 90},
-    ]
 
     const getSortedData = (data, sortIndex) =>{
         if(sortIndex===1) return data.sort((a,b)=> a.utilization-b.utilization)
@@ -145,7 +166,7 @@ const EquipmentUtilizationTable = () =>{
 
 const Card = ({children}) =>{
     return(
-    <Box sx={{ background: "white", p:2, borderRadius: 2, boxShadow: "0 4px 8px 0 rgb(0 0 0 / 20%), 0 6px 20px 0 rgb(0 0 0 / 19%)"}}>
+    <Box sx={{ background: "white", p:2, borderRadius: 1, boxShadow: "0 4px 8px 0 rgb(0 0 0 / 20%), 0 6px 20px 0 rgb(0 0 0 / 19%)", flexGrow: 1}}>
      {children}
     </Box>
     )
