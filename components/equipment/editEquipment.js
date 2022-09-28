@@ -106,12 +106,25 @@ const EquipmentInputForm = ({ mode, handleClose }) => {
     setEquipment({ ...equipment, [event.target.id]: event.target.value });
   };
 
-  const handleChangeOperation = (operationID, targetID) => (event) => {
+  const handleChangeOperation = ({
+    operationID,
+    targetID,
+    operation,
+    event,
+  }) => {
     let field = null;
     let value = null;
-    console.log("Event", event);
+
+    if (!event) return;
     if (event.target === undefined) {
       //for dropdowns
+      // if (targetID == "type" && event.value == "LINK") {
+      //   //When link is selected, duration needs to be automatically calulated
+
+      //   //get predicessor
+      //   const pred = operations.find((op) => op.id == operationID);
+      //   console.log("pred", pred);
+      // }
       field = targetID;
       //   value = event.value;
       value = {
@@ -394,6 +407,17 @@ const OperationRow = ({
   const handleChange = () => {
     handleToggle(id);
   };
+
+  const onChange = (targetID) => (event) => {
+    const details = {
+      operationID: id,
+      targetID: targetID,
+      operation: operation,
+      event: event,
+    };
+    handleChangeOperation(details);
+  };
+
   const label = { inputProps: { "aria-label": "selection" } };
   const style = {
     color: "#red",
@@ -426,7 +450,8 @@ const OperationRow = ({
           value={title}
           type="text"
           placeholder="Name"
-          onChange={handleChangeOperation(id)}
+          // onChange={handleChangeOperation(id)}
+          onChange={onChange}
           ref={nameInput}
         />
       </div>
@@ -440,13 +465,15 @@ const OperationRow = ({
             disabled={disabled}
             style={{ textAlign: "right" }}
             placeholder="Duration"
-            onChange={handleChangeOperation(id)}
+            // onChange={handleChangeOperation(id)}
+            onChange={onChange}
           />
           <Dropdown
             id="durationUnit"
             value={durationUnit}
             disabled={disabled}
-            onChange={handleChangeOperation(id, "durationUnit")}
+            // onChange={handleChangeOperation(id, "durationUnit")}
+            onChange={onChange("durationUnit")}
             options={[
               { label: "min", value: "min" },
               { label: "hr", value: "hr" },
@@ -459,7 +486,8 @@ const OperationRow = ({
         <Dropdown
           id="predecessor"
           value={predecessor}
-          onChange={handleChangeOperation(id, "predecessor")}
+          // onChange={handleChangeOperation(id, "predecessor")}
+          onChange={onChange("predecessor")}
           options={predecessorOptions}
           isSearchable={true}
           // formatGroupLabel={formatGroupLabel}
@@ -469,7 +497,8 @@ const OperationRow = ({
         <Dropdown
           id="type"
           value={type}
-          onChange={handleChangeOperation(id, "type")}
+          // onChange={handleChangeOperation(id, "type")}
+          onChange={onChange("type")}
           options={[
             { label: "Start-to-Finish", value: "SF" },
             { label: "Start-to-Start", value: "SS" },
