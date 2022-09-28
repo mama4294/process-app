@@ -33,12 +33,11 @@ const ResourcePage = () => {
   const hasOperations = operations.flatMap((op) => op.resources).length > 0;
 
   return (
-    <Box
-      sx={{
-        minWidth: "650px",
-        margin: "0 auto",
-        padding: "10px 10px",
+    <div
+      style={{
         display: "flex",
+        gap: "20px",
+        padding: "10px 10px",
         flexWrap: "wrap",
         backgroundColor: "#dddddd",
       }}
@@ -49,8 +48,6 @@ const ResourcePage = () => {
             operations,
             resource.title
           );
-          console.log("Filtered by: ", resource.title);
-          console.log("filteredOperations", filteredOperations);
           const hasResources = filteredOperations.length > 0;
           if (!hasResources) return <></>;
           return (
@@ -68,7 +65,7 @@ const ResourcePage = () => {
       ) : (
         <NoResourcesCard />
       )}
-    </Box>
+    </div>
   );
 };
 
@@ -157,7 +154,7 @@ const LineChartCard = ({
           height: "342.328px",
           padding: "20px",
           borderRadius: "4px",
-          margin: "20px",
+          flexGrow: "1",
           boxShadow:
             "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
           display: "flex",
