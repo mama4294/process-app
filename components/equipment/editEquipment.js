@@ -30,6 +30,10 @@ import {
 import { generateId } from "../../utils/helperFunctions";
 import { EquipmentContext } from "../../contexts/equipmentContext";
 import { ResourceSelector } from "../inputs/resourceSelector";
+import {
+  ContentPasteSearchOutlined,
+  LocalConvenienceStoreOutlined,
+} from "@mui/icons-material";
 
 const EditEquipmentModal = ({ drawer, handleClose }) => {
   const { open, mode } = drawer;
@@ -107,26 +111,49 @@ const EquipmentInputForm = ({ mode, handleClose }) => {
   };
 
   const handleChangeOperation = ({
-    operationID,
     targetID,
     operation,
     event,
+    predecessorOptions,
   }) => {
     let field = null;
     let value = null;
+    let newOp = {};
 
     if (!event) return;
+    console.log(event);
     if (event.target === undefined) {
       //for dropdowns
-      // if (targetID == "type" && event.value == "LINK") {
-      //   //When link is selected, duration needs to be automatically calulated
+      let options = [];
+      const predOptions = [
+        ...predecessorOptions[0].options,
+        ...predecessorOptions[1].options,
+      ];
 
-      //   //get predicessor
-      //   const pred = operations.find((op) => op.id == operationID);
-      //   console.log("pred", pred);
-      // }
+      //LINK is selected, a new duration is automatically calculated
+      if (targetID == "type" && event.value == "LINK") {
+        console.log("Changed to Link");
+        console.log(operation.predecessor);
+        const pred = predOptions.find(
+          (op) => op.value == operation.predecessor.value
+        );
+        const duration = pred.duration;
+        const durationUnit = pred.durationUnit;
+
+        newOp = { duration, durationUnit };
+      }
+
+      //When predicessor changes and LINK is selected, a new duration is automatically calculated
+      if (targetID == "predecessor" && operation.type.value == "LINK") {
+        const pred = predOptions.find((op) => op.value == event.value);
+        const duration = pred.duration;
+        const durationUnit = pred.durationUnit;
+
+        newOp = { duration, durationUnit };
+      }
+      //When link is selected, duration needs to be automatically calulated
+
       field = targetID;
-      //   value = event.value;
       value = {
         value: event.value,
         label: event.label,
@@ -137,13 +164,14 @@ const EquipmentInputForm = ({ mode, handleClose }) => {
       field = event.target.id;
       value = event.target.value;
     }
-    const newState = operations.map((operation) => {
-      if (operation.id === operationID) {
+    const totalNewOp = { [field]: value, ...newOp };
+    const newState = operations.map((op) => {
+      if (op.id === operation.id) {
         // console.log(`Found operation with field ${field} and value ${value}`);
-        return { ...operation, [field]: value };
+        return { ...op, ...totalNewOp };
       }
       //otherwise return object as is
-      return operation;
+      return op;
     });
 
     setOperations(newState);
@@ -408,12 +436,12 @@ const OperationRow = ({
     handleToggle(id);
   };
 
-  const onChange = (targetID) => (event) => {
+  const onChangeValue = (targetID) => (event) => {
     const details = {
-      operationID: id,
       targetID: targetID,
       operation: operation,
       event: event,
+      predecessorOptions: predecessorOptions,
     };
     handleChangeOperation(details);
   };
@@ -451,7 +479,7 @@ const OperationRow = ({
           type="text"
           placeholder="Name"
           // onChange={handleChangeOperation(id)}
-          onChange={onChange}
+          onChange={onChangeValue()}
           ref={nameInput}
         />
       </div>
@@ -466,14 +494,14 @@ const OperationRow = ({
             style={{ textAlign: "right" }}
             placeholder="Duration"
             // onChange={handleChangeOperation(id)}
-            onChange={onChange}
+            onChange={onChangeValue()}
           />
           <Dropdown
             id="durationUnit"
             value={durationUnit}
             disabled={disabled}
             // onChange={handleChangeOperation(id, "durationUnit")}
-            onChange={onChange("durationUnit")}
+            onChange={onChangeValue("durationUnit")}
             options={[
               { label: "min", value: "min" },
               { label: "hr", value: "hr" },
@@ -487,7 +515,7 @@ const OperationRow = ({
           id="predecessor"
           value={predecessor}
           // onChange={handleChangeOperation(id, "predecessor")}
-          onChange={onChange("predecessor")}
+          onChange={onChangeValue("predecessor")}
           options={predecessorOptions}
           isSearchable={true}
           // formatGroupLabel={formatGroupLabel}
@@ -498,7 +526,7 @@ const OperationRow = ({
           id="type"
           value={type}
           // onChange={handleChangeOperation(id, "type")}
-          onChange={onChange("type")}
+          onChange={onChangeValue("type")}
           options={[
             { label: "Start-to-Finish", value: "SF" },
             { label: "Start-to-Start", value: "SS" },

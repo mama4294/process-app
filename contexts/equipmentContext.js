@@ -285,6 +285,8 @@ export const EquipmentProvider = ({ children }) => {
         newArray.push({
           label: `${equip.title} - ${operation.title}`,
           value: operation.id,
+          duration: operation.duration,
+          durationUnit: operation.durationUnit,
           external: true,
         });
       });
