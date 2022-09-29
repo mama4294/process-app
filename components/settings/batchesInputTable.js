@@ -1,11 +1,8 @@
-import React, { useState, useCallback } from "react";
+import React, { useState } from "react";
 import Button from "@mui/material/Button";
-import Checkbox from "@mui/material/Checkbox";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
-import AddIcon from "@mui/icons-material/Add";
 import TextInput from "../inputs/textInput";
-import ClearIcon from "@mui/icons-material/Clear";
 import { TwitterPicker } from "react-color";
 
 import styles from "../../styles/operations.module.css";
@@ -54,10 +51,6 @@ const TableHeader = ({ data, headers, handleAdd }) => {
     <>
       <div className={styles.titleContainer}>
         <div className={styles.title}>Batches</div>
-
-        {/* <IconButton onClick={handleAdd}>
-          <AddIcon color="action" />
-        </IconButton> */}
       </div>
       {data.length > 0 && (
         <div className={`${stylesCampaign.chartRow} ${styles.headerRow}`}>
