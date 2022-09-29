@@ -8,6 +8,7 @@ import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Checkbox from "@mui/material/Checkbox";
 import Tooltip from "@mui/material/Tooltip";
+import LinkIcon from "@mui/icons-material/Link";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
@@ -467,6 +468,15 @@ const OperationRow = ({
     }
   }, []);
 
+  const LinkText = () => {
+    return (
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <LinkIcon fontSize="small" />
+        <p style={{ margin: "0 0 0 2px" }}>Link</p>
+      </div>
+    );
+  };
+
   const disabled = type.value === "LINK";
 
   return (
@@ -532,7 +542,7 @@ const OperationRow = ({
             { label: "Start-to-Start", value: "SS" },
             { label: "Finish-to-Finish", value: "FF" },
             { label: "Finish-to-Start", value: "FS" },
-            { label: "Link", value: "LINK" },
+            { label: <LinkText />, value: "LINK" },
           ]}
         />
       </div>
