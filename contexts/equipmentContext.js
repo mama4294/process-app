@@ -1,114 +1,399 @@
 import { useState, createContext, useEffect } from "react";
-import { toggleSelection, deleteByIds, deleteById } from "../utils/arrayLogic";
+import { deleteById } from "../utils/arrayLogic";
 import { calcGanttLogic, calcEOCLogic } from "../utils/ganttLogic";
-import { generateId, exportToJsonFile } from "../utils/helperFunctions";
-
-const defaultResources = {
-  steam: {
-    name: "Steam",
-    defaultUnit: "kg/hr",
-    type: "Mass flow rate",
-  },
-  water: {
-    name: "Water",
-    defaultUnit: "lpm",
-    type: "Volumetric flow rate",
-  },
-  CIP: {
-    name: "CIP",
-    defaultUnit: "lpm",
-    type: "Volumetric flow rate",
-  },
-};
+import { generateId } from "../utils/helperFunctions";
 
 const defaultEquipmentData = [
   {
-    id: "decd93e4",
+    id: "193e230f",
     title: "Mixer",
-    duration: 145,
     operations: [
       {
-        duration: "15",
-        durationUnit: { value: "min", label: "min" },
-        end: 16,
-        id: "971dc105",
+        id: "9cddeb8a",
+        title: "Setup",
+        duration: "2",
+        durationUnit: {
+          value: "hr",
+          label: "hr",
+        },
+        predecessor: {
+          value: 0,
+          label: "Initial",
+          external: false,
+        },
         offset: 0,
-        offsetUnit: { value: "hr", label: "hr" },
-        parentId: "275d01f8",
-        predecessor: { value: 0, label: "Initial" },
+        offsetUnit: {
+          value: "hr",
+          label: "hr",
+        },
+        type: {
+          value: "SF",
+          label: "Start-to-Finish",
+        },
         resources: [],
         start: 1,
+        end: 121,
+        parentId: "193e230f",
+      },
+      {
+        id: "7bf55c2e",
         title: "Load",
-        type: { value: "SF", label: "Start-to-Finish" },
+        duration: "20",
+        durationUnit: {
+          value: "min",
+          label: "min",
+        },
+        predecessor: {
+          value: "9cddeb8a",
+          label: "Setup",
+          external: false,
+        },
+        offset: 0,
+        offsetUnit: {
+          value: "hr",
+          label: "hr",
+        },
+        type: {
+          value: "SF",
+          label: "Start-to-Finish",
+        },
+        resources: [
+          {
+            title: "Water",
+            id: "9404732e",
+            color: "#8ED1FC",
+            unit: "lpm",
+            label: "Water - 20 lpm",
+            value: "Water",
+            amount: "20",
+          },
+        ],
+        start: 121,
+        end: 141,
+        parentId: "193e230f",
       },
       {
-        duration: "1",
-        durationUnit: { value: "hr", label: "hr" },
-        end: 76,
-        id: "86fc6543",
-        offset: 0,
-        offsetUnit: { value: "hr", label: "hr" },
-        parentId: "275d01f8",
-        predecessor: { value: "971dc105", label: "Load" },
-        resources: [],
-        start: 16,
+        id: "4d963425",
         title: "Mix",
-        type: { value: "SF", label: "Start-to-Finish" },
+        duration: "45",
+        durationUnit: {
+          value: "min",
+          label: "min",
+        },
+        predecessor: {
+          value: "7bf55c2e",
+          label: "Load",
+          external: false,
+        },
+        offset: 0,
+        offsetUnit: {
+          value: "hr",
+          label: "hr",
+        },
+        type: {
+          value: "SF",
+          label: "Start-to-Finish",
+        },
+        resources: [
+          {
+            title: "Electricity",
+            id: "66b598e3",
+            color: "#FCB900",
+            unit: "kW",
+            label: "Electricity - 50 kW",
+            value: "Electricity",
+            amount: "50",
+          },
+        ],
+        start: 141,
+        end: 186,
+        parentId: "193e230f",
       },
       {
-        duration: "10",
-        durationUnit: { value: "min", label: "min" },
-        end: 86,
-        id: "da41da6e",
-        offset: 0,
-        offsetUnit: { value: "hr", label: "hr" },
-        parentId: "275d01f8",
-        predecessor: { value: "86fc6543", label: "Mix" },
-        resources: [],
-        start: 76,
+        id: "d38efdf7",
         title: "Discharge",
-        type: { value: "SF", label: "Start-to-Finish" },
+        duration: "30",
+        durationUnit: {
+          value: "min",
+          label: "min",
+        },
+        predecessor: {
+          value: "4d963425",
+          label: "Mix",
+          external: false,
+        },
+        offset: 0,
+        offsetUnit: {
+          value: "hr",
+          label: "hr",
+        },
+        type: {
+          value: "SF",
+          label: "Start-to-Finish",
+        },
+        resources: [
+          {
+            title: "Electricity",
+            id: "401e3177",
+            color: "#FCB900",
+            unit: "kW",
+            label: "Electricity - 5 kW",
+            value: "Electricity",
+            amount: "5",
+          },
+        ],
+        start: 186,
+        end: 216,
+        parentId: "193e230f",
+      },
+      {
+        id: "370d6b7f",
+        title: "Clean",
+        duration: "2",
+        durationUnit: {
+          value: "hr",
+          label: "hr",
+        },
+        predecessor: {
+          value: "d38efdf7",
+          label: "Discharge",
+          external: false,
+        },
+        offset: 0,
+        offsetUnit: {
+          value: "hr",
+          label: "hr",
+        },
+        type: {
+          value: "SF",
+          label: "Start-to-Finish",
+        },
+        resources: [
+          {
+            title: "Cleaner",
+            id: "1725cf6d",
+            color: "#7bdcb5",
+            unit: "lpm",
+            label: "Cleaner - 60 lpm",
+            value: "Cleaner",
+            amount: "60",
+          },
+        ],
+        start: 216,
+        end: 336,
+        parentId: "193e230f",
       },
     ],
+    duration: 335,
   },
   {
-    title: "Former",
-    duration: 330,
-    id: "8865b56e",
+    id: "3086050f",
+    title: "Filler",
     operations: [
       {
-        duration: "30",
-        durationUnit: { value: "min", label: "min" },
-        end: 86,
-        id: "eac61970",
-        offset: 0,
-        offsetUnit: { value: "hr", label: "hr" },
-        parentId: "8865b56e",
-        predecessor: { value: "445bee24", label: "Form" },
-        resources: [],
-        start: 56,
-        title: "Form",
-        type: { value: "FS", label: "Finish-to-Start" },
-      },
-      {
-        duration: "5",
-        durationUnit: { value: "hr", label: "hr" },
-        end: 386,
-        id: "445bee24",
-        offset: 0,
-        offsetUnit: { value: "hr", label: "hr" },
-        parentId: "8865b56e",
+        id: "6b393d28",
+        title: "Load",
+        duration: "45",
+        durationUnit: {
+          value: "min",
+          label: "min",
+        },
         predecessor: {
-          value: "da41da6e",
+          value: "d38efdf7",
           label: "Mixer - Discharge",
           external: true,
         },
+        offset: 0,
+        offsetUnit: {
+          value: "hr",
+          label: "hr",
+        },
+        type: {
+          value: "SF",
+          label: "Start-to-Finish",
+        },
         resources: [],
-        start: 86,
-        title: "Form",
-        type: { value: "SF", label: "Start-to-Finish" },
+        start: 216,
+        end: 261,
+        parentId: "3086050f",
+      },
+      {
+        id: "1723dd37",
+        title: "Fill",
+        duration: "3",
+        durationUnit: {
+          value: "hr",
+          label: "hr",
+        },
+        predecessor: {
+          value: "6b393d28",
+          label: "Load",
+          external: false,
+        },
+        offset: 0,
+        offsetUnit: {
+          value: "hr",
+          label: "hr",
+        },
+        type: {
+          value: "SF",
+          label: "Start-to-Finish",
+        },
+        resources: [
+          {
+            title: "Electricity",
+            id: "ae926b37",
+            color: "#FCB900",
+            unit: "kW",
+            label: "Electricity - 20 kW",
+            value: "Electricity",
+            amount: "20",
+          },
+        ],
+        start: 261,
+        end: 441,
+        parentId: "3086050f",
+      },
+      {
+        id: "f770216e",
+        title: "Shutdown",
+        duration: "20",
+        durationUnit: {
+          value: "min",
+          label: "min",
+        },
+        predecessor: {
+          value: "1723dd37",
+          label: "Fill",
+          external: false,
+        },
+        offset: 0,
+        offsetUnit: {
+          value: "hr",
+          label: "hr",
+        },
+        type: {
+          value: "SF",
+          label: "Start-to-Finish",
+        },
+        resources: [],
+        start: 441,
+        end: 461,
+        parentId: "3086050f",
+      },
+      {
+        id: "b5e44240",
+        title: "Clean",
+        duration: "2",
+        durationUnit: {
+          value: "hr",
+          label: "hr",
+        },
+        predecessor: {
+          value: "f770216e",
+          label: "Shutdown",
+          external: false,
+        },
+        offset: 0,
+        offsetUnit: {
+          value: "hr",
+          label: "hr",
+        },
+        type: {
+          value: "SF",
+          label: "Start-to-Finish",
+        },
+        resources: [
+          {
+            title: "Cleaner",
+            id: "a07c41dc",
+            color: "#7bdcb5",
+            unit: "lpm",
+            label: "Cleaner - 60 lpm",
+            value: "Cleaner",
+            amount: "60",
+          },
+        ],
+        start: 461,
+        end: 581,
+        parentId: "3086050f",
       },
     ],
+    duration: 365,
+  },
+  {
+    id: "1405ec6f",
+    title: "Palletizer",
+    operations: [
+      {
+        id: "c5ed6195",
+        title: "Palletize",
+        duration: "3",
+        durationUnit: {
+          value: "hr",
+          label: "hr",
+        },
+        predecessor: {
+          value: "1723dd37",
+          label: "Filler - Fill",
+          external: true,
+        },
+        offset: 0,
+        offsetUnit: {
+          value: "hr",
+          label: "hr",
+        },
+        type: {
+          value: "LINK",
+          label: {
+            key: null,
+            ref: null,
+            props: {},
+            _owner: {
+              tag: 0,
+              key: "c5ed6195",
+              stateNode: null,
+              return: null,
+              child: null,
+              sibling: null,
+              index: 0,
+              ref: null,
+              pendingProps: null,
+              memoizedProps: null,
+              updateQueue: null,
+              memoizedState: null,
+              dependencies: null,
+              mode: 27,
+              flags: 1,
+              subtreeFlags: 14682117,
+              deletions: null,
+              lanes: 0,
+              childLanes: 0,
+              alternate: null,
+              actualDuration: 5.900000035762787,
+              actualStartTime: 336913.39999997616,
+              selfBaseDuration: 0.19999998807907104,
+              treeBaseDuration: 5.700000047683716,
+              _debugSource: {
+                fileName:
+                  "/Users/matthewmalone/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Programming/NextJS Projects/process-visualizer/process-app/components/equipment/editEquipment.js",
+                lineNumber: 325,
+                columnNumber: 15,
+              },
+              _debugOwner: null,
+              _debugNeedsRemount: false,
+              _debugHookTypes: ["useCallback"],
+            },
+            _store: {},
+          },
+        },
+        resources: [],
+        start: 261,
+        end: 441,
+        parentId: "1405ec6f",
+      },
+    ],
+    duration: 180,
   },
 ];
 
@@ -138,7 +423,6 @@ export const EquipmentProvider = ({ children }) => {
     ids: [],
     message: "",
   });
-  const [userResources, setUserResources] = useState(defaultResources);
   const [selectionId, setSelectionId] = useState();
   const [drawer, setDrawer] = useState({ open: false, mode: "new" });
 
@@ -155,7 +439,7 @@ export const EquipmentProvider = ({ children }) => {
   useEffect(() => {
     const getLocalEquipment = () => {
       const localdata = localStorage.getItem("equipment");
-      return localdata ? JSON.parse(localdata) : [];
+      return localdata ? JSON.parse(localdata) : defaultEquipmentData;
     };
     setEquipment(getLocalEquipment());
   }, []);
@@ -378,8 +662,6 @@ export const EquipmentProvider = ({ children }) => {
         equipment,
         EOerror,
         setEquipment,
-        userResources,
-        setUserResources,
         selectionId,
         findSelectedEquipment,
         deleteEquipment,

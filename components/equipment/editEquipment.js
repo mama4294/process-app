@@ -7,7 +7,6 @@ import TextField from "@mui/material/TextField";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Checkbox from "@mui/material/Checkbox";
-import Tooltip from "@mui/material/Tooltip";
 import LinkIcon from "@mui/icons-material/Link";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
@@ -17,7 +16,7 @@ import AddIcon from "@mui/icons-material/Add";
 import styles from "../../styles/operations.module.css";
 import Alert from "@mui/material/Alert";
 import { blueGrey } from "@mui/material/colors";
-import { useState, useContext, useEffect, useCallback } from "react";
+import { useState, useContext, useCallback } from "react";
 import { useWindowWide } from "../../hooks/windowWidth";
 import TextInput from "../inputs/textInput";
 import Dropdown from "../inputs/dropdown";
@@ -31,10 +30,6 @@ import {
 import { generateId } from "../../utils/helperFunctions";
 import { EquipmentContext } from "../../contexts/equipmentContext";
 import { ResourceSelector } from "../inputs/resourceSelector";
-import {
-  ContentPasteSearchOutlined,
-  LocalConvenienceStoreOutlined,
-} from "@mui/icons-material";
 
 const EditEquipmentModal = ({ drawer, handleClose }) => {
   const { open, mode } = drawer;

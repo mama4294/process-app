@@ -39,21 +39,27 @@ export const ResourceProvider = ({ children }) => {
   const defaultResouces = [
     {
       title: "Water",
-      id: generateId(),
+      id: "862da0df",
       color: "#8ED1FC",
       unit: "lpm",
     },
     {
       title: "Steam",
-      id: generateId(),
+      id: "49dc27db",
       color: "#EB144C",
       unit: "kg/hr",
     },
     {
       title: "Electricity",
-      id: generateId(),
+      id: "01ada8a8",
       color: "#FCB900",
       unit: "kW",
+    },
+    {
+      title: "Cleaner",
+      id: "1ac0ffab",
+      color: "#7bdcb5",
+      unit: "lpm",
     },
   ];
 
@@ -120,6 +126,7 @@ export const ResourceProvider = ({ children }) => {
       value={{
         resourceOptions,
         setResourceOptions,
+        defaultResouces,
         handleAdd,
         handleEdit,
         handleDelete,

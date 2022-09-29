@@ -31,12 +31,25 @@ export const CampaignProvider = ({ children }) => {
   const [batches, setBatches] = useState([]);
   const defaultBatch = { id: generateId(), color: getRandomColor() };
 
+  const exampleBatches = [
+    {
+      id: 1,
+      color: "#7BDCB5",
+    },
+    {
+      id: "d5a3b2ed",
+      color: "#8ed1fc",
+    },
+    {
+      id: "ac0b8592",
+      color: "#fcb900",
+    },
+  ];
+
   useEffect(() => {
     const getLocalData = () => {
       const localdata = localStorage.getItem("batches");
-      return localdata
-        ? JSON.parse(localdata)
-        : [{ id: 1, color: getRandomColor() }];
+      return localdata ? JSON.parse(localdata) : exampleBatches;
     };
     setBatches(getLocalData());
   }, []);
@@ -86,10 +99,6 @@ export const CampaignProvider = ({ children }) => {
       setBatches(deleteByIds(batches, [{ id: id }]));
     }
   };
-
-  useEffect(() => {
-    console.log(batches);
-  }, [batches]);
 
   return (
     <CampaignContext.Provider

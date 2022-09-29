@@ -15,7 +15,7 @@ export const TitleProvider = ({ children }) => {
   useEffect(() => {
     const getLocalData = () => {
       const localdata = localStorage.getItem("projectTitle");
-      return localdata ? JSON.parse(localdata) : defaultTitle;
+      return localdata ? JSON.parse(localdata) : "Example Project";
     };
     setProjectTitle(getLocalData());
   }, []);
@@ -33,6 +33,7 @@ export const TitleProvider = ({ children }) => {
       value={{
         projectTitle,
         setProjectTitle,
+        defaultTitle,
         saveTitle,
         resetTitle,
       }}

@@ -34,11 +34,16 @@ import { LocalConvenienceStoreOutlined } from "@mui/icons-material";
 const Navbar = () => {
   const { equipment, setEquipment, saveEquipment, resetEquipment } =
     useContext(EquipmentContext);
-  const { batches, setBatches, saveBatches, resetBatches } =
+  const { batches, setBatches, saveBatches, resetBatches, defaultBatch } =
     useContext(CampaignContext);
-  const { resourceOptions, setResourceOptions, saveResources, resetResources } =
-    useContext(ResourceContext);
-  const { projectTitle, setProjectTitle, saveTitle, resetTitle } =
+  const {
+    resourceOptions,
+    setResourceOptions,
+    saveResources,
+    resetResources,
+    defaultResouces,
+  } = useContext(ResourceContext);
+  const { projectTitle, setProjectTitle, saveTitle, resetTitle, defaultTitle } =
     useContext(TitleContext);
 
   const [saveLoading, setSaveLoading] = useState(false);
@@ -107,6 +112,13 @@ const Navbar = () => {
     resetTitle();
     localStorage.clear();
     window.location.reload();
+    const data = {
+      projectTitle: defaultTitle,
+      equipment: [],
+      batches: [defaultBatch],
+      resourceOptions: defaultResouces,
+    };
+    storeDataInLocalStorage(data);
   };
 
   const handleChangeTitle = (e) => {
@@ -169,19 +181,6 @@ const Navbar = () => {
           >
             {saveLoading ? "Saving" : saveSuccess ? "Saved" : "Save"}
           </Button>
-          {/* {saveLoading && (
-            <CircularProgress
-              size={24}
-              sx={{
-                color: "rgb(76, 175, 80)",
-                position: "absolute",
-                top: "50%",
-                left: "50%",
-                marginTop: "-12px",
-                marginLeft: "-12px",
-              }}
-            />
-          )} */}
         </Toolbar>
       </AppBar>
     </>
