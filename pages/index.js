@@ -45,6 +45,28 @@ export default function Home() {
         <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#1876d1" />
         <meta name="msapplication-TileColor" content="#da532c" />
         <meta name="theme-color" content="#ffffff" />
+
+        <meta name="title" content="Process Visualizer" />
+        <meta
+          name="description"
+          content="A tool for process engineers to visualize complex batch processes."
+        />
+        <meta property="og:type" content="website" />
+        {/* <meta property="og:url" content="https://example.com/"/> */}
+        <meta property="og:title" content="Process Visualizer" />
+        <meta
+          property="og:description"
+          content="A tool for process engineers to visualize complex batch processes."
+        />
+        <meta property="og:image" content="/processVisExample.png" />
+        <meta property="twitter:card" content="summary_large_image" />
+        {/* <meta property="twitter:url" content="https://example.com/"/> */}
+        <meta property="twitter:title" content="Process Visualizer" />
+        <meta
+          property="twitter:description"
+          content="A tool for process engineers to visualize complex batch processes."
+        />
+        <meta property="twitter:image" content="/processVisExample.png" />
       </Head>
       <Navbar />
       <ActionBar view={view} setView={setView} />
