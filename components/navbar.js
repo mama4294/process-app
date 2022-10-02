@@ -168,12 +168,12 @@ const Navbar = () => {
             onClick={save}
             variant="outlined"
             color="inherit"
-            sx={
-              saveSuccess && {
-                bgcolor: "rgb(76, 175, 80)",
-                "&:hover": { bgcolor: "rgb(56, 142, 60)" },
-              }
-            }
+            // sx={
+            //   saveSuccess && {
+            //     bgcolor: "rgb(76, 175, 80)",
+            //     "&:hover": { bgcolor: "rgb(56, 142, 60)" },
+            //   }
+            // }
             startIcon={saveButtonIcon({
               loading: saveLoading,
               success: saveSuccess,
