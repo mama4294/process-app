@@ -498,14 +498,12 @@ const OperationRow = ({
             disabled={disabled}
             style={{ textAlign: "right" }}
             placeholder="Duration"
-            // onChange={handleChangeOperation(id)}
             onChange={onChangeValue()}
           />
           <Dropdown
             id="durationUnit"
             value={durationUnit}
             disabled={disabled}
-            // onChange={handleChangeOperation(id, "durationUnit")}
             onChange={onChangeValue("durationUnit")}
             options={[
               { label: "min", value: "min" },
@@ -519,7 +517,6 @@ const OperationRow = ({
         <Dropdown
           id="predecessor"
           value={predecessor}
-          // onChange={handleChangeOperation(id, "predecessor")}
           onChange={onChangeValue("predecessor")}
           options={predecessorOptions}
           isSearchable={true}
@@ -530,7 +527,6 @@ const OperationRow = ({
         <Dropdown
           id="type"
           value={type}
-          // onChange={handleChangeOperation(id, "type")}
           onChange={onChangeValue("type")}
           options={[
             { label: "Start-to-Finish", value: "SF" },
@@ -550,13 +546,13 @@ const OperationRow = ({
             disabled={disabled}
             style={{ textAlign: "right" }}
             placeholder="Offset"
-            onChange={handleChangeOperation(id)}
+            onChange={onChangeValue("offset")}
           />
           <Dropdown
             id="offsetUnit"
             value={offsetUnit}
             disabled={disabled}
-            onChange={handleChangeOperation(id, "offsetUnit")}
+            onChange={onChangeValue("offsetUnit")}
             options={[
               { label: "min", value: "min" },
               { label: "hr", value: "hr" },
